@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"oiaom.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="对于vsocde巨硬官方的C++调试插件, 许多学长们非常不满. 对于我来讲, 我目前用着感觉很差的方面主要就是堆栈帧看不了.(当然不是一般的函数调用堆栈帧, 例如cout这种函数就看不了说是没权限. 还有就是头文件的跳转, 在我电脑的环境下iostream跳转好像没问题, 但是进入这个头内部之后再想跳转似乎不行?) 我这里目前是ubuntu22.04的环境. 先看下下面这个视频, 文章是对它的补">
+<meta property="og:type" content="article">
+<meta property="og:title" content="clangd+codelldb的vscode表现">
+<meta property="og:url" content="http://oiaom.github.io/2022/11/10/clangd-codelldb%E7%9A%84vscode%E8%A1%A8%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Oiaom的小窝">
+<meta property="og:description" content="对于vsocde巨硬官方的C++调试插件, 许多学长们非常不满. 对于我来讲, 我目前用着感觉很差的方面主要就是堆栈帧看不了.(当然不是一般的函数调用堆栈帧, 例如cout这种函数就看不了说是没权限. 还有就是头文件的跳转, 在我电脑的环境下iostream跳转好像没问题, 但是进入这个头内部之后再想跳转似乎不行?) 我这里目前是ubuntu22.04的环境. 先看下下面这个视频, 文章是对它的补">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.imgdb.cn/item/62bd5a5d1d64b0706614c2e0.png">
+<meta property="article:published_time" content="2022-11-10T14:30:49.000Z">
+<meta property="article:modified_time" content="2023-09-07T02:21:19.413Z">
+<meta property="article:author" content="Oiaom">
+<meta property="article:tag" content="vscode">
+<meta property="article:tag" content="touchfish">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/62bd5a5d1d64b0706614c2e0.png">
+
+
+<link rel="canonical" href="http://oiaom.github.io/2022/11/10/clangd-codelldb%E7%9A%84vscode%E8%A1%A8%E7%8E%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://oiaom.github.io/2022/11/10/clangd-codelldb%E7%9A%84vscode%E8%A1%A8%E7%8E%B0/","path":"2022/11/10/clangd-codelldb的vscode表现/","title":"clangd+codelldb的vscode表现"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>clangd+codelldb的vscode表现 | Oiaom的小窝</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Oiaom的小窝</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-text"> linux环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-text"> 准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E7%9B%B8%E5%BA%94%E7%9A%84%E8%B0%83%E8%AF%95%E6%89%A9%E5%B1%95"><span class="nav-text"> 安装相应的调试扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E5%92%8C%E8%B0%83%E8%AF%95%E9%85%8D%E7%BD%AE"><span class="nav-text"> 运行和调试配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E9%87%8C%E9%9D%A2%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%8F%E9%97%AE%E9%A2%98%E4%BB%85%E9%92%88%E5%AF%B9%E7%AC%AC%E4%BA%8C%E8%8A%82"><span class="nav-text"> 视频里面的一些小问题(仅针对第二节)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#windows%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-text"> windows环境下的配置</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Oiaom"
+      src="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <p class="site-author-name" itemprop="name">Oiaom</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://oiaom.github.io/2022/11/10/clangd-codelldb%E7%9A%84vscode%E8%A1%A8%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+      <meta itemprop="name" content="Oiaom">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oiaom的小窝">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="clangd+codelldb的vscode表现 | Oiaom的小窝">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          clangd+codelldb的vscode表现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-11-10 22:30:49" itemprop="dateCreated datePublished" datetime="2022-11-10T22:30:49+08:00">2022-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-09-07 10:21:19" itemprop="dateModified" datetime="2023-09-07T10:21:19+08:00">2023-09-07</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>对于vsocde巨硬官方的C++调试插件, 许多学长们非常不满. 对于我来讲, 我目前用着感觉很差的方面主要就是堆栈帧看不了.(当然不是一般的函数调用堆栈帧, 例如cout这种函数就看不了说是没权限. 还有就是头文件的跳转, 在我电脑的环境下iostream跳转好像没问题, 但是进入这个头内部之后再想跳转似乎不行?) 我这里目前是ubuntu22.04的环境. 先看下下面这个视频, 文章是对它的补充:</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1sW411v7VZ?share_source=copy_web">https://www.bilibili.com/video/BV1sW411v7VZ?share_source=copy_web</a></p>
+<span id="more"></span>
+<p>所以看了网上很多家方案之后, 我最后选择了clangd补全分析, lldb调试, <s>llvm不知道干什么</s>.</p>
+<p><img src="https://pic.imgdb.cn/item/62bd5a5d1d64b0706614c2e0.png" alt="img" /></p>
+<h1 id="linux环境配置"><a class="markdownIt-Anchor" href="#linux环境配置"></a> linux环境配置</h1>
+<h2 id="准备工作"><a class="markdownIt-Anchor" href="#准备工作"></a> 准备工作</h2>
+<p>安装好clang, clangd, llvm(所以这个 干什么的). lldb就不用装了, 可以直接用vscode扩展里面自带的codelldb来, 没必要全局安装了. 全局安装了反而不好配hhhh.</p>
+<p><strong>注意, 在我后来重新看来, 这里完全没有必要安装clang. 我十分建议使用g++作为工具链. clang自身并不自带stdc++标准库, 所以用的时候可能会出现头文件缺失的问题(虽然也好解决), 但是clangd和clang没啥关系, vscode的cmake工具也可以使用g++工具链. 所以完全可以把这里的clang安装换成g++. 直接安装clang反而可能会出现头文件确实的可能性.</strong></p>
+<p>以ubuntu作为例子:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install clang clangd llvm</span><br></pre></td></tr></table></figure>
+<p>然后在vscode里面把原来的配置文件以及其他的扩展都删掉. 新建文件夹.vscode, 再新建tasks.json和launch.json. 这里有一点还需要注意, 好像这个tasks.json啊, 它只认自己创建的, 它不认新建的. 遇到这种情况就点终端-&gt;配置任务-&gt;使用模板创建tasks.json文件-&gt;others(其实这里怎么点都一样, 只要把文件搞出来就可以了.) 或者重启一下, 如果你在命名有./.vscode/tasks.json的情况下还被说任务不存在, 那就说明是这样.</p>
+<h2 id="安装相应的调试扩展"><a class="markdownIt-Anchor" href="#安装相应的调试扩展"></a> 安装相应的调试扩展</h2>
+<p>下载这几个插件:clangd codelldb.</p>
+<h2 id="运行和调试配置"><a class="markdownIt-Anchor" href="#运行和调试配置"></a> 运行和调试配置</h2>
+<p>然后就是json怎么写的问题. 我这里举几个例子:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    //task.json</span><br><span class="line">  &quot;version&quot;: &quot;2.0.0&quot;,</span><br><span class="line">  &quot;tasks&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;shell&quot;,</span><br><span class="line">      &quot;label&quot;: &quot;Build C++&quot;,</span><br><span class="line">      &quot;command&quot;: &quot;clang++&quot;,</span><br><span class="line">      &quot;args&quot;: [</span><br><span class="line">        &quot;-g&quot;,</span><br><span class="line">        &quot;-Wall&quot;,</span><br><span class="line">        &quot;-o&quot;,</span><br><span class="line">        &quot;$&#123;workspaceFolder&#125;/output/$&#123;fileBasenameNoExtension&#125;&quot;,</span><br><span class="line">        &quot;$&#123;workspaceFolder&#125;/*.cpp&quot;</span><br><span class="line">      ],</span><br><span class="line">      &quot;options&quot;: &#123;</span><br><span class="line">        &quot;cwd&quot;: &quot;/usr/bin&quot;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;group&quot;: &#123;</span><br><span class="line">        &quot;kind&quot;: &quot;build&quot;,</span><br><span class="line">        &quot;isDefault&quot;: true</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;detail&quot;: &quot;Task generated by Debugger.&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里面具体的细节性的东西我也不是很清楚, 但是有几个关键的必须要明白, 要是照搬照抄很有可能在自己的电脑上面运行不起来.</p>
+<p>首先先注意command这里, 虽然说clang也可以编译C++代码, 但是C++有的用法还是不兼容, 好像常见的std::cout这种说法就不行(这里我没有试过, 反正确实有一些写法是没法用). 所以填clang++, 这也是官方提供的解决方法.</p>
+<p>再就是args(arguments)这一栏, 里面的args含义必须要知道. -g这个都知道是完整的调试信息, -Wall的意思是显示完整的warning信息, -o明显是一个重命名选项. 然后重要的是后面两个, 第一个参数是编译后生成的可执行文件的路径, 我这里写的是 <code>$&#123;workspaceFolder&#125;/output/$&#123;fileBasenameNoExtension&#125;</code>, 这里带有$的都是vscode里面定义的宏, 表示编译之后的可执行文件生成在我当前vscode工作区的文件夹下面的output文件夹里面, 然后生成的可执行文件的名字是我编译的这个文件去掉扩展名(NoExtension). 所以假如想用我这一套配置, 就必须在工作目录下面新建一个output文件夹, 我这样设计有一个好处就是可以把源文件放在工作目录下面, 可执行文件单独放到一个文件夹里面. 整个工作目录比较简洁.</p>
+<p>下一个是需要编译的文件的路径. 我这里路径写的是*.cpp, 这是一个通配符写法, 意思是编译的时候把当前目录下面的所有cpp文件都编译了. 这个主要是针对有些代码不止一个源文件, 当然这样写就有一个坏处, 那就是不能把所有的作品都存到工作目录下面, 不然出现多个main函数就没法报错. 我的目录树结构是这样的:</p>
+<p>.<br />
+├── archive<br />
+├── .clang-format<br />
+├── main.cpp<br />
+├── output<br />
+├── .vscode<br />
+└── .vscode.bkbk(这是vscode的配置备份, 忽略)</p>
+<p>可以看见, 当前目录下面留3个文件夹, 一个是.vscode正常, 一个是output用来储存可执行文件的, 还有一个就是归档, 每次代码写好了之后就把代码放到那个文件夹里面, 保证外面的代码都是当前编辑的项目且只有一个main函数. 当然你也可以新建一个src目录, 了解了这些args的含义都好办. 设置成编译src目录下面的所有cpp文件很容易的, 通过json可以控制整个编译过程.</p>
+<p>假如vscode只是想写单文件的东西, 可以直接把上面的*.cpp改成${file}, 这样就只是编译当前的单文件. 这个时候所有代码都放到工作区文件夹下面就可以了. 对于一些人这样的结构只写单文件, 多文件都是单独开文件夹用cmake写的.</p>
+<p>接下来是launch.json实例:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  // 使用 IntelliSense 了解相关属性。 </span><br><span class="line">  // 悬停以查看现有属性的描述。</span><br><span class="line">  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  // 刘的注释: 这个tasks.json和launch.json的作用是, 在vscode当前打开的目录下, 使用clang++编译工作区目录下面的所有cpp文件(所以同一时间下build目录里面只能有一个项目), 并且把输出放到当前目录下面的output目录下面.</span><br><span class="line">  &quot;version&quot;: &quot;0.2.0&quot;,</span><br><span class="line">  &quot;configurations&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;lldb&quot;,</span><br><span class="line">      &quot;request&quot;: &quot;launch&quot;,</span><br><span class="line">      &quot;name&quot;: &quot;Debug&quot;,</span><br><span class="line">      &quot;program&quot;: &quot;$&#123;workspaceFolder&#125;/output/$&#123;fileBasenameNoExtension&#125;&quot;,</span><br><span class="line">      &quot;args&quot;: [],</span><br><span class="line">      &quot;cwd&quot;: &quot;$&#123;workspaceFolder&#125;&quot;,</span><br><span class="line">      &quot;preLaunchTask&quot;: &quot;Build C++&quot;,</span><br><span class="line">      &quot;internalConsoleOptions&quot;: &quot;neverOpen&quot;,</span><br><span class="line">      &quot;console&quot;: &quot;integratedTerminal&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>type是和扩展有关, 安装了codelldb之后就可以填这个type了. program填的位置就是可执行文件出现的目录, 注意和task.json保持一致. 本质上就是launch.json是管调试的, task.json是管编译的. 还有一个很重要的就是”prelaunchtask”, 这一项是说在调试之前要干什么, 如果没有这个每次调试按钮之前还要手动编译一下. 这里的名字要和前面task的label保持一致. 其他的意思倒也无所谓.</p>
+<p><s>紧接着是clang-format, 在上面的目录树里面, 出现了.clang-format. 这个文件是用来格式化代码用的, 而且标准规定得很硬性. 在工作目录下面新建一个这个文件之后, clangd扩展内置的clang-format可以对内容进行读取, 自动规定tab宽度啊, 什么乱七八糟的, 只要这个文件到位了, 基本上以后新电脑就再也不用配置代码风格相关的东西了. 这个文件可以自己写, 也可以安装clang-format生成, 我这里生成了google风格的文件作为实例:</s></p>
+<blockquote>
+<p>这里出错了, 实际上当时我没有搞清楚clangd其实自己也有格式化的功能, 其实原来讲的配置clangformat就不行. 其实根本就没有配置上.</p>
+<p>其实clang-format自己也有很严重的问题—版本不兼容. 在vscode扩展商场里面下载clang-format, 这个时候我在我电脑上面下载了clang-format:</p>
+<p><code>sudo apt install clang-format</code></p>
+<p>然后用:</p>
+<p><code>clang-format -style=google -dump-config &gt; .clang-format</code></p>
+<p>生成了google风格的配置文件, 接着把这个文件copy到项目中, 然后vscode中右键, 选择&quot;Format Document With…&quot;, 上面会弹出来一个框, 里面configure了一下默认的formatter.</p>
+<p>然后我再格式化就报错了.</p>
+<p>这其实是因为这个插件没更新导致的. 所以应该控制好版本. 我当前电脑上是Ubuntu22.10, 能在包管理器里面找到的最老的clang-format是11.</p>
+<p><code>sudo apt install clang-format-11</code></p>
+<p>然后:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/bin</span><br><span class="line">sudo ln -s clang-format-11 clang-format</span><br></pre></td></tr></table></figure>
+<p>这样我输入clang-format就会调用这个11, 不这样进行一个<strong>软链接</strong>结果就是很多插件都会找不到, 插件比较笨, 一般只会找clang-format在不在环境变量里面. 然后目前为止在vscode里面就可以正常clang-format了. 然后我把这个配置文件放到clion里面发现还是报错, 总之就是值不兼容. 很典, 就是提示这个地方只能填某三个值, 结果生成的文件里面是true. 很大程度上是clang-format更新之后的语法变了. 我只好把那些标高亮的都注释掉了.(所以clion为什么你不自带一个format)</p>
+<p>我这里再贴一份.clang-format, 是由clang-format-11生成的, 如果说老版本clion想要用的话需要自行改一些高亮的, 好在不是太多.(适用于vscode的Clang-Format插件):</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">Language:</span>        <span class="string">Cpp</span></span><br><span class="line"><span class="comment"># BasedOnStyle:  Google</span></span><br><span class="line"><span class="attr">AccessModifierOffset:</span> <span class="number">-1</span></span><br><span class="line"><span class="attr">AlignAfterOpenBracket:</span> <span class="string">Align</span></span><br><span class="line"><span class="attr">AlignConsecutiveMacros:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">AlignConsecutiveAssignments:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">AlignConsecutiveBitFields:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">AlignConsecutiveDeclarations:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">AlignEscapedNewlines:</span> <span class="string">Left</span></span><br><span class="line"><span class="attr">AlignOperands:</span>   <span class="string">Align</span></span><br><span class="line"><span class="attr">AlignTrailingComments:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">AllowAllArgumentsOnNextLine:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">AllowAllConstructorInitializersOnNextLine:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">AllowAllParametersOfDeclarationOnNextLine:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">AllowShortEnumsOnASingleLine:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">AllowShortBlocksOnASingleLine:</span> <span class="string">Never</span></span><br><span class="line"><span class="attr">AllowShortCaseLabelsOnASingleLine:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">AllowShortFunctionsOnASingleLine:</span> <span class="string">All</span></span><br><span class="line"><span class="attr">AllowShortLambdasOnASingleLine:</span> <span class="string">All</span></span><br><span class="line"><span class="attr">AllowShortIfStatementsOnASingleLine:</span> <span class="string">WithoutElse</span></span><br><span class="line"><span class="attr">AllowShortLoopsOnASingleLine:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">AlwaysBreakAfterDefinitionReturnType:</span> <span class="string">None</span></span><br><span class="line"><span class="attr">AlwaysBreakAfterReturnType:</span> <span class="string">None</span></span><br><span class="line"><span class="attr">AlwaysBreakBeforeMultilineStrings:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">AlwaysBreakTemplateDeclarations:</span> <span class="literal">Yes</span></span><br><span class="line"><span class="attr">BinPackArguments:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">BinPackParameters:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">BraceWrapping:</span></span><br><span class="line"><span class="attr">AfterCaseLabel:</span>  <span class="literal">false</span></span><br><span class="line"><span class="attr">AfterClass:</span>      <span class="literal">false</span></span><br><span class="line"><span class="attr">AfterControlStatement:</span> <span class="string">Never</span></span><br><span class="line"><span class="attr">AfterEnum:</span>       <span class="literal">false</span></span><br><span class="line"><span class="attr">AfterFunction:</span>   <span class="literal">false</span></span><br><span class="line"><span class="attr">AfterNamespace:</span>  <span class="literal">false</span></span><br><span class="line"><span class="attr">AfterObjCDeclaration:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">AfterStruct:</span>     <span class="literal">false</span></span><br><span class="line"><span class="attr">AfterUnion:</span>      <span class="literal">false</span></span><br><span class="line"><span class="attr">AfterExternBlock:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">BeforeCatch:</span>     <span class="literal">false</span></span><br><span class="line"><span class="attr">BeforeElse:</span>      <span class="literal">false</span></span><br><span class="line"><span class="attr">BeforeLambdaBody:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">BeforeWhile:</span>     <span class="literal">false</span></span><br><span class="line"><span class="attr">IndentBraces:</span>    <span class="literal">false</span></span><br><span class="line"><span class="attr">SplitEmptyFunction:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">SplitEmptyRecord:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">SplitEmptyNamespace:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">BreakBeforeBinaryOperators:</span> <span class="string">None</span></span><br><span class="line"><span class="attr">BreakBeforeBraces:</span> <span class="string">Attach</span></span><br><span class="line"><span class="attr">BreakBeforeInheritanceComma:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">BreakInheritanceList:</span> <span class="string">BeforeColon</span></span><br><span class="line"><span class="attr">BreakBeforeTernaryOperators:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">BreakConstructorInitializersBeforeComma:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">BreakConstructorInitializers:</span> <span class="string">BeforeColon</span></span><br><span class="line"><span class="attr">BreakAfterJavaFieldAnnotations:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">BreakStringLiterals:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">ColumnLimit:</span>     <span class="number">80</span></span><br><span class="line"><span class="attr">CommentPragmas:</span>  <span class="string">&#x27;^ IWYU pragma:&#x27;</span></span><br><span class="line"><span class="attr">CompactNamespaces:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">ConstructorInitializerAllOnOneLineOrOnePerLine:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">ConstructorInitializerIndentWidth:</span> <span class="number">4</span></span><br><span class="line"><span class="attr">ContinuationIndentWidth:</span> <span class="number">4</span></span><br><span class="line"><span class="attr">Cpp11BracedListStyle:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">DeriveLineEnding:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">DerivePointerAlignment:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">DisableFormat:</span>   <span class="literal">false</span></span><br><span class="line"><span class="attr">ExperimentalAutoDetectBinPacking:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">FixNamespaceComments:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">ForEachMacros:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">foreach</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Q_FOREACH</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">BOOST_FOREACH</span></span><br><span class="line"><span class="attr">IncludeBlocks:</span>   <span class="string">Regroup</span></span><br><span class="line"><span class="attr">IncludeCategories:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Regex:</span>           <span class="string">&#x27;^&lt;ext/.*\.h&gt;&#x27;</span></span><br><span class="line">    <span class="attr">Priority:</span>        <span class="number">2</span></span><br><span class="line">    <span class="attr">SortPriority:</span>    <span class="number">0</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Regex:</span>           <span class="string">&#x27;^&lt;.*\.h&gt;&#x27;</span></span><br><span class="line">    <span class="attr">Priority:</span>        <span class="number">1</span></span><br><span class="line">    <span class="attr">SortPriority:</span>    <span class="number">0</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Regex:</span>           <span class="string">&#x27;^&lt;.*&#x27;</span></span><br><span class="line">    <span class="attr">Priority:</span>        <span class="number">2</span></span><br><span class="line">    <span class="attr">SortPriority:</span>    <span class="number">0</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Regex:</span>           <span class="string">&#x27;.*&#x27;</span></span><br><span class="line">    <span class="attr">Priority:</span>        <span class="number">3</span></span><br><span class="line">    <span class="attr">SortPriority:</span>    <span class="number">0</span></span><br><span class="line"><span class="attr">IncludeIsMainRegex:</span> <span class="string">&#x27;([-_](test|unittest))?$&#x27;</span></span><br><span class="line"><span class="attr">IncludeIsMainSourceRegex:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="attr">IndentCaseLabels:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">IndentCaseBlocks:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">IndentGotoLabels:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">IndentPPDirectives:</span> <span class="string">None</span></span><br><span class="line"><span class="attr">IndentExternBlock:</span> <span class="string">AfterExternBlock</span></span><br><span class="line"><span class="attr">IndentWidth:</span>     <span class="number">2</span></span><br><span class="line"><span class="attr">IndentWrappedFunctionNames:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">InsertTrailingCommas:</span> <span class="string">None</span></span><br><span class="line"><span class="attr">JavaScriptQuotes:</span> <span class="string">Leave</span></span><br><span class="line"><span class="attr">JavaScriptWrapImports:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">KeepEmptyLinesAtTheStartOfBlocks:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">MacroBlockBegin:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="attr">MacroBlockEnd:</span>   <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="attr">MaxEmptyLinesToKeep:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">NamespaceIndentation:</span> <span class="string">None</span></span><br><span class="line"><span class="attr">ObjCBinPackProtocolList:</span> <span class="string">Never</span></span><br><span class="line"><span class="attr">ObjCBlockIndentWidth:</span> <span class="number">2</span></span><br><span class="line"><span class="attr">ObjCBreakBeforeNestedBlockParam:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">ObjCSpaceAfterProperty:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">ObjCSpaceBeforeProtocolList:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">PenaltyBreakAssignment:</span> <span class="number">2</span></span><br><span class="line"><span class="attr">PenaltyBreakBeforeFirstCallParameter:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">PenaltyBreakComment:</span> <span class="number">300</span></span><br><span class="line"><span class="attr">PenaltyBreakFirstLessLess:</span> <span class="number">120</span></span><br><span class="line"><span class="attr">PenaltyBreakString:</span> <span class="number">1000</span></span><br><span class="line"><span class="attr">PenaltyBreakTemplateDeclaration:</span> <span class="number">10</span></span><br><span class="line"><span class="attr">PenaltyExcessCharacter:</span> <span class="number">1000000</span></span><br><span class="line"><span class="attr">PenaltyReturnTypeOnItsOwnLine:</span> <span class="number">200</span></span><br><span class="line"><span class="attr">PointerAlignment:</span> <span class="string">Left</span></span><br><span class="line"><span class="attr">RawStringFormats:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Language:</span>        <span class="string">Cpp</span></span><br><span class="line">    <span class="attr">Delimiters:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">cc</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CC</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">cpp</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">Cpp</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CPP</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;c++&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;C++&#x27;</span></span><br><span class="line">    <span class="attr">CanonicalDelimiter:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="attr">BasedOnStyle:</span>    <span class="string">google</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Language:</span>        <span class="string">TextProto</span></span><br><span class="line">    <span class="attr">Delimiters:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">pb</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">PB</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">proto</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">PROTO</span></span><br><span class="line">    <span class="attr">EnclosingFunctions:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">EqualsProto</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">EquivToProto</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">PARSE_PARTIAL_TEXT_PROTO</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">PARSE_TEST_PROTO</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">PARSE_TEXT_PROTO</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ParseTextOrDie</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ParseTextProtoOrDie</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ParseTestProto</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ParsePartialTestProto</span></span><br><span class="line">    <span class="attr">CanonicalDelimiter:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="attr">BasedOnStyle:</span>    <span class="string">google</span></span><br><span class="line"><span class="attr">ReflowComments:</span>  <span class="literal">true</span></span><br><span class="line"><span class="attr">SortIncludes:</span>    <span class="literal">true</span></span><br><span class="line"><span class="attr">SortUsingDeclarations:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">SpaceAfterCStyleCast:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">SpaceAfterLogicalNot:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">SpaceAfterTemplateKeyword:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">SpaceBeforeAssignmentOperators:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">SpaceBeforeCpp11BracedList:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">SpaceBeforeCtorInitializerColon:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">SpaceBeforeInheritanceColon:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">SpaceBeforeParens:</span> <span class="string">ControlStatements</span></span><br><span class="line"><span class="attr">SpaceBeforeRangeBasedForLoopColon:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">SpaceInEmptyBlock:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">SpaceInEmptyParentheses:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">SpacesBeforeTrailingComments:</span> <span class="number">2</span></span><br><span class="line"><span class="attr">SpacesInAngles:</span>  <span class="literal">false</span></span><br><span class="line"><span class="attr">SpacesInConditionalStatement:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">SpacesInContainerLiterals:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">SpacesInCStyleCastParentheses:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">SpacesInParentheses:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">SpacesInSquareBrackets:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">SpaceBeforeSquareBrackets:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">Standard:</span>        <span class="string">Auto</span></span><br><span class="line"><span class="attr">StatementMacros:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Q_UNUSED</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">QT_REQUIRE_VERSION</span></span><br><span class="line"><span class="attr">TabWidth:</span>        <span class="number">8</span></span><br><span class="line"><span class="attr">UseCRLF:</span>         <span class="literal">false</span></span><br><span class="line"><span class="attr">UseTab:</span>          <span class="string">Never</span></span><br><span class="line"><span class="attr">WhitespaceSensitiveMacros:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">STRINGIZE</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">PP_STRINGIZE</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">BOOST_PP_STRINGIZE</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>同时更新到ubuntu22.10之后, clang-format也更新到了15, 这里是15生成的配置文件, Google的:</p>
+<pre class="highlight"><code class="yaml"><span class="meta">---</span>
+<span class="attr">Language:</span>        <span class="string">Cpp</span>
+<span class="comment"># BasedOnStyle:  Google</span>
+<span class="attr">AccessModifierOffset:</span> <span class="number">-1</span>
+<span class="attr">AlignAfterOpenBracket:</span> <span class="string">Align</span>
+<span class="attr">AlignArrayOfStructures:</span> <span class="string">None</span>
+<span class="attr">AlignConsecutiveAssignments:</span>
+  <span class="attr">Enabled:</span>         <span class="literal">false</span>
+  <span class="attr">AcrossEmptyLines:</span> <span class="literal">false</span>
+  <span class="attr">AcrossComments:</span>  <span class="literal">false</span>
+  <span class="attr">AlignCompound:</span>   <span class="literal">false</span>
+  <span class="attr">PadOperators:</span>    <span class="literal">true</span>
+<span class="attr">AlignConsecutiveBitFields:</span>
+  <span class="attr">Enabled:</span>         <span class="literal">false</span>
+  <span class="attr">AcrossEmptyLines:</span> <span class="literal">false</span>
+  <span class="attr">AcrossComments:</span>  <span class="literal">false</span>
+  <span class="attr">AlignCompound:</span>   <span class="literal">false</span>
+  <span class="attr">PadOperators:</span>    <span class="literal">false</span>
+<span class="attr">AlignConsecutiveDeclarations:</span>
+  <span class="attr">Enabled:</span>         <span class="literal">false</span>
+  <span class="attr">AcrossEmptyLines:</span> <span class="literal">false</span>
+  <span class="attr">AcrossComments:</span>  <span class="literal">false</span>
+  <span class="attr">AlignCompound:</span>   <span class="literal">false</span>
+  <span class="attr">PadOperators:</span>    <span class="literal">false</span>
+<span class="attr">AlignConsecutiveMacros:</span>
+  <span class="attr">Enabled:</span>         <span class="literal">false</span>
+  <span class="attr">AcrossEmptyLines:</span> <span class="literal">false</span>
+  <span class="attr">AcrossComments:</span>  <span class="literal">false</span>
+  <span class="attr">AlignCompound:</span>   <span class="literal">false</span>
+  <span class="attr">PadOperators:</span>    <span class="literal">false</span>
+<span class="attr">AlignEscapedNewlines:</span> <span class="string">Left</span>
+<span class="attr">AlignOperands:</span>   <span class="string">Align</span>
+<span class="attr">AlignTrailingComments:</span> <span class="literal">true</span>
+<span class="attr">AllowAllArgumentsOnNextLine:</span> <span class="literal">true</span>
+<span class="attr">AllowAllParametersOfDeclarationOnNextLine:</span> <span class="literal">true</span>
+<span class="attr">AllowShortEnumsOnASingleLine:</span> <span class="literal">true</span>
+<span class="attr">AllowShortBlocksOnASingleLine:</span> <span class="string">Never</span>
+<span class="attr">AllowShortCaseLabelsOnASingleLine:</span> <span class="literal">false</span>
+<span class="attr">AllowShortFunctionsOnASingleLine:</span> <span class="string">All</span>
+<span class="attr">AllowShortLambdasOnASingleLine:</span> <span class="string">All</span>
+<span class="attr">AllowShortIfStatementsOnASingleLine:</span> <span class="string">WithoutElse</span>
+<span class="attr">AllowShortLoopsOnASingleLine:</span> <span class="literal">true</span>
+<span class="attr">AlwaysBreakAfterDefinitionReturnType:</span> <span class="string">None</span>
+<span class="attr">AlwaysBreakAfterReturnType:</span> <span class="string">None</span>
+<span class="attr">AlwaysBreakBeforeMultilineStrings:</span> <span class="literal">true</span>
+<span class="attr">AlwaysBreakTemplateDeclarations:</span> <span class="literal">Yes</span>
+<span class="attr">AttributeMacros:</span>
+  <span class="bullet">-</span> <span class="string">__capability</span>
+<span class="attr">BinPackArguments:</span> <span class="literal">true</span>
+<span class="attr">BinPackParameters:</span> <span class="literal">true</span>
+<span class="attr">BraceWrapping:</span>
+  <span class="attr">AfterCaseLabel:</span>  <span class="literal">false</span>
+  <span class="attr">AfterClass:</span>      <span class="literal">false</span>
+  <span class="attr">AfterControlStatement:</span> <span class="string">Never</span>
+  <span class="attr">AfterEnum:</span>       <span class="literal">false</span>
+  <span class="attr">AfterFunction:</span>   <span class="literal">false</span>
+  <span class="attr">AfterNamespace:</span>  <span class="literal">false</span>
+  <span class="attr">AfterObjCDeclaration:</span> <span class="literal">false</span>
+  <span class="attr">AfterStruct:</span>     <span class="literal">false</span>
+  <span class="attr">AfterUnion:</span>      <span class="literal">false</span>
+  <span class="attr">AfterExternBlock:</span> <span class="literal">false</span>
+  <span class="attr">BeforeCatch:</span>     <span class="literal">false</span>
+  <span class="attr">BeforeElse:</span>      <span class="literal">false</span>
+  <span class="attr">BeforeLambdaBody:</span> <span class="literal">false</span>
+  <span class="attr">BeforeWhile:</span>     <span class="literal">false</span>
+  <span class="attr">IndentBraces:</span>    <span class="literal">false</span>
+  <span class="attr">SplitEmptyFunction:</span> <span class="literal">true</span>
+  <span class="attr">SplitEmptyRecord:</span> <span class="literal">true</span>
+  <span class="attr">SplitEmptyNamespace:</span> <span class="literal">true</span>
+<span class="attr">BreakBeforeBinaryOperators:</span> <span class="string">None</span>
+<span class="attr">BreakBeforeConceptDeclarations:</span> <span class="string">Always</span>
+<span class="attr">BreakBeforeBraces:</span> <span class="string">Attach</span>
+<span class="attr">BreakBeforeInheritanceComma:</span> <span class="literal">false</span>
+<span class="attr">BreakInheritanceList:</span> <span class="string">BeforeColon</span>
+<span class="attr">BreakBeforeTernaryOperators:</span> <span class="literal">true</span>
+<span class="attr">BreakConstructorInitializersBeforeComma:</span> <span class="literal">false</span>
+<span class="attr">BreakConstructorInitializers:</span> <span class="string">BeforeColon</span>
+<span class="attr">BreakAfterJavaFieldAnnotations:</span> <span class="literal">false</span>
+<span class="attr">BreakStringLiterals:</span> <span class="literal">true</span>
+<span class="attr">ColumnLimit:</span>     <span class="number">80</span>
+<span class="attr">CommentPragmas:</span>  <span class="string">&#x27;^ IWYU pragma:&#x27;</span>
+<span class="attr">QualifierAlignment:</span> <span class="string">Leave</span>
+<span class="attr">CompactNamespaces:</span> <span class="literal">false</span>
+<span class="attr">ConstructorInitializerIndentWidth:</span> <span class="number">4</span>
+<span class="attr">ContinuationIndentWidth:</span> <span class="number">4</span>
+<span class="attr">Cpp11BracedListStyle:</span> <span class="literal">true</span>
+<span class="attr">DeriveLineEnding:</span> <span class="literal">true</span>
+<span class="attr">DerivePointerAlignment:</span> <span class="literal">true</span>
+<span class="attr">DisableFormat:</span>   <span class="literal">false</span>
+<span class="attr">EmptyLineAfterAccessModifier:</span> <span class="string">Never</span>
+<span class="attr">EmptyLineBeforeAccessModifier:</span> <span class="string">LogicalBlock</span>
+<span class="attr">ExperimentalAutoDetectBinPacking:</span> <span class="literal">false</span>
+<span class="attr">PackConstructorInitializers:</span> <span class="string">NextLine</span>
+<span class="attr">BasedOnStyle:</span>    <span class="string">&#x27;&#x27;</span>
+<span class="attr">ConstructorInitializerAllOnOneLineOrOnePerLine:</span> <span class="literal">false</span>
+<span class="attr">AllowAllConstructorInitializersOnNextLine:</span> <span class="literal">true</span>
+<span class="attr">FixNamespaceComments:</span> <span class="literal">true</span>
+<span class="attr">ForEachMacros:</span>
+  <span class="bullet">-</span> <span class="string">foreach</span>
+  <span class="bullet">-</span> <span class="string">Q_FOREACH</span>
+  <span class="bullet">-</span> <span class="string">BOOST_FOREACH</span>
+<span class="attr">IfMacros:</span>
+  <span class="bullet">-</span> <span class="string">KJ_IF_MAYBE</span>
+<span class="attr">IncludeBlocks:</span>   <span class="string">Regroup</span>
+<span class="attr">IncludeCategories:</span>
+  <span class="bullet">-</span> <span class="attr">Regex:</span>           <span class="string">&#x27;^&lt;ext/.*\.h&gt;&#x27;</span>
+    <span class="attr">Priority:</span>        <span class="number">2</span>
+    <span class="attr">SortPriority:</span>    <span class="number">0</span>
+    <span class="attr">CaseSensitive:</span>   <span class="literal">false</span>
+  <span class="bullet">-</span> <span class="attr">Regex:</span>           <span class="string">&#x27;^&lt;.*\.h&gt;&#x27;</span>
+    <span class="attr">Priority:</span>        <span class="number">1</span>
+    <span class="attr">SortPriority:</span>    <span class="number">0</span>
+    <span class="attr">CaseSensitive:</span>   <span class="literal">false</span>
+  <span class="bullet">-</span> <span class="attr">Regex:</span>           <span class="string">&#x27;^&lt;.*&#x27;</span>
+    <span class="attr">Priority:</span>        <span class="number">2</span>
+    <span class="attr">SortPriority:</span>    <span class="number">0</span>
+    <span class="attr">CaseSensitive:</span>   <span class="literal">false</span>
+  <span class="bullet">-</span> <span class="attr">Regex:</span>           <span class="string">&#x27;.*&#x27;</span>
+    <span class="attr">Priority:</span>        <span class="number">3</span>
+    <span class="attr">SortPriority:</span>    <span class="number">0</span>
+    <span class="attr">CaseSensitive:</span>   <span class="literal">false</span>
+<span class="attr">IncludeIsMainRegex:</span> <span class="string">&#x27;([-_](test|unittest))?$&#x27;</span>
+<span class="attr">IncludeIsMainSourceRegex:</span> <span class="string">&#x27;&#x27;</span>
+<span class="attr">IndentAccessModifiers:</span> <span class="literal">false</span>
+<span class="attr">IndentCaseLabels:</span> <span class="literal">true</span>
+<span class="attr">IndentCaseBlocks:</span> <span class="literal">false</span>
+<span class="attr">IndentGotoLabels:</span> <span class="literal">true</span>
+<span class="attr">IndentPPDirectives:</span> <span class="string">None</span>
+<span class="attr">IndentExternBlock:</span> <span class="string">AfterExternBlock</span>
+<span class="attr">IndentRequiresClause:</span> <span class="literal">true</span>
+<span class="attr">IndentWidth:</span>     <span class="number">2</span>
+<span class="attr">IndentWrappedFunctionNames:</span> <span class="literal">false</span>
+<span class="attr">InsertBraces:</span>    <span class="literal">false</span>
+<span class="attr">InsertTrailingCommas:</span> <span class="string">None</span>
+<span class="attr">JavaScriptQuotes:</span> <span class="string">Leave</span>
+<span class="attr">JavaScriptWrapImports:</span> <span class="literal">true</span>
+<span class="attr">KeepEmptyLinesAtTheStartOfBlocks:</span> <span class="literal">false</span>
+<span class="attr">LambdaBodyIndentation:</span> <span class="string">Signature</span>
+<span class="attr">MacroBlockBegin:</span> <span class="string">&#x27;&#x27;</span>
+<span class="attr">MacroBlockEnd:</span>   <span class="string">&#x27;&#x27;</span>
+<span class="attr">MaxEmptyLinesToKeep:</span> <span class="number">1</span>
+<span class="attr">NamespaceIndentation:</span> <span class="string">None</span>
+<span class="attr">ObjCBinPackProtocolList:</span> <span class="string">Never</span>
+<span class="attr">ObjCBlockIndentWidth:</span> <span class="number">2</span>
+<span class="attr">ObjCBreakBeforeNestedBlockParam:</span> <span class="literal">true</span>
+<span class="attr">ObjCSpaceAfterProperty:</span> <span class="literal">false</span>
+<span class="attr">ObjCSpaceBeforeProtocolList:</span> <span class="literal">true</span>
+<span class="attr">PenaltyBreakAssignment:</span> <span class="number">2</span>
+<span class="attr">PenaltyBreakBeforeFirstCallParameter:</span> <span class="number">1</span>
+<span class="attr">PenaltyBreakComment:</span> <span class="number">300</span>
+<span class="attr">PenaltyBreakFirstLessLess:</span> <span class="number">120</span>
+<span class="attr">PenaltyBreakOpenParenthesis:</span> <span class="number">0</span>
+<span class="attr">PenaltyBreakString:</span> <span class="number">1000</span>
+<span class="attr">PenaltyBreakTemplateDeclaration:</span> <span class="number">10</span>
+<span class="attr">PenaltyExcessCharacter:</span> <span class="number">1000000</span>
+<span class="attr">PenaltyReturnTypeOnItsOwnLine:</span> <span class="number">200</span>
+<span class="attr">PenaltyIndentedWhitespace:</span> <span class="number">0</span>
+<span class="attr">PointerAlignment:</span> <span class="string">Left</span>
+<span class="attr">PPIndentWidth:</span>   <span class="number">-1</span>
+<span class="attr">RawStringFormats:</span>
+  <span class="bullet">-</span> <span class="attr">Language:</span>        <span class="string">Cpp</span>
+    <span class="attr">Delimiters:</span>
+      <span class="bullet">-</span> <span class="string">cc</span>
+      <span class="bullet">-</span> <span class="string">CC</span>
+      <span class="bullet">-</span> <span class="string">cpp</span>
+      <span class="bullet">-</span> <span class="string">Cpp</span>
+      <span class="bullet">-</span> <span class="string">CPP</span>
+      <span class="bullet">-</span> <span class="string">&#x27;c++&#x27;</span>
+      <span class="bullet">-</span> <span class="string">&#x27;C++&#x27;</span>
+    <span class="attr">CanonicalDelimiter:</span> <span class="string">&#x27;&#x27;</span>
+    <span class="attr">BasedOnStyle:</span>    <span class="string">google</span>
+  <span class="bullet">-</span> <span class="attr">Language:</span>        <span class="string">TextProto</span>
+    <span class="attr">Delimiters:</span>
+      <span class="bullet">-</span> <span class="string">pb</span>
+      <span class="bullet">-</span> <span class="string">PB</span>
+      <span class="bullet">-</span> <span class="string">proto</span>
+      <span class="bullet">-</span> <span class="string">PROTO</span>
+    <span class="attr">EnclosingFunctions:</span>
+      <span class="bullet">-</span> <span class="string">EqualsProto</span>
+      <span class="bullet">-</span> <span class="string">EquivToProto</span>
+      <span class="bullet">-</span> <span class="string">PARSE_PARTIAL_TEXT_PROTO</span>
+      <span class="bullet">-</span> <span class="string">PARSE_TEST_PROTO</span>
+      <span class="bullet">-</span> <span class="string">PARSE_TEXT_PROTO</span>
+      <span class="bullet">-</span> <span class="string">ParseTextOrDie</span>
+      <span class="bullet">-</span> <span class="string">ParseTextProtoOrDie</span>
+      <span class="bullet">-</span> <span class="string">ParseTestProto</span>
+      <span class="bullet">-</span> <span class="string">ParsePartialTestProto</span>
+    <span class="attr">CanonicalDelimiter:</span> <span class="string">pb</span>
+    <span class="attr">BasedOnStyle:</span>    <span class="string">google</span>
+<span class="attr">ReferenceAlignment:</span> <span class="string">Pointer</span>
+<span class="attr">ReflowComments:</span>  <span class="literal">true</span>
+<span class="attr">RemoveBracesLLVM:</span> <span class="literal">false</span>
+<span class="attr">RequiresClausePosition:</span> <span class="string">OwnLine</span>
+<span class="attr">SeparateDefinitionBlocks:</span> <span class="string">Leave</span>
+<span class="attr">ShortNamespaceLines:</span> <span class="number">1</span>
+<span class="attr">SortIncludes:</span>    <span class="string">CaseSensitive</span>
+<span class="attr">SortJavaStaticImport:</span> <span class="string">Before</span>
+<span class="attr">SortUsingDeclarations:</span> <span class="literal">true</span>
+<span class="attr">SpaceAfterCStyleCast:</span> <span class="literal">false</span>
+<span class="attr">SpaceAfterLogicalNot:</span> <span class="literal">false</span>
+<span class="attr">SpaceAfterTemplateKeyword:</span> <span class="literal">true</span>
+<span class="attr">SpaceBeforeAssignmentOperators:</span> <span class="literal">true</span>
+<span class="attr">SpaceBeforeCaseColon:</span> <span class="literal">false</span>
+<span class="attr">SpaceBeforeCpp11BracedList:</span> <span class="literal">false</span>
+<span class="attr">SpaceBeforeCtorInitializerColon:</span> <span class="literal">true</span>
+<span class="attr">SpaceBeforeInheritanceColon:</span> <span class="literal">true</span>
+<span class="attr">SpaceBeforeParens:</span> <span class="string">ControlStatements</span>
+<span class="attr">SpaceBeforeParensOptions:</span>
+  <span class="attr">AfterControlStatements:</span> <span class="literal">true</span>
+  <span class="attr">AfterForeachMacros:</span> <span class="literal">true</span>
+  <span class="attr">AfterFunctionDefinitionName:</span> <span class="literal">false</span>
+  <span class="attr">AfterFunctionDeclarationName:</span> <span class="literal">false</span>
+  <span class="attr">AfterIfMacros:</span>   <span class="literal">true</span>
+  <span class="attr">AfterOverloadedOperator:</span> <span class="literal">false</span>
+  <span class="attr">AfterRequiresInClause:</span> <span class="literal">false</span>
+  <span class="attr">AfterRequiresInExpression:</span> <span class="literal">false</span>
+  <span class="attr">BeforeNonEmptyParentheses:</span> <span class="literal">false</span>
+<span class="attr">SpaceAroundPointerQualifiers:</span> <span class="string">Default</span>
+<span class="attr">SpaceBeforeRangeBasedForLoopColon:</span> <span class="literal">true</span>
+<span class="attr">SpaceInEmptyBlock:</span> <span class="literal">false</span>
+<span class="attr">SpaceInEmptyParentheses:</span> <span class="literal">false</span>
+<span class="attr">SpacesBeforeTrailingComments:</span> <span class="number">2</span>
+<span class="attr">SpacesInAngles:</span>  <span class="string">Never</span>
+<span class="attr">SpacesInConditionalStatement:</span> <span class="literal">false</span>
+<span class="attr">SpacesInContainerLiterals:</span> <span class="literal">true</span>
+<span class="attr">SpacesInCStyleCastParentheses:</span> <span class="literal">false</span>
+<span class="attr">SpacesInLineCommentPrefix:</span>
+  <span class="attr">Minimum:</span>         <span class="number">1</span>
+  <span class="attr">Maximum:</span>         <span class="number">-1</span>
+<span class="attr">SpacesInParentheses:</span> <span class="literal">false</span>
+<span class="attr">SpacesInSquareBrackets:</span> <span class="literal">false</span>
+<span class="attr">SpaceBeforeSquareBrackets:</span> <span class="literal">false</span>
+<span class="attr">BitFieldColonSpacing:</span> <span class="string">Both</span>
+<span class="attr">Standard:</span>        <span class="string">Auto</span>
+<span class="attr">StatementAttributeLikeMacros:</span>
+  <span class="bullet">-</span> <span class="string">Q_EMIT</span>
+<span class="attr">StatementMacros:</span>
+  <span class="bullet">-</span> <span class="string">Q_UNUSED</span>
+  <span class="bullet">-</span> <span class="string">QT_REQUIRE_VERSION</span>
+<span class="attr">TabWidth:</span>        <span class="number">8</span>
+<span class="attr">UseCRLF:</span>         <span class="literal">false</span>
+<span class="attr">UseTab:</span>          <span class="string">Never</span>
+<span class="attr">WhitespaceSensitiveMacros:</span>
+  <span class="bullet">-</span> <span class="string">STRINGIZE</span>
+  <span class="bullet">-</span> <span class="string">PP_STRINGIZE</span>
+  <span class="bullet">-</span> <span class="string">BOOST_PP_STRINGIZE</span>
+  <span class="bullet">-</span> <span class="string">NS_SWIFT_NAME</span>
+  <span class="bullet">-</span> <span class="string">CF_SWIFT_NAME</span>
+<span class="string">...</span>
+</code></pre>
+</blockquote>
+<p>注意, 在安装了官方的扩展之后, 默认的格式化工具就是官方的. clangd插件和官方的是冲突的, 卸载掉官方的插件之后再次格式化, 会提示找不到格式化工具, 然后再点击配置, 选择clangd提供的格式化工具, 这样就非常好.</p>
+<p>那写到这里, 基本上问题都解决了.</p>
+<h2 id="视频里面的一些小问题仅针对第二节"><a class="markdownIt-Anchor" href="#视频里面的一些小问题仅针对第二节"></a> 视频里面的一些小问题(仅针对第二节)</h2>
+<p>视频评论区底下的task.json命令写的是clang不是clang++, 有的时候一些CPP的写法会出现问题.</p>
+<p>使用这个插件进行调试的时候, 假如没办法看到全局变量, 就尝试切换一下左下侧的堆栈帧.</p>
+<h1 id="windows环境下的配置"><a class="markdownIt-Anchor" href="#windows环境下的配置"></a> windows环境下的配置</h1>
+<p>我认为还是得像视频里面一样, 使用wsl2. 首先对于一个程序员的windows系统, wsl2总是少不了的. 所以换言之windows下面想使用clangd基本上就是wsl2的配置, 视频中间的wsl2是第三方做的arch的发行版, 我个人还偏向使用微软商店提供的发行版, 更加可靠.<s>(再说了要那么新的软件干什么)</s> 下面是官方给的安装参考文档:</p>
+<p><a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/install">https://docs.microsoft.com/zh-cn/windows/wsl/install</a></p>
+<p>有几个注意点需要特别提醒:</p>
+<ol>
+<li>为了体验最好还是下载一个windows terminal. 还送一个很好看的默认字体.</li>
+<li>如果勾选了磁盘压缩来节省空间(就是文件夹上面看到蓝色压缩箭头了的.)可能会在安装子系统的时候出现问题, 需要取消勾选某个特定位置. 如果是在微软商店安装的, 就需要取消家目录下面的AppData/Local/Packages/Canonical…(最后这个根据你选的发行版而定)这个文件夹的”压缩以节省空间”选项.</li>
+<li>默认会把wsl安装到C盘, 其实是有办法安装到D盘, 详情可以看微软商店里面搜ubuntu的第一条评论.(就是赞最多的那个) 当然我个人C盘不少那点空间, 而且默认安装目录其实更加方便(教程命令什么的都能适用, 不用抄官方命令的时候还要注意路径问题)</li>
+<li>假如ubuntu不要安装最新的22.04, 我也不知道为什么我一直失败, 最后还是选了20.04.</li>
+</ol>
+<p>我现在假设安装好了(其实安装wsl2还是有点费劲的…)</p>
+<p>下面需要vscode里面非常好用的扩展—-“remote-wsl”, 接下来的步骤就和开始看的视频一样了. windows下面的小问题就重启解.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vscode/" rel="tag"># vscode</a>
+              <a href="/tags/touchfish/" rel="tag"># touchfish</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/10/ubuntu%E4%BD%BF%E7%94%A8%E5%BB%BA%E8%AE%AE/" rel="prev" title="ubuntu使用建议">
+                  <i class="fa fa-angle-left"></i> ubuntu使用建议
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/11/10/%E6%9C%88%E8%89%B2%E7%9C%9F%E7%BE%8E%E5%B0%8F%E8%AF%84/" rel="next" title="月色真美小评">
+                  月色真美小评 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Oiaom</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" integrity="sha256-3574TpfThVfeAhg+I4+N39EJiLN3QUkuEsMVe8hWAR4=" crossorigin="anonymous">
+
+
+
+</body>
+</html>

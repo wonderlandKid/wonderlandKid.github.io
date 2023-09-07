@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"oiaom.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="现在是2023年的6月份, 本来润回ubuntu, 但是觉得不够刺激, 现在再次回到了endeavouros, 于是想着重置一下这一篇文章. 重新编排一下组织章节.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重新回到arch系重置版">
+<meta property="og:url" content="http://oiaom.github.io/2023/06/18/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0arch%E7%B3%BB%E9%87%8D%E7%BD%AE%E7%89%88/index.html">
+<meta property="og:site_name" content="Oiaom的小窝">
+<meta property="og:description" content="现在是2023年的6月份, 本来润回ubuntu, 但是觉得不够刺激, 现在再次回到了endeavouros, 于是想着重置一下这一篇文章. 重新编排一下组织章节.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-18T04:12:23.000Z">
+<meta property="article:modified_time" content="2023-09-07T02:21:19.413Z">
+<meta property="article:author" content="Oiaom">
+<meta property="article:tag" content="touchfish">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://oiaom.github.io/2023/06/18/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0arch%E7%B3%BB%E9%87%8D%E7%BD%AE%E7%89%88/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://oiaom.github.io/2023/06/18/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0arch%E7%B3%BB%E9%87%8D%E7%BD%AE%E7%89%88/","path":"2023/06/18/重新回到arch系重置版/","title":"重新回到arch系重置版"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>重新回到arch系重置版 | Oiaom的小窝</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Oiaom的小窝</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%B3%95%E9%97%AE%E9%A2%98"><span class="nav-text"> 输入法问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8%E9%97%AE%E9%A2%98"><span class="nav-text"> 显卡驱动问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pacman%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8"><span class="nav-text"> pacman包管理器</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Oiaom"
+      src="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <p class="site-author-name" itemprop="name">Oiaom</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://oiaom.github.io/2023/06/18/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0arch%E7%B3%BB%E9%87%8D%E7%BD%AE%E7%89%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+      <meta itemprop="name" content="Oiaom">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oiaom的小窝">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="重新回到arch系重置版 | Oiaom的小窝">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          重新回到arch系重置版
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-06-18 12:12:23" itemprop="dateCreated datePublished" datetime="2023-06-18T12:12:23+08:00">2023-06-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-09-07 10:21:19" itemprop="dateModified" datetime="2023-09-07T10:21:19+08:00">2023-09-07</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>现在是2023年的6月份, 本来润回ubuntu, 但是觉得不够刺激, 现在再次回到了endeavouros, 于是想着重置一下这一篇文章. 重新编排一下组织章节. <span id="more"></span></p>
+<h1 id="输入法问题"><a class="markdownIt-Anchor" href="#输入法问题"></a> 输入法问题</h1>
+<p>我还是不想换</p>
+<h1 id="显卡驱动问题"><a class="markdownIt-Anchor" href="#显卡驱动问题"></a> 显卡驱动问题</h1>
+<p>一直以来, arch系和Ubuntu相对比一直差点意思. 首先是arch自己, 装完桌面后配置过于麻烦, 是在是让人难以忍受. manjaro也不是很好, 突出表现在驱动, 对于N卡的驱动比arch实在是差太多了. 使用manjaro玩MC会画面撕裂, 罪魁祸首还是采取了一个hybrid的显卡驱动方法(当然自2023年以来我也没有再去试manjaro了). 而且manjaro毕竟不是arch, 在使用一些aur软件或者是GitHub的开源项目过程中, 万一出了问题, 有时候没法复现. 毕竟aur是给arch用的而不是给manjaro用的.</p>
+<p>对于一些对arch亲缘比较近的发行版, 对于N卡的方案就好很多, 对于笔记本的双显卡切换试用<code>nvidia-prime</code>的方案, 也就是默认是一种混合的模式, 如果需要使用独显, 显示地用<code>prime-run</code>. 虽然说这个方案没有彻底关闭nvidia省电但是毕竟是官方的方案, 比manjaro的要好.</p>
+<p>当然archwiki也提供了一些其他的方案, 其中有一些方案是需要手动做一些看似很危险的操作, 改一些平时我从来不会去看的文件, 和内核相关. 这些方案确实很吓人, 毕竟如果linux桌面没了还好, kernel panic处理起来可是麻烦多了.</p>
+<p>所以看来看去, 好用的其实就一个首推的, <code>optimus-manager</code>. 这应该是算一个首选. 但是这个也确实有一些弊端, 首先就是它已经很久没有更新了(虽然说It works well so no maintainance is needed). 而且optimus也需要搭配一些其他的包比如说bbswitch一起使用来&quot;延长电池续航时间&quot;. 配置起来还是麻烦.</p>
+<p><code>envycontrol</code>是最新的, 也是目前最优的解. 也是目前我正在使用的, 非常好用, 方便程度相当于Ubuntu里面的<code>prime-select</code>. 我也在近期重新回到了arch发行版, 也是今天的主角: <strong>endeavoros</strong>.</p>
+<p>如果是想要安装xfce的版本那没有什么大问题, 直接安装就行, 默认下面就是给你安装xfce桌面. 但是如果你想安装其他的桌面环境比如说我最喜欢的KDE, 或者是gnome. 那么就需要先<strong>换源</strong>. 保证pacman不会报网络相关的错误. 而且如果不换源的话很有可能它会给你报错, 就说连不上网络, 无法使用online模式, 而offline只有xfce这一种桌面环境. 联网了之后的选择是十分丰富的.</p>
+<p>其实和manjaro确实差不太多, 可以参看manjaro那一篇文章. 关于Ubuntu的那一篇文章写的是真的详细. 在进入live环境的时候如果选择了nvidia的那个选择项, 那么在安装完成之后应该会是自动安装的N卡驱动. 然后再搭配上最新的envycontrol, 简直是完美.</p>
+<p>可以说流畅地用上了arch系简直是走上了人生巅峰的感觉.</p>
+<p><strong>那么接下来是我新添加的内容以及新的想说的话.</strong> 实际情况是, envycontrol依赖于特定版本的python. 在上次离开arch系的原因就是yay -Syyu的时候python从3.10更新到了3.11, 然后一大票软件通通寄了, 我的备份也比较老, 所以直接放弃了. 这次事故再次让人认识到, 一旦一个软件是非官方的, 依赖社区的, 它就很容易出了问题好久没人解决. 我不知道现在解决没有但是, 我现在仍然在使用官方的<code>nvidia-prime</code>方案, 虽然看上去好像耗电, 但是更加安心. aur的社区包非常多, 但是可能问题也很多, 很多时候就是能少装几个就少装几个, 尽量装有官方支持的, 不然用arch就永远在看issue和修bug的路上.</p>
+<h1 id="pacman包管理器"><a class="markdownIt-Anchor" href="#pacman包管理器"></a> pacman包管理器</h1>
+<p>对于安装, 多是S开头. 没有什么稀奇的地方.</p>
+<p><code>pacman -Rs package_name</code>: 相比普通的-R, 这个会remove所有的dependencies.</p>
+<p><code>pacman -Rn package_name</code>: prevent backup files of package.</p>
+<p>显然-Rsn是未来经常用的命令了.</p>
+<p><code>pacman -Syu</code>: 更新整个系统. 如果是Syyu, 就是强制重新sync repo, 即使repo已经报告它没有被更新.</p>
+<p>除开更新下载和安装, 查询也是包管理器重要的功能. 随着对linux系统使用的深入, 查询命令确实用得越来越多.</p>
+<blockquote>
+<p>Pacman queries the local package database with the <code>-Q</code> flag, the sync database with the <code>-S</code> flag and the files database with the <code>-F</code> flag. See <code>pacman -Q --help</code>, <code>pacman -S --help</code> and <code>pacman -F --help</code> for the respective suboptions of each flag.</p>
+</blockquote>
+<p><code>pacman -Ss string1 string2 ...</code>: 在远端搜索这个包的名字, 列出描述. 这个描述还是比较简略, 但是关键是它显示了每个包来自于哪个仓库:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ sudo pacman -Ss neovim     </span><br><span class="line">community/neovide 0.10.3-1</span><br><span class="line">    No Nonsense Neovim Client in Rust</span><br><span class="line">community/neovim 0.8.3-1 [installed]</span><br><span class="line">    Fork of Vim aiming to improve user experience, plugins, and GUIs</span><br><span class="line">...省略, 类似这一种显示信息.</span><br></pre></td></tr></table></figure>
+<p>如果觉得信息太少, 使用-Si查看extensive的信息.</p>
+<p>对于已经install的包, 可以使用-Q选项来查询:</p>
+<p><code>pacman -Qs neovim</code></p>
+<p>同样的:</p>
+<p><code>pacman -Qi neovim</code></p>
+<p>如果想要查看一个包安装在哪些目录, 使用-Ql, 这样一下子确实输出很多目录.</p>
+<p>然后还有一个特别乐的, 可以看一个文件是谁在maintain:</p>
+<p><code>pacman -Qo filepath</code></p>
+<p>我就是通过这么命令验证了<code>/etc/environment</code>这个文件是属于哪一个包, 在群友的帮助下确实学到了很多.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/touchfish/" rel="tag"># touchfish</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/09/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0arch%E7%B3%BB/" rel="prev" title="重新回到arch系">
+                  <i class="fa fa-angle-left"></i> 重新回到arch系
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/04/CPP%E4%B8%AD%E7%9A%84%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/" rel="next" title="CPP中的右值引用">
+                  CPP中的右值引用 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Oiaom</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" integrity="sha256-3574TpfThVfeAhg+I4+N39EJiLN3QUkuEsMVe8hWAR4=" crossorigin="anonymous">
+
+
+
+</body>
+</html>

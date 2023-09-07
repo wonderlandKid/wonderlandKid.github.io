@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"oiaom.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这一个专栏以cprimer为主，记录一些C语言中需要注意的知识。大概能算是一篇读书笔记。每周一晚上的三节课一般都是用来看计算机专业书籍的，这个星期暂时定为cprimer，等到cprimer看得差不多了之后就来看《深入理解计算机操作系统》，着几本都是很好的书籍，当然还没有忘记《linux私房菜》。 考古：基本上计划没完成 都鸽了 要不是有一天心血来潮估计这个都写不完了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言学习">
+<meta property="og:url" content="http://oiaom.github.io/2022/11/10/C%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Oiaom的小窝">
+<meta property="og:description" content="这一个专栏以cprimer为主，记录一些C语言中需要注意的知识。大概能算是一篇读书笔记。每周一晚上的三节课一般都是用来看计算机专业书籍的，这个星期暂时定为cprimer，等到cprimer看得差不多了之后就来看《深入理解计算机操作系统》，着几本都是很好的书籍，当然还没有忘记《linux私房菜》。 考古：基本上计划没完成 都鸽了 要不是有一天心血来潮估计这个都写不完了">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.imgdb.cn/item/622608f35baa1a80ab88d858.png">
+<meta property="article:published_time" content="2022-11-10T14:14:23.000Z">
+<meta property="article:modified_time" content="2023-09-07T02:21:19.413Z">
+<meta property="article:author" content="Oiaom">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="C和C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/622608f35baa1a80ab88d858.png">
+
+
+<link rel="canonical" href="http://oiaom.github.io/2022/11/10/C%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://oiaom.github.io/2022/11/10/C%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/","path":"2022/11/10/C语言学习/","title":"C语言学习"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C语言学习 | Oiaom的小窝</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Oiaom的小窝</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#c%E8%AF%AD%E8%A8%80%E4%B8%AD%E7%9A%84%E5%AE%8F"><span class="nav-text"> C语言中的宏</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#stdout%E5%92%8Cstdin"><span class="nav-text"> stdout和stdin</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gcc%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-text"> GCC编译器的过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#c%E8%AF%AD%E8%A8%80%E4%B8%AD%E7%9A%84%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-text"> C语言中的预处理器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#stdlibh"><span class="nav-text"> stdlib.h</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#qsort"><span class="nav-text"> qsort</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bsearch"><span class="nav-text"> bsearch()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#atoi"><span class="nav-text"> atoi()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#stdioh%E4%B8%AD%E7%9A%84%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-text"> stdio.h中的常用的文件操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#fopen"><span class="nav-text"> fopen()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fclose"><span class="nav-text"> fclose()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ftell"><span class="nav-text"> ftell()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#remove"><span class="nav-text"> remove()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rename"><span class="nav-text"> rename()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fprintf"><span class="nav-text"> fprintf()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fscanf"><span class="nav-text"> fscanf()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#feof"><span class="nav-text"> feof()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fgets"><span class="nav-text"> fgets()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E4%BE%9B%E7%9A%84%E5%88%86%E6%9E%90%E5%AD%97%E7%AC%A6%E5%87%BD%E6%95%B0"><span class="nav-text"> 提供的分析字符函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E6%95%B0%E6%8D%AE%E5%92%8Cc"><span class="nav-text"> 第三章 数据和C</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E7%9A%84%E6%89%93%E5%8D%B0"><span class="nav-text"> 整数的打印</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-text"> 整数的类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E6%89%93%E5%8D%B0%E5%AD%97%E7%AC%A6%E6%9F%A5%E8%AF%A2"><span class="nav-text"> 非打印字符查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="nav-text"> 缓冲区</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%92%8C%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="nav-text"> 第四章 字符串和格式化输入&#x2F;输出</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sizeof%E5%92%8Cstrlen"><span class="nav-text"> sizeof()和strlen()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8E%9F%E5%9E%8B%E5%92%8C%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-text"> 函数原型和返回值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA%E8%BE%93%E5%85%A5%E7%AC%A6%E5%8F%B7"><span class="nav-text"> 格式化输出输入符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E5%87%BD%E6%95%B0%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text"> *在输入输出函数中的使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0-%E8%BF%90%E7%AE%97%E7%AC%A6-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E8%AF%AD%E5%8F%A5"><span class="nav-text"> 第五章 运算符、表达式和语句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E4%B8%BA%E7%94%9F%E7%96%8F%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text"> 更为生疏的运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sizeof%E6%93%8D%E4%BD%9C%E5%92%8Csize_t%E7%B1%BB%E5%9E%8B"><span class="nav-text"> sizeof操作和size_t类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text"> %运算符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-text"> 类型转换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0-c%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5-%E5%BE%AA%E7%8E%AF"><span class="nav-text"> 第六章 C控制语句—-循环</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF"><span class="nav-text"> 循环</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%AE%80%E4%BB%8B"><span class="nav-text"> 数组简介</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%83%E7%AB%A0-c%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5%E5%88%86%E6%94%AF%E5%92%8C%E8%B7%B3%E8%BD%AC"><span class="nav-text"> 第七章 C控制语句：分支和跳转</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%9A%E4%B8%80%E4%B8%AA%E7%BB%9F%E8%AE%A1%E5%8D%95%E8%AF%8D%E6%95%B0%E9%87%8F%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%AE%9E%E8%B7%B5"><span class="nav-text"> 做一个统计单词数量的程序（实践）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A4%E8%AF%86%E6%9D%A1%E4%BB%B6%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text"> 认识条件运算符 ?:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0"><span class="nav-text"> 第十一章 字符串和字符串函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2io"><span class="nav-text"> 表示字符串和字符串I&#x2F;O</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F"><span class="nav-text"> 字符串常量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88"><span class="nav-text"> 数组和指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-text"> 指针和字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%B1%E9%99%A9%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D%E9%97%AE%E9%A2%98"><span class="nav-text"> 危险的字符串空间分配问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gets%E5%87%BD%E6%95%B0%E7%9A%84%E6%9B%BF%E4%BB%A3%E9%97%AE%E9%A2%98"><span class="nav-text"> gets()函数的替代问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E4%BA%8C%E7%AB%A0-%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5%E5%92%8C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-text"> 第十二章 存储类别、链接和内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1211%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-text"> 12.1.1作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1212-%E9%93%BE%E6%8E%A5"><span class="nav-text"> 12.1.2 链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1213-%E5%AD%98%E5%82%A8%E6%9C%9F"><span class="nav-text"> 12.1.3 存储期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1214-%E8%87%AA%E5%8A%A8%E5%8F%98%E9%87%8F"><span class="nav-text"> 12.1.4 自动变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1216-%E5%9D%97%E4%BD%9C%E7%94%A8%E5%9F%9F%E7%9A%84%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F"><span class="nav-text"> 12.1.6 块作用域的静态变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#127-%E5%B0%8F%E7%BB%93"><span class="nav-text"> 12.7 小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0-%E6%96%87%E4%BB%B6%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="nav-text"> 第十三章 文件的输入输出</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0-%E4%BD%8D%E6%93%8D%E4%BD%9C"><span class="nav-text"> 第十五章 位操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#c%E4%B8%AD%E7%9A%84%E6%8C%89%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text"> C中的按位运算符</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Oiaom"
+      src="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <p class="site-author-name" itemprop="name">Oiaom</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://oiaom.github.io/2022/11/10/C%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+      <meta itemprop="name" content="Oiaom">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oiaom的小窝">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C语言学习 | Oiaom的小窝">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C语言学习
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-11-10 22:14:23" itemprop="dateCreated datePublished" datetime="2022-11-10T22:14:23+08:00">2022-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-09-07 10:21:19" itemprop="dateModified" datetime="2023-09-07T10:21:19+08:00">2023-09-07</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这一个专栏以cprimer为主，记录一些C语言中需要注意的知识。大概能算是一篇读书笔记。每周一晚上的三节课一般都是用来看计算机专业书籍的，这个星期暂时定为cprimer，等到cprimer看得差不多了之后就来看《深入理解计算机操作系统》，着几本都是很好的书籍，当然还没有忘记《linux私房菜》。 <s>考古：基本上计划没完成 都鸽了 要不是有一天心血来潮估计这个都写不完了</s></p>
+<span id="more"></span>
+<p><strong>本文章提到的有关函数资料的引用绝大多数都来自菜鸟教程。</strong><br />
+<a target="_blank" rel="noopener" href="https://m.runoob.com/">菜鸟教程</a></p>
+<h1 id="c语言中的宏"><a class="markdownIt-Anchor" href="#c语言中的宏"></a> C语言中的宏</h1>
+<h2 id="stdout和stdin"><a class="markdownIt-Anchor" href="#stdout和stdin"></a> stdout和stdin</h2>
+<p>如果用惯了文件操作，难免会觉得把屏幕和文件分开处理很麻烦。就是说将内容输出到屏幕上要使用printf和puts之类的函数，其实是把屏幕特殊化了。所以就定义了一个stdout的宏，可以将显示器当做文件来处理，促进了代码的整洁。stdin也是一样，这两个变量都是FILE类型的指针，只不过一个是键盘一个是显示屏，可以当做常规文件操作。</p>
+<hr />
+<h1 id="gcc编译器的过程"><a class="markdownIt-Anchor" href="#gcc编译器的过程"></a> GCC编译器的过程</h1>
+<p>编译分为四步。</p>
+<ol>
+<li>预处理<br />
+<code>gcc -E main.c -o main.i</code><br />
+生成main.i的经过预处理的代码。<em>注意所有的步骤都可以通过-o指令来指定生成的文件名。</em></li>
+<li>编译<br />
+<code>gcc -S main.i -o main.s</code></li>
+<li>汇编<br />
+<code>gcc -c main.s -o main.o</code></li>
+<li>链接<br />
+<code>gcc main.o -o main</code></li>
+</ol>
+<hr />
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">-o</td>
+<td>指定文件输出路径（一般用来重命名）</td>
+</tr>
+<tr>
+<td style="text-align:left">-E</td>
+<td>只进行预处理</td>
+</tr>
+<tr>
+<td style="text-align:left">-S</td>
+<td>进行预处理、编译</td>
+</tr>
+<tr>
+<td style="text-align:left">-c</td>
+<td>预处理、编译、汇编</td>
+</tr>
+<tr>
+<td style="text-align:left">-I(大写i)</td>
+<td>包含头文件路径</td>
+</tr>
+<tr>
+<td style="text-align:left">-L</td>
+<td>链接库文件路径</td>
+</tr>
+<tr>
+<td style="text-align:left">-l</td>
+<td>链接库文件</td>
+</tr>
+<tr>
+<td style="text-align:left">-fPIC</td>
+<td>生成位置无关代码</td>
+</tr>
+<tr>
+<td style="text-align:left">-Wall</td>
+<td>对代码所有可能有问题的地方发出警告</td>
+</tr>
+<tr>
+<td style="text-align:left">-g</td>
+<td>调试信息（如果需要调试必须勾这个）</td>
+</tr>
+<tr>
+<td style="text-align:left">-w</td>
+<td>不显示所有警告</td>
+</tr>
+</tbody>
+</table>
+<p>假如我写好了一个C文件，叫main.c，可以使用-v参数来查看详细的编译过程。输入gcc main.c -v。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">使用内建 specs。</span><br><span class="line">COLLECT_GCC=gcc</span><br><span class="line">COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/lto-wrapper</span><br><span class="line">目标：x86_64-pc-linux-gnu</span><br><span class="line">配置为：/build/gcc/src/gcc/configure --enable- languages=c,c++,ada,fortran,go,lto,objc,obj-c++,d --enable-bootstrap --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://bugs.archlinux.org/ --with-linker-hash-style=gnu --with-system-zlib --enable-__cxa_atexit --enable-cet=auto --enable-checking=release --enable-clocale=gnu --enable-default-pie --enable-default-ssp --enable-gnu-indirect-function --enable-gnu-unique-object --enable-linker-build-id --enable-lto --enable-multilib --enable-plugin --enable-shared --enable-threads=posix --disable-libssp --disable-libstdcxx-pch --disable-werror --with-build-config=bootstrap-lto --enable-link-serialization=1 gdc_include_dir=/usr/include/dlang/gdc</span><br><span class="line">线程模型：posix</span><br><span class="line">Supported LTO compression algorithms: zlib zstd</span><br><span class="line">gcc 版本 11.2.0 (GCC) </span><br><span class="line"></span><br><span class="line">//从此开始编译 上面都是显示配置？ 里面写满了默认的配置参数 注意到下面的有一串路径后面跟上cc1 cc1就是负责预处理和编译</span><br><span class="line"></span><br><span class="line">COLLECT_GCC_OPTIONS=&#x27;-v&#x27; &#x27;-mtune=generic&#x27; &#x27;-march=x86-64&#x27; &#x27;-dumpdir&#x27; &#x27;a-&#x27;</span><br><span class="line"> /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/cc1 -quiet -v main.c -quiet -dumpdir a- -dumpbase main.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -o /tmp/ccpxXxA0.s</span><br><span class="line">GNU C17 (GCC) 版本 11.2.0 (x86_64-pc-linux-gnu)</span><br><span class="line">        由 GNU C 版本 11.2.0 编译，GMP 版本 6.2.1，MPFR 版本 4.1.0-p13，MPC 版本 1.2.1，isl 版本 isl-0.24-GMP</span><br><span class="line"></span><br><span class="line">GGC 准则：--param ggc-min-expand=100 --param ggc-min-heapsize=131072</span><br><span class="line">忽略不存在的目录“/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../x86_64-pc-linux-gnu/include”</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">include <span class="string">&quot;...&quot;</span> 搜索从这里开始：</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">include &lt;...&gt; 搜索从这里开始：</span></span><br><span class="line"> /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include</span><br><span class="line"> /usr/local/include</span><br><span class="line"> /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include-fixed</span><br><span class="line"> /usr/include</span><br><span class="line">搜索列表结束。</span><br><span class="line">GNU C17 (GCC) 版本 11.2.0 (x86_64-pc-linux-gnu)</span><br><span class="line">        由 GNU C 版本 11.2.0 编译，GMP 版本 6.2.1，MPFR 版本 4.1.0-p13，MPC 版本 1.2.1，isl 版本 isl-0.24-GMP</span><br><span class="line"></span><br><span class="line">//下面的as就是用来汇编的 将汇编码后缀.s转变为后缀.o的机械码 注意参数顺序 因为有了-o选项 是 as -o 新路径 源文件.s</span><br><span class="line"></span><br><span class="line">GGC 准则：--param ggc-min-expand=100 --param ggc-min-heapsize=131072</span><br><span class="line">Compiler executable checksum: 65a5ec6b673b24273c0fdde359680a16</span><br><span class="line">COLLECT_GCC_OPTIONS=&#x27;-v&#x27; &#x27;-mtune=generic&#x27; &#x27;-march=x86-64&#x27; &#x27;-dumpdir&#x27; &#x27;a-&#x27;</span><br><span class="line"> as -v --64 -o /tmp/ccyInjqL.o /tmp/ccpxXxA0.s</span><br><span class="line">GNU assembler version 2.38 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.38</span><br><span class="line">COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/</span><br><span class="line">LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../:/lib/:/usr/lib/</span><br><span class="line">COLLECT_GCC_OPTIONS=&#x27;-v&#x27; &#x27;-mtune=generic&#x27; &#x27;-march=x86-64&#x27; &#x27;-dumpdir&#x27; &#x27;a.&#x27;</span><br><span class="line"></span><br><span class="line">//这下面就是cllect2了 用处是链接</span><br><span class="line"></span><br><span class="line">/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cclMPHvr.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0 -L/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../.. /tmp/ccyInjqL.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/crtn.o</span><br><span class="line">COLLECT_GCC_OPTIONS=&#x27;-v&#x27; &#x27;-mtune=generic&#x27; &#x27;-march=x86-64&#x27; &#x27;-dumpdir&#x27; &#x27;a.&#x27;</span><br></pre></td></tr></table></figure>
+<p>里面信息很多，也没必要看。总之可以发现cc1，as和collect2是实际起作用的命令。正因为如此gcc的英文名字叫GNU Compiler Collection，是一个Collection（套件），理应由几部分组成。</p>
+<h1 id="c语言中的预处理器"><a class="markdownIt-Anchor" href="#c语言中的预处理器"></a> C语言中的预处理器</h1>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">指令</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">define</td>
+<td style="text-align:left">定义宏</td>
+</tr>
+<tr>
+<td style="text-align:center">include</td>
+<td style="text-align:left">包含一个头文件</td>
+</tr>
+<tr>
+<td style="text-align:center">undef</td>
+<td style="text-align:left">取消已经定义的宏</td>
+</tr>
+<tr>
+<td style="text-align:center">ifdef</td>
+<td style="text-align:left">如果宏已经定义就返回真</td>
+</tr>
+<tr>
+<td style="text-align:center">ifndef</td>
+<td style="text-align:left">如果宏没有定义就返回真</td>
+</tr>
+<tr>
+<td style="text-align:center">if</td>
+<td style="text-align:left">给定条件为真就执行以下代码</td>
+</tr>
+<tr>
+<td style="text-align:center">else</td>
+<td style="text-align:left">同上</td>
+</tr>
+<tr>
+<td style="text-align:center">elif</td>
+<td style="text-align:left">如果前面的if不为真就这个为真</td>
+</tr>
+<tr>
+<td style="text-align:center">endif</td>
+<td style="text-align:left">结束一个#if和#else的模块</td>
+</tr>
+<tr>
+<td style="text-align:center">error</td>
+<td style="text-align:left">遇到标准错误的时候输出错误消息</td>
+</tr>
+<tr>
+<td style="text-align:center">progma</td>
+<td style="text-align:left">使用标准化方法，向编译器发布特殊的命令到编译器中</td>
+</tr>
+</tbody>
+</table>
+<p><strong>记得预处理器需要加#符号，这里因为markdown语法的影响就没有再额外加了hhhhh。</strong></p>
+<h1 id="stdlibh"><a class="markdownIt-Anchor" href="#stdlibh"></a> stdlib.h</h1>
+<p>记录一下那些stdlib里面的好用函数</p>
+<p>这是两个在标准函数库里面的函数。分别表示quick sort和binary search。（快速排序、二分查找）</p>
+<h2 id="qsort"><a class="markdownIt-Anchor" href="#qsort"></a> qsort</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-qsort.html">菜鸟教程qsort</a></p>
+<p>函数原型：<br />
+<code>void qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))</code></p>
+<p>参数</p>
+<ul>
+<li><strong>base</strong> — 指向要排序的数组的第一个元素的指针。</li>
+<li><strong>nitems</strong> — 由 base 指向的数组中元素的个数。</li>
+<li><strong>size</strong> — 数组中每个元素的大小，以字节为单位。</li>
+<li><strong>compar</strong> — 用来比较两个元素的函数。（学了C++之后再看这是个函数指针）</li>
+</ul>
+<p>具体使用时，例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span> <span class="comment">//首先要包括这个标准函数库</span></span></span><br><span class="line"><span class="comment">//假如这里对array[8]=&#123;1, 2, 5, 8, 7, 4, 6, 2&#125;进行排序</span></span><br><span class="line"><span class="comment">//void qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">compare</span><span class="params">(<span class="type">const</span> <span class="type">void</span>* a, <span class="type">const</span> <span class="type">void</span>* b)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//要比较的是整数所以要转换成整数指针</span></span><br><span class="line">    <span class="type">int</span>* pa= (<span class="type">int</span>*)a;</span><br><span class="line">    <span class="type">int</span>* pb= (<span class="type">int</span>*)b;</span><br><span class="line">    <span class="comment">//因为要比较的是整数所以转换成整数指针。注意要比较什么就转换成什么样的指针</span></span><br><span class="line">    <span class="type">int</span> num1 = *pa;</span><br><span class="line">    <span class="type">int</span> num2 = *pb; <span class="comment">//求出pa和pb两个指针指向的值</span></span><br><span class="line">    <span class="comment">//一定注意这里面 如果是想正向排序 就要求a和b指向的大小和返回值正负一致</span></span><br><span class="line">    <span class="keyword">if</span>(num1-num2&gt;=<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="comment">//假如想反向排序 则让返回值和a b大小异号</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> <span class="built_in">array</span>[<span class="number">8</span>]=&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">7</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">2</span>&#125;;</span><br><span class="line">    qsort(<span class="built_in">array</span>, <span class="number">8</span>, <span class="keyword">sizeof</span>(<span class="type">int</span>), compare);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;=<span class="number">7</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, <span class="built_in">array</span>[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//程序输出12245678</span></span><br></pre></td></tr></table></figure>
+<p>这段代码能让排序进行。</p>
+<h2 id="bsearch"><a class="markdownIt-Anchor" href="#bsearch"></a> bsearch()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-bsearch.html">bsearch</a></p>
+<p>函数原型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void *bsearch(const void *key, const void *base, size_t nitems, size_t size, int (*compar)(const void *, const void *))</span><br></pre></td></tr></table></figure>
+<p>参数</p>
+<ul>
+<li><strong>key</strong> — 指向要查找的元素的指针，类型转换为 void*。</li>
+<li><strong>base</strong> — 指向进行查找的数组的第一个对象的指针，类型转换为 void*。</li>
+<li><strong>nitems</strong> — base 所指向的数组中元素的个数。</li>
+<li><strong>size</strong> — 数组中每个元素的大小，以字节为单位。</li>
+<li><strong>compar</strong> — 用来比较两个元素的函数。</li>
+</ul>
+<p>但是注意，bsearch只能返回一个指向对应值的指针（好吧其实你自己还要强制转化）。如果有多个元素符合，<strong>bsearch没有定义返回哪一个</strong>。</p>
+<p>通过cmp函数的不同当然还可以搜索是否有比制定目标大1的元素，还有各种规则等等。这些都是 在比较函数里面更改。</p>
+<h2 id="atoi"><a class="markdownIt-Anchor" href="#atoi"></a> atoi()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-atoi.html">atoi</a><br />
+<code>int atoi(const char *str)</code></p>
+<ul>
+<li>作用：将str所指向的一个字符串转换成一个int类型的整数。</li>
+<li>参数：str—-要转换成整数的字符串。</li>
+<li>自然是返回那个整数，如果转换失败那么返回零。</li>
+</ul>
+<p>跟atoi一个系列的还有atof，atol和atoll。分别是float，long和longlong。</p>
+<hr />
+<h1 id="stdioh中的常用的文件操作"><a class="markdownIt-Anchor" href="#stdioh中的常用的文件操作"></a> stdio.h中的常用的文件操作</h1>
+<p>这一个模块来记录一下stdio.h这个头文件里面关于文件操作的常用函数。然后摘录菜鸟教程里面的内容，对必要内容加以注释。</p>
+<h2 id="fopen"><a class="markdownIt-Anchor" href="#fopen"></a> fopen()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-fopen.html">fopen</a><br />
+<code>FILE *fopen(const char *filename, const char *mode)</code><br />
+作用：<br />
+使用指定的mode打开指定的文件。<br />
+参数说明：<br />
+filename是要打开文件的名字。<br />
+mode是一个c字符串，决定打开这个文件的模式。</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r</td>
+<td>打开一个用于读取的文件，该文件必须存在</td>
+</tr>
+<tr>
+<td>w</td>
+<td>创建一个用于写入的空文件，如果文件名字重复则清零</td>
+</tr>
+<tr>
+<td>a</td>
+<td>追加一个文件，写操作向文件末尾增加数据，不存在则创建</td>
+</tr>
+<tr>
+<td>r+</td>
+<td>打开一个用于更新的文件可读取可写入，文件必须存在</td>
+</tr>
+<tr>
+<td>w+</td>
+<td>打开一个用于读写的空文件，文件必须存在</td>
+</tr>
+<tr>
+<td>a+</td>
+<td>打开一个用于读取和追加的文件</td>
+</tr>
+</tbody>
+</table>
+<p>返回值：<br />
+返回一个FILE类型的指针（如果成功打开文件的话）。否则返回空指针。</p>
+<h2 id="fclose"><a class="markdownIt-Anchor" href="#fclose"></a> fclose()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-fclose.html">fclose</a><br />
+<code>int fclose(FILE *stream)</code><br />
+作用：<br />
+关闭文件stream，刷新所有的缓冲区。<br />
+参数说明：<br />
+stream是一个FILE类型的文件指针。<br />
+返回值：<br />
+如果stream成功关闭，返回0。关闭失败，返回EOF。</p>
+<h2 id="ftell"><a class="markdownIt-Anchor" href="#ftell"></a> ftell()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-ftell.html">ftell</a><br />
+<code>long int ftell(FILE *stream)</code><br />
+作用：<br />
+返回给定流stream的当前文件位置。<br />
+参数说明：略。<br />
+返回值：<br />
+返回位置表示符号的当前值。如果出现错误就返回-1L。</p>
+<h2 id="remove"><a class="markdownIt-Anchor" href="#remove"></a> remove()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-remove.html">remove</a><br />
+<code>int remove(const char *filename)</code><br />
+作用：<br />
+删除文件。<br />
+参数说明：<br />
+文件名。<br />
+返回值：<br />
+成功删除返回0，发生错误返回-1。</p>
+<h2 id="rename"><a class="markdownIt-Anchor" href="#rename"></a> rename()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-rename.html">rename</a><br />
+<code>int rename(const char *old_filename, const char *new_filename)</code><br />
+使用方法不谈了。如果重命名成功，那么返回0，否则返回-1。</p>
+<h2 id="fprintf"><a class="markdownIt-Anchor" href="#fprintf"></a> fprintf()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-fprintf.html">fprintf</a><br />
+<code>int fprintf(FILE *stream, const char *format, ...)</code><br />
+作用：<br />
+发送格式化输出到流stream中。（stream是一个文件指针）</p>
+<p>参数：<br />
+一个是stream文件指针，另一个是c字符串。这个字符串和printf里面的c字符串是同一个格式，是可以带有格式化说明符号的。</p>
+<p>我的说明：<br />
+可以说这个fprintf连同fscanf一同构成了大多数对文件的操作。对于一些基本的情况使用fprintf而不是fwrite，fwrite设计二进制写入，比较复杂。<s>我没看懂bushi</s></p>
+<h2 id="fscanf"><a class="markdownIt-Anchor" href="#fscanf"></a> fscanf()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-fscanf.html">fscanf</a><br />
+<code>int fscanf(FILE *stream, const char *format, ...)</code><br />
+作用：<br />
+从流stream读取格式化输入。<s>这里因为C语言就把打开的文件看做流式文件，意思就是从文件读取输入。原先的scanf是从标准输入输出读取输入，（相当于stdin也被看作是一个文件了！！）不知道我的一点猜想对不对。就是把键盘等输入设备输入的内容也看做流式文件。</s></p>
+<p>参数：<br />
+一个文件指针好说。另外的是标识符。</p>
+<p>例子：<br />
+看下面一段代码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">   char str1[10], str2[10], str3[10];</span><br><span class="line">   int year;</span><br><span class="line">   FILE * fp;</span><br><span class="line"></span><br><span class="line">   fp = fopen (&quot;file.txt&quot;, &quot;w+&quot;);</span><br><span class="line">   fputs(&quot;We are in 2014&quot;, fp);</span><br><span class="line">   </span><br><span class="line">   rewind(fp);</span><br><span class="line">   fscanf(fp, &quot;%s %s %s %d&quot;, str1, str2, str3, &amp;year); //注意这一行！</span><br><span class="line">   </span><br><span class="line">   printf(&quot;Read String1 |%s|\n&quot;, str1 );</span><br><span class="line">   printf(&quot;Read String2 |%s|\n&quot;, str2 );</span><br><span class="line">   printf(&quot;Read String3 |%s|\n&quot;, str3 );</span><br><span class="line">   printf(&quot;Read Integer |%d|\n&quot;, year );</span><br><span class="line"></span><br><span class="line">   fclose(fp);</span><br><span class="line">   </span><br><span class="line">   return(0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个里面fscanf的用法就很标准。从fp这个文件指针所指的文件里面按照%s %s %s %d读取数据然后存入到了后面的指针里面，完成了从数据库到内存的转换。</p>
+<p>返回值：<br />
+如果成功，该函数返回成功匹配和赋值的个数。如果到达<strong>文件末尾</strong>或发生读错误，则返回 EOF。</p>
+<p>我的说明：<br />
+feof()函数同样有检测到达末尾的效果，区别在于feof()函数仅仅是观测，而fscanf是实际读取，读取不到才会报EOF。</p>
+<h2 id="feof"><a class="markdownIt-Anchor" href="#feof"></a> feof()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-feof.html">feof</a><br />
+<code>int feof(FILE *stream)</code><br />
+作用：<br />
+测试给定流文件的文件结束标识符。</p>
+<p>参数：<br />
+一个FILE类型的指针。</p>
+<p>返回值：<br />
+如果说这个流文件结束了，就返回真（非零值），否则返回0。</p>
+<p>我的说明：<br />
+这个比较常用，用来检测文件是否到达结尾。这里检测结尾是说现在这个流文件中指针是不是在结尾，许多对于文件操作的函数可以控制流文件指针的移动，这个是检测当前指针的位置。所以经常看见和循环连用，经常都是只要不到结尾就继续读取之类。但是这个函数的效果使用fscanf的返回值检测也能达到。</p>
+<h2 id="fgets"><a class="markdownIt-Anchor" href="#fgets"></a> fgets()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-fgets.html">fgets</a><br />
+<code>char *fgets(char *str, int n, FILE *stream)</code><br />
+作用：<br />
+从制定的流文件读取一行，储存到str所指向的字符串里面。当读取 <strong>(n-1)</strong> 个字符时，或者读取到换行符时，或者到达文件末尾时，它会停止，具体视情况而定。</p>
+<p>参数：<br />
+str是一个指向数组的指针。<br />
+n是一个要读取的最大字符数。<br />
+stream是一个FILE的流文件指针。</p>
+<p>返回值：<br />
+返回值是一个字符指针。假如成功地写入了str指针，那么返回值也还是这个str。假如到达文件末尾或者没有读取到任何字符或者说发生了错误，返回空指针NULL。</p>
+<p>这个常用来替换gets()，这个函数以后要少用。以后的标准会越来越限制使用gets。这个如何代替在第十一章gets函数缓冲区溢出问题的时候再说。</p>
+<hr />
+<h1 id="提供的分析字符函数"><a class="markdownIt-Anchor" href="#提供的分析字符函数"></a> 提供的分析字符函数</h1>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-standard-library-ctype-h.html">菜鸟教程 ctype.h</a></p>
+<p>在学习cpp的时候曾经下断言凡是c开头的头文件好多都是从c继承下来的用于cpp的全新函数库。这个还是比较特别，ctype.h是C语言里面有的。</p>
+<p>在这一段代码里面就使用了isspace函数来判断这一个字符是不是空格。（话说这么简单的操作还需要引用函数吗。。。。<s>其实空格还比较简单，但是像判断大写字母这些函数都是自己写起来很麻烦的，所以这个函数库还是比较好用的</s>）</p>
+<h1 id="第三章-数据和c"><a class="markdownIt-Anchor" href="#第三章-数据和c"></a> 第三章 数据和C</h1>
+<p>这一章比较简单，注意<strong>字</strong>的概念。</p>
+<p>字对于不同的机器是不一样的。硬件层面来看就是内存条的宽度。多少位计算机字长就是多少位。</p>
+<p>c语言中，声明和赋值对于一个变量来说不同。声明的时候只是仅仅创建了内存空间，内存空间里面的值是随机的。</p>
+<h2 id="整数的打印"><a class="markdownIt-Anchor" href="#整数的打印"></a> 整数的打印</h2>
+<p>在使用 printf 的时候，可以用不同的进制来打印。<br />
+<strong>使用 %o 打印八进制数字，使用 %x 打印十六进制数字。若是要带前缀的话，（例如一般显示八进制数字的话前面就要带一个 0 ，显示十六进制数字的话前面就要带一个 0x ）就在百分号和字母之间加一个 # 。例如 %#o 和 %#x 。<s>当然如果是 %#X 就是会显示大写的 X，出现 0X 而不是 0x。（花里胡哨的知识增加了！</s></strong></p>
+<h2 id="整数的类型"><a class="markdownIt-Anchor" href="#整数的类型"></a> 整数的类型</h2>
+<p>int 本身普遍的话是占 4 个字节。（32bit）范围大概是正负21亿左右。</p>
+<p>short int 一般占十六位。</p>
+<p>long long int 一般占64位。</p>
+<p>无符号数字无非就是范围是对应的两倍。unsigned long long int 和 unsigned int。</p>
+<p>short 一般不用，不在乎那一点空间。一般llint用的比较多。在使用llint的时候的格式转换符需要注意。</p>
+<p>一般不使用 long int，因为历史原因 long int 在我的机器上看来和int没有区别！</p>
+<p>long long 或者说 long long int 需要使用 lld 的转换符号。</p>
+<p>对于unsigned的就需要使用 %u，假如是表示最大的正数像 unsigned long long 就使用 %llu 作为转换符号。</p>
+<h2 id="非打印字符查询"><a class="markdownIt-Anchor" href="#非打印字符查询"></a> 非打印字符查询</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">转移序列</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">\a</td>
+<td style="text-align:center">警报</td>
+</tr>
+<tr>
+<td style="text-align:center">\b</td>
+<td style="text-align:center">退格</td>
+</tr>
+<tr>
+<td style="text-align:center">\f</td>
+<td style="text-align:center">换页</td>
+</tr>
+<tr>
+<td style="text-align:center">\n</td>
+<td style="text-align:center">换行</td>
+</tr>
+<tr>
+<td style="text-align:center">\r</td>
+<td style="text-align:center">回车</td>
+</tr>
+<tr>
+<td style="text-align:center">\t</td>
+<td style="text-align:center">水平制表符</td>
+</tr>
+<tr>
+<td style="text-align:center">\v</td>
+<td style="text-align:center">垂直制表符</td>
+</tr>
+</tbody>
+</table>
+<h2 id="缓冲区"><a class="markdownIt-Anchor" href="#缓冲区"></a> 缓冲区</h2>
+<p>C语言规定，printf函数会把语句发送到缓冲区buffer里面，然后缓冲区里面的内容再被发送到屏幕上。</p>
+<ol>
+<li>当缓冲区满</li>
+<li>遇到换行字符</li>
+<li>需要输入</li>
+</ol>
+<p><strong>这三种情况就会刷新缓冲区</strong></p>
+<p>这一点在linux环境下使用vscode配合gdb调试深有体会。假如说这里有一句<code>printf(&quot;linux vscode&quot;);</code> 因为后面没有加换行符，缓冲区没有满，所以不会刷新，也就是单步调试明明执行了却在终端里面看不到输出结果。VS调试好像就没有这个问题，推测是不停地刷新了缓冲区。</p>
+<hr />
+<h1 id="第四章-字符串和格式化输入输出"><a class="markdownIt-Anchor" href="#第四章-字符串和格式化输入输出"></a> 第四章 字符串和格式化输入/输出</h1>
+<p>C语言没有专门的字符串类型来存储字符串，而是使用char类型的数组来存储字符串。如果使用scanf函数来读取字符串的话，像<code>scanf(&quot;%s&quot;, array);</code>，那array里面末尾会被自动补上’\0’，标志字符串的结束，所以\0也是字符串结束的标志。</p>
+<p>字符使用’字符’，字符串使用”字符串”。</p>
+<p><code>#define *** ***</code>后面不要加分号！这是一种预处理操作，是把前面的替换成后面的，这是预处理器完成的。</p>
+<h2 id="sizeof和strlen"><a class="markdownIt-Anchor" href="#sizeof和strlen"></a> sizeof()和strlen()</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/strlen-and-sizeof.html">菜鸟教程</a><br />
+我的评价是，说得好！</p>
+<p>strlen会把接受的参数视为数组一样的，然后求从开始到’\0’的长度（但是不含\0）。</p>
+<p>sizeof则是求它后面的东西的长度。在看的时候尤其注意，<code>sizeof(字符指针)</code>返回的是这个字符指针本身的大小！有意思的是在我的电脑上面**字符指针一个好像占8个字节。**也合理其实。</p>
+<p>scanf和printf函数的使用</p>
+<h2 id="函数原型和返回值"><a class="markdownIt-Anchor" href="#函数原型和返回值"></a> 函数原型和返回值</h2>
+<p><code>int scanf(const char *format, ...)</code><br />
+如果成功，该函数返回成功匹配和赋值的个数。如果到达文件末尾或发生读错误，则返回 EOF。<br />
+<code>int printf(const char *format, ...)</code><br />
+如果成功，则返回写入的字符总数，否则返回一个负数。</p>
+<h2 id="格式化输出输入符号"><a class="markdownIt-Anchor" href="#格式化输出输入符号"></a> 格式化输出输入符号</h2>
+<p>题外话这图片是在xfce桌面下面截的，换到kde了之后发现kde真的比这好看不知道多少。截自cprimer。</p>
+<p><img src="https://pic.imgdb.cn/item/622608f35baa1a80ab88d858.png" alt="格式化打印符号" /></p>
+<p>就以%d作为例子。%hd是用来输出short int类型的，%ld就是long int类型，%lld就是long long int类型。注意，这些都是有符号整型。如果是无符号就应当使用%u系列。（u就是unsigned int的意思）</p>
+<p>浮点是%f一支，在printf double的量的时候，可以使用%f。但是在scanf的时候好像应该使用%lf。当然对应的还有%llf。</p>
+<p>%p用来输出指针。打印一个指针？经过实际的尝试，发现打印出来是一个十六进制的数字，应该就是指针了。</p>
+<h2 id="在输入输出函数中的使用"><a class="markdownIt-Anchor" href="#在输入输出函数中的使用"></a> *在输入输出函数中的使用</h2>
+<p>假如想要以执行宽度打印数据，就可以考虑使用*。<br />
+<code>printf(&quot;%*d&quot;, width, it);</code><br />
+width就是打印的宽度。这样能够让输入输出更灵活了。</p>
+<p>而在scanf这边，带有的*表示忽略这个输入。<br />
+<code>scanf(&quot;%*d %*d %d&quot;, &amp;input);</code><br />
+这条语句会接收三个输入，但是只会把这三个数最后的一个数字scanf到input变量里面。</p>
+<p><strong>最后提醒，scanf不能够跳过空格，scanf在遇到空格的时候会中断。</strong></p>
+<hr />
+<h1 id="第五章-运算符-表达式和语句"><a class="markdownIt-Anchor" href="#第五章-运算符-表达式和语句"></a> 第五章 运算符、表达式和语句</h1>
+<p>要点比较少。</p>
+<ol>
+<li>
+<p>注意除号，除号两边如果都是整数，结果会被执行<em>整数截断</em>。</p>
+</li>
+<li>
+<p>对于‘=’这种运算符，一般都是从左到右进行的。</p>
+<blockquote>
+<p>a = b = 3;<br />
+这个式子应该这样理解：先把3这个值赋给b，然后b=3这个式子它的值和右侧是相等的，所以把这个整体的值也赋给a，导致复制操作完成之后，a，b全都是3。</p>
+</blockquote>
+</li>
+</ol>
+<p>这里关于整个式子的理解存疑，学了C++之后可能观点不一样。可能其实并不是这个式子的值，而是a=b=3的意思是把3的值赋给b，把b的值赋给a，不是什么式子的值的理解。（不过也都差不多就是了）</p>
+<h2 id="更为生疏的运算符"><a class="markdownIt-Anchor" href="#更为生疏的运算符"></a> 更为生疏的运算符</h2>
+<h3 id="sizeof操作和size_t类型"><a class="markdownIt-Anchor" href="#sizeof操作和size_t类型"></a> sizeof操作和size_t类型</h3>
+<p>在将转换符的时候就有这么一回事。sizeof函数的作用是返回后面对象的大小（单位是字节）。那么首先这是一个无符号整数。出于可移植的考虑，定义了一个%zd来作为输出符号。因为是在不同平台上面再定义的，所以一定能保证%zd的读取和sizeof所输出的数据在栈中等长。</p>
+<p>如果是使用%u，会害怕sizeof返回值是不是%lu的。如果使用%lu有可能会是后面的格式转换符在栈中读取的时候移位。。（这样的原因就是不同平台的编译器上面sizeof返回值的占用位数不确定。所以%zd还是非常好用︿(￣︶￣)︿）</p>
+<h3 id="运算符"><a class="markdownIt-Anchor" href="#运算符"></a> %运算符</h3>
+<p>取余数的运算符号的负数情况。</p>
+<p>第一个操作数如果是负数，那么取模一定是负数。第一个操作数是正数，那一定是正数。</p>
+<h2 id="类型转换"><a class="markdownIt-Anchor" href="#类型转换"></a> 类型转换</h2>
+<p>理论上来讲，式子一定要使用相同类型的变量。但是C语言比较智能，即使使用混合类型的式子也能够进行自动转换。</p>
+<ol>
+<li>当类型转换出现在表达式时，无论是unsigned还是signed的char和short都会被转换成int。有必要会转换为范围更大的unsigned int。（在较早的C语言里面float在类型转换的时候会被转换为double，但是现在不是这样）。这些都是从小类型转换为较大类型，称为升级。</li>
+<li>涉及两种类型的运算，两个值会被分别转换成两种类型的更高级别。</li>
+<li>类型的级别从高至低依次是long double、double、float、unsignedlong long、long long、unsigned long、long、unsigned int、int。例外的情况是，当 long 和 int 的大小相同时，unsigned int比long的级别高。之所以short和char类 型没有列出，是因为它们已经被升级到int或unsigned int。</li>
+<li>在赋值表达式语句中，计算的最终结果会被转换成被赋值变量的类 型。这个过程可能导致类型升级或降级（demotion）。所谓降级，是指把一 种类型转换成更低级别的类型。</li>
+</ol>
+<p>一般来讲升级的话不会有什么影响，但是降级转换的时候有的时候有问题，需要注意。</p>
+<hr />
+<h1 id="第六章-c控制语句-循环"><a class="markdownIt-Anchor" href="#第六章-c控制语句-循环"></a> 第六章 C控制语句—-循环</h1>
+<h2 id="循环"><a class="markdownIt-Anchor" href="#循环"></a> 循环</h2>
+<p>尤其注意c风格的循环：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    int x;</span><br><span class="line">    while(scanf(&quot;%d&quot;, &amp;x))</span><br><span class="line">    &#123;</span><br><span class="line">        printf(&quot;Input completed!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这一段代码还是比较有意思的，运行之后，假如说读入的是一个整数，那么scanf就会返回1，因为scanf的返回值是赋值成功的数量。这样的话这个循环就会继续进行。</p>
+<p>假如说输入的不是数字，比如说字母，函数甚至不会进入循环，会直接中断掉，不会打印任何结果。</p>
+<p><s>但是不知道为什么输入小数的时候会打印一次目标语句，还是好奇怪。（但是打印之后就循环结束了）</s></p>
+<p>此外在嵌套循环的时候一定要注意不能使循环的内外层互相干扰，最好使用不一样的循环控制条件。</p>
+<h2 id="数组简介"><a class="markdownIt-Anchor" href="#数组简介"></a> 数组简介</h2>
+<p>因为是数组简介，有价值的点比较少，只有两个：</p>
+<ol>
+<li>数组越界在编译的时候并不会检查。比如说数组只开了20个位置，里面出现了<code>array[20]=1;</code>等字样， <strong>为了编译速度考虑并不会检查</strong>。</li>
+<li>区别字符串和数组就看末尾有没有空字符。</li>
+</ol>
+<hr />
+<h1 id="第七章-c控制语句分支和跳转"><a class="markdownIt-Anchor" href="#第七章-c控制语句分支和跳转"></a> 第七章 C控制语句：分支和跳转</h1>
+<h2 id="做一个统计单词数量的程序实践"><a class="markdownIt-Anchor" href="#做一个统计单词数量的程序实践"></a> 做一个统计单词数量的程序（实践）</h2>
+<p>功能是统计单词的数量，计算字符数和行数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;ctype.h&gt; //为isspace()函数提供原型</span><br><span class="line">#include&lt;stdbool.h&gt; //为bool true false提供定义</span><br><span class="line"></span><br><span class="line">#define STOP &#x27;|&#x27;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    char c;</span><br><span class="line">    char prev; //读入的前一个字符</span><br><span class="line">    long n_chars=0L; //字符的数量</span><br><span class="line">    int n_lines;</span><br><span class="line">    int n_words;</span><br><span class="line">    int p_lines;</span><br><span class="line">    p_lines=n_lines=n_words=0;</span><br><span class="line">    bool inword=false;</span><br><span class="line"></span><br><span class="line">    printf(&quot;Enter text to be analyzed (| to terminate):\n&quot;);</span><br><span class="line">    prev=&#x27;\n&#x27;;</span><br><span class="line">    while( ( c=getchar() ) != STOP)</span><br><span class="line">    &#123;</span><br><span class="line">        n_chars++;</span><br><span class="line">        if(c == &#x27;\n&#x27;)</span><br><span class="line">        &#123;</span><br><span class="line">            n_lines++; //统计行</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if( !isspace(c) &amp;&amp; !inword )</span><br><span class="line">        &#123;</span><br><span class="line">            inword=true;</span><br><span class="line">            n_words++; //统计单词个数</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if( isspace(c) &amp;&amp; inword )</span><br><span class="line">            inword=false;</span><br><span class="line"></span><br><span class="line">        prev=c;</span><br><span class="line">    &#125;</span><br><span class="line">    if(prev != &#x27;\n&#x27;)</span><br><span class="line">        p_lines=1;</span><br><span class="line"></span><br><span class="line">    printf(&quot;characters =%ld, words = %d, lines = %d&quot;, n_chars, n_words, n_lines);</span><br><span class="line">    printf(&quot;\tpartial lines = %d&quot;, p_lines);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="认识条件运算符"><a class="markdownIt-Anchor" href="#认识条件运算符"></a> 认识条件运算符 ?:</h2>
+<p>这是if-else语句的一种快捷的表达方式：<br />
+<code>x = (y &lt; 0) ? -y : y;</code><br />
+等价于：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if (y &lt; 0)</span><br><span class="line">	x = -y;</span><br><span class="line">else</span><br><span class="line">	x = y;</span><br></pre></td></tr></table></figure>
+<p>总而言之，?:需要三个expression。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">expression1 ? expression2 : expression3</span><br></pre></td></tr></table></figure>
+<p>意思是，如果1为真，整个条件表达式（注意上面这整个是有一个值的，这整个称为一个条件表达式）的值是2的值，否则是3的值。</p>
+<h1 id="第十一章-字符串和字符串函数"><a class="markdownIt-Anchor" href="#第十一章-字符串和字符串函数"></a> 第十一章 字符串和字符串函数</h1>
+<h2 id="表示字符串和字符串io"><a class="markdownIt-Anchor" href="#表示字符串和字符串io"></a> 表示字符串和字符串I/O</h2>
+<h3 id="字符串常量"><a class="markdownIt-Anchor" href="#字符串常量"></a> 字符串常量</h3>
+<p>首先是定义字符串。使用双引号括起来的部分叫做字符串常量，有一个小技巧就是假如字符串包括双引号但是不想让字符串中止就要使用转义字符。<strong>当字符串常量储存在内存里面的时候编译器会自动在末尾加一个\0</strong>。</p>
+<p><strong>字符串常量属于*静态类别*(static storage class)，意思是说在函数里面使用字符串常量的时候这个字符串只会被存储一次。</strong></p>
+<p>字符串有可能使用指针指向首地址，也有可能使用字符数组来存储，一般就这里两种手段储存字符串。指针不谈，会不会有人在使用字符类型的数组的时候这样初始化？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const char m1[7] = &#123;&#x27;w&#x27;, &#x27;h&#x27;, &#x27;o&#x27;, &#x27;a&#x27;, &#x27;y&#x27;, &#x27;?&#x27;, 0&#125;;</span><br></pre></td></tr></table></figure>
+<p>首先着肯定是没问题的，是标准语法。但是实际上可以这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const char m1[7] = &quot;whoay?&quot;;</span><br></pre></td></tr></table></figure>
+<p>一定注意不要加大括号！直接使用双引号初始化。</p>
+<p>当然更为聪明的人也许会这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const char m1[] = &quot;whoay?&quot;;</span><br></pre></td></tr></table></figure>
+<p>将数组留空，让编译器自动分配合理大小的数组空间，这样更加安全。</p>
+<p>忽然发现这里有新特性，即使写成<code>const char m1[6] = &quot;whoay?&quot;;</code>再使用gcc的情况下不会报错，编译正常运行。就是0没有存进去而已。这就随缘了，假如内存里面有0那么打印就停止，没有就会往后面再打一点乱码。</p>
+<hr />
+<p>关于静态量和字符串常量之类的讨论下面的程序可以进一步理解：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//指针和数组和字符串常量</span><br><span class="line">#define MSG &quot;I&#x27;m special&quot;</span><br><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    char ar[] = MSG;</span><br><span class="line">    const char *pt = MSG;</span><br><span class="line">    printf(&quot;address of \&quot;I&#x27;m special\&quot; : %p\n&quot;, &quot;I&#x27;m special&quot;);</span><br><span class="line">    printf(&quot;          address ar : %p\n&quot;, ar);</span><br><span class="line">    printf(&quot;          address of pt : %p\n&quot;, pt);</span><br><span class="line">    printf(&quot;          address of MSG : %p\n&quot;, MSG);</span><br><span class="line">    return 0;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看见，使用宏定义了一个字符串常量MSG=”I’m special”。然后让一个数组的值为它，再const了一个指针指向这个常量字符串。接着使用%p打印指针变量的值。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">address of &quot;I&#x27;m special&quot; : 0x560db1ead008</span><br><span class="line">              address ar : 0x7ffd5b1d452c</span><br><span class="line">           address of pt : 0x560db1ead008</span><br><span class="line">          address of MSG : 0x560db1ead008</span><br></pre></td></tr></table></figure>
+<p>直接贴我电脑上面的运行结果。从这个结果可以直观地说明几点：</p>
+<ol>
+<li>新建数组时，无论数组里面的值是不是字符串常量，一定会重新分配空间。</li>
+<li>将一个字符串常量复制给指针之后，其他所有用到这个字符串的地方都会共用一个地址。编译器可以把多个相同的字符串常量合并来节省空间。这是编译器的智能的地方。</li>
+<li>即使是同一个字符串常量在内存中也可能储存多次，像本例子中的数组。</li>
+</ol>
+<h2 id="数组和指针"><a class="markdownIt-Anchor" href="#数组和指针"></a> 数组和指针</h2>
+<p>数组定义之后，数组名不能再动了。就我的理解来看一旦数组被定义，数组首地址就成了常量了。</p>
+<p>指针也指向常量字符串，但是指向过后还是能改变它的值。</p>
+<h2 id="指针和字符串"><a class="markdownIt-Anchor" href="#指针和字符串"></a> 指针和字符串</h2>
+<p>字符串和指针的联系非常紧密，现在来看一个程序：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    const char * mesg = &quot;I love study!&quot;;</span><br><span class="line">    const char * copy;</span><br><span class="line">    </span><br><span class="line">    copy = mesg;</span><br><span class="line">    printf(&quot;%s\n&quot;, copy);</span><br><span class="line">    printf(&quot;mesg = %s, &amp;mesg = %p, value = %s\n&quot;, mesg, &amp;mesg, mesg);</span><br><span class="line">    printf(&quot;copy = %s, &amp;copy = %p, value = %s\n&quot;, copy, &amp;copy, copy);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line">I love study!</span><br><span class="line">mesg = I love study!, &amp;mesg = 0x7ffeca443bf8, value = I love study!</span><br><span class="line">copy = I love study!, &amp;copy = 0x7ffeca443c00, value = I love study!</span><br></pre></td></tr></table></figure>
+<p>运行结果是这样。合理。两个指针的位置不同，指向同一个字符串。</p>
+<h2 id="危险的字符串空间分配问题"><a class="markdownIt-Anchor" href="#危险的字符串空间分配问题"></a> 危险的字符串空间分配问题</h2>
+<p>看这样一个代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char *name;</span><br><span class="line">scanf(&quot;%s&quot;, name);</span><br></pre></td></tr></table></figure>
+<p>乍一看好像没有什么问题，但是假如编译的话就会发现编译器报错。（这里书本上面说的是编译的时候会报错，我这里的实际情况是编译过了，运行的时候segmentation fault）</p>
+<p>这样写是危险的，不管能不能编译通过。因为一开始并没有告诉%s有多大，这样编译器不知道给这个留多大空间。假如输入的%s过大，空间没有留够，那个这个字符串就会顶掉这个程序在内存中的其他部分。</p>
+<p>C语言的程序在执行的时候在内存里面都是有结构的，<s>这个等我看了深入理解计算机系统再说</s>，面对这种情况最好就用数组，就是数组不指定大小也不要用指针。</p>
+<h2 id="gets函数的替代问题"><a class="markdownIt-Anchor" href="#gets函数的替代问题"></a> gets()函数的替代问题</h2>
+<p>我是没想到本来准备在上面关于头文件编写的章节里面说这个问题，但是书上面刚好说了这个问题。</p>
+<p>gets函数的危险性和上面举的例子是一样的，因为gets函数读入字符串不加节制，而且没有标明这个字符串到底多大，这样一旦输入某个字符串太长就会顶掉这个程序其他地方，又叫做缓冲区溢出*(buffer overflow)*，超出的字符串有可能会破坏程序。</p>
+<p><strong>c11标准采取了非常严格的态度，这个函数将在c11标准被删除！</strong></p>
+<p>方法是使用fgets函数代替：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    char *str=0;</span><br><span class="line">    gets(str);</span><br><span class="line">    fgets(str, 60, stdin); //这里面两个函数是等价的</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好吧也不是完全等价，下面最多只能输入60个字符，也就是说加入你输入了70个字符，最终读到str里面的就只有60个。<strong>在推荐标准下不能无限制读入字符串</strong>，虽然看上去不合理但是这样确实安全一些。要是怕读不完数字就调大点。。。。</p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-function-fgets.html">fgets</a></p>
+<p>还是贴上fgets的函数用法。</p>
+<hr />
+<p>随书还附加了一些字符串函数，这些字符串函数都可以在string.h中找到。（其实就许多C语言的题目都可以直接使用标准库中的函数解决，常见的像排序，字符串合并等等）</p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-standard-library-string-h.html">菜鸟教程sting.h</a></p>
+<p>还有一部分和处理字符串有关的函数被放在stdlib里面，可以搜索str就能找到他们。</p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-standard-library-stdlib-h.html">菜鸟教程stdlib.h</a></p>
+<p><s>赶快结束这一章吧，虽然知识点还有很多但是基本上对我来说用的很少，到时候再查</s></p>
+<h1 id="第十二章-存储类别-链接和内存管理"><a class="markdownIt-Anchor" href="#第十二章-存储类别-链接和内存管理"></a> 第十二章 存储类别、链接和内存管理</h1>
+<p>这个比较专业，逐章笔记。作用域, 存储期和链接是描述一个变量的三个角度.</p>
+<h2 id="1211作用域"><a class="markdownIt-Anchor" href="#1211作用域"></a> 12.1.1作用域</h2>
+<p>作用域是描述可以访问标识符的区域。一个C变量的作用域常见的有<strong>块作用域，函数作用域，函数原型作用域或者是文件作用域</strong>。</p>
+<p><strong>块作用域</strong>是用花括号括起来的区域，函数中使用的局部变量都具有块作用域。</p>
+<p><strong>函数作用域</strong>是用于goto语句的标签。（看不懂）</p>
+<p><strong>函数原型作用域</strong>是从形参定义到函数原型声明结束。这里直接证明了函数原型里面变量的名字完全不影响定义。</p>
+<p>举个栗子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int function(int a, int b);</span><br><span class="line"></span><br><span class="line">int function(int m, int n)</span><br><span class="line">&#123;</span><br><span class="line">    return m+n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里就不用担心m还有n的混淆问题，因为到下面的时候函数已经完全不认识a和b了，a和b的作用域只在那个小括号里面。前面已经学到过函数声明仅仅只管类型，不管名字。</p>
+<p><strong>文件作用域</strong>是当一个变量定义在函数外面时候的作用域，也叫做<strong>全局变量</strong>。这样的变量可以用于多个函数。</p>
+<p>这里说的很好，有人说那另一个文件里面可不可以用呢？另一个文件里面一般写的不就是函数嘛，一句可以用于多个函数也暗示着不只这个文件的函数可以用。</p>
+<h2 id="1212-链接"><a class="markdownIt-Anchor" href="#1212-链接"></a> 12.1.2 链接</h2>
+<p>C变量有三个链接属性。<strong>外部链接、内部链接和无链接。</strong></p>
+<p>凡是块作用域、函数作用域或者是函数原型作用域的变量都是无链接变量。</p>
+<p>那么一个变量具有文件作用域，就看它有没有static声明，如果有就是内部链接，没有就是外部链接。</p>
+<p>这里链接的概念是这个变量和其他文件之间的关系，因为只有具有文件作用域的变量才可以被其他文件使用，所以叫外部链接（可以供外部使用的变量）。加上static就是不让外部使用，就是内部链接变量。其他的不谈链接，因为无论如何都不会被外部文件使用。</p>
+<h2 id="1213-存储期"><a class="markdownIt-Anchor" href="#1213-存储期"></a> 12.1.3 存储期</h2>
+<p><strong>作用域和链接描述了标识符的可见性，存储期描述了变量的生存周期。</strong></p>
+<p>C变量有四个存储期：</p>
+<ol>
+<li>静态存储期</li>
+<li>线程存储期</li>
+<li>自动存储期</li>
+<li>动态分配存储期</li>
+</ol>
+<p>静态存储区的意思是，在程序运行的过程中变量一直存在。文件作用域变量都具有静态存储区。而无论其是内部链接还是外部链接。（那么针对文件作用域变量，static的作用仅仅是表明是内部链接还是外部链接）</p>
+<p>线程存储区用于并发程序设计，巴拉巴拉巴拉~~</p>
+<p>块作用域变量具有自动存储期。当程序进入块的时候，为块作用域的变量申请内存。结束之后就释放。变长数组稍有不同，它不像一般的块作用域变量是进入块开始到块结束，是声明到块结束。</p>
+<p>在块作用域变量里面使用static关键字在后面有讨论。</p>
+<h2 id="1214-自动变量"><a class="markdownIt-Anchor" href="#1214-自动变量"></a> 12.1.4 自动变量</h2>
+<p>自动存储期，块作用域，无链接。</p>
+<h2 id="1216-块作用域的静态变量"><a class="markdownIt-Anchor" href="#1216-块作用域的静态变量"></a> 12.1.6 块作用域的静态变量</h2>
+<p>块作用域，无连接，静态存储区。可以看出来描述一个变量有很多方面, 首先就是作用于, 指的是在什么范围中能够访问这个变量, 再就是在内存里面的存储位置, 像是块作用域的静态变量(这里面的静态主要指的是在内存里面原地不动), 最经典的就是在函数里面定义一个静态的量, 每次调用函数结束之后就没法访问这个量了, 但是只要main函数不结束那么这个值就一直保存在内存里面, 下次再调用这个值还是保存下来了.</p>
+<p>剩下的一些部分太繁琐了看不进~~~~(&gt;_&lt;)~~~~.</p>
+<p>直接小结一下吧.</p>
+<h2 id="127-小结"><a class="markdownIt-Anchor" href="#127-小结"></a> 12.7 小结</h2>
+<p>对于一个变量, 从存储期, 作用域和链接表征三方面来考虑.</p>
+<p>存储期是<strong>静态的, 自动的或者动态分配</strong>的. 静态变量存储期是从程序运行开始到结束, 变量一直存在在内存里面(这里面暂时不考虑能不能访问的问题), 自动存储期就是在进入变量定义所在块的时候分配内存, 离开的时候释放. 动态分配就是使用malloc和free来申请和释放的.</p>
+<p>作用域是决定哪一部分可以访问这个数据. 是文件作用域, 块作用域. 在所有函数之外定义的变量具有文件作用域, 块内就是块作用域.</p>
+<p>链接是一个变量能被外部文件访问的程度, 具有块作用域的变量一定是局部变量(不谈是内部链接还是外部链接), 只有文件作用域的变量才有可能是具有外部链接(这个时候才有可能是内部链接和外部链接).</p>
+<h1 id="第十三章-文件的输入输出"><a class="markdownIt-Anchor" href="#第十三章-文件的输入输出"></a> 第十三章 文件的输入输出</h1>
+<p>首先C提供两种模式, 文本模式和二进制模式. 前面的一些基本的知识都知道不记了.</p>
+<p>getc比getchar更加完善, putc也比putchar更加完善, 事实上后面带char的两个函数是通过前面的函数来定义的. 这章感觉太难写笔记了不写了.</p>
+<h1 id="第十五章-位操作"><a class="markdownIt-Anchor" href="#第十五章-位操作"></a> 第十五章 位操作</h1>
+<h1 id="c中的按位运算符"><a class="markdownIt-Anchor" href="#c中的按位运算符"></a> C中的按位运算符</h1>
+<p>~: 二进制反码(这里要注意是把操作的数字转成二进制了之后才有的看.)</p>
+<p>&amp;: 按位与</p>
+<p>|: 按位或</p>
+<p>^: 按位异或</p>
+<p>OK cprimer结束</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/C%E5%92%8CC/" rel="tag"># C和C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/10/manjarokde%E7%9A%84%E9%85%8D%E7%BD%AE/" rel="prev" title="manjarokde的配置">
+                  <i class="fa fa-angle-left"></i> manjarokde的配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/11/10/%E6%88%91%E7%9A%84%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/" rel="next" title="我的大学生活">
+                  我的大学生活 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Oiaom</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" integrity="sha256-3574TpfThVfeAhg+I4+N39EJiLN3QUkuEsMVe8hWAR4=" crossorigin="anonymous">
+
+
+
+</body>
+</html>

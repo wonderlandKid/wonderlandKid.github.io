@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"oiaom.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="我对C++真是又爱又恨, 但是静下心来又不得不学. 我认为现在作为一个计算机学生, C++和JAVA无论如何都要熟悉了解一门, 这里的了解当然并不单单是指语法(虽然语法也难学明白), 更是搜索能力, 解决问题能力, 阅读报错能力和项目经验的综合体现. 好好studyC++罢!">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CPP中的右值引用">
+<meta property="og:url" content="http://oiaom.github.io/2023/09/04/CPP%E4%B8%AD%E7%9A%84%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/index.html">
+<meta property="og:site_name" content="Oiaom的小窝">
+<meta property="og:description" content="我对C++真是又爱又恨, 但是静下心来又不得不学. 我认为现在作为一个计算机学生, C++和JAVA无论如何都要熟悉了解一门, 这里的了解当然并不单单是指语法(虽然语法也难学明白), 更是搜索能力, 解决问题能力, 阅读报错能力和项目经验的综合体现. 好好studyC++罢!">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.stack.imgur.com/GNhBF.png">
+<meta property="article:published_time" content="2023-09-04T00:51:48.000Z">
+<meta property="article:modified_time" content="2023-09-07T02:21:19.413Z">
+<meta property="article:author" content="Oiaom">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="cpp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.stack.imgur.com/GNhBF.png">
+
+
+<link rel="canonical" href="http://oiaom.github.io/2023/09/04/CPP%E4%B8%AD%E7%9A%84%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://oiaom.github.io/2023/09/04/CPP%E4%B8%AD%E7%9A%84%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/","path":"2023/09/04/CPP中的右值引用/","title":"CPP中的右值引用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CPP中的右值引用 | Oiaom的小窝</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Oiaom的小窝</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8"><span class="nav-text"> 为什么需要右值引用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E6%9D%A5%E9%81%BF%E5%85%8D%E6%8B%B7%E8%B4%9D"><span class="nav-text"> 实现移动语义来避免拷贝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91"><span class="nav-text"> 完美转发</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%80%BC%E7%B1%BB%E5%88%AB"><span class="nav-text"> 值类别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text"> 总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Oiaom"
+      src="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+  <p class="site-author-name" itemprop="name">Oiaom</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://oiaom.github.io/2023/09/04/CPP%E4%B8%AD%E7%9A%84%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
+      <meta itemprop="name" content="Oiaom">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oiaom的小窝">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CPP中的右值引用 | Oiaom的小窝">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CPP中的右值引用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-09-04 08:51:48" itemprop="dateCreated datePublished" datetime="2023-09-04T08:51:48+08:00">2023-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-09-07 10:21:19" itemprop="dateModified" datetime="2023-09-07T10:21:19+08:00">2023-09-07</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>我对C++真是又爱又恨, 但是静下心来又不得不学. 我认为现在作为一个计算机学生, C++和JAVA无论如何都要熟悉了解一门, 这里的了解当然并不单单是指语法(虽然语法也难学明白), 更是搜索能力, 解决问题能力, 阅读报错能力和项目经验的综合体现. 好好studyC++罢!<span id="more"></span></p>
+<p><a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/reference">右值引用</a>, 始于C++11, 是C++中一个相当关键的概念. 虽然是C++11, 但是本文所有的代码也都会在C++17下面测试一回.</p>
+<h1 id="为什么需要右值引用"><a class="markdownIt-Anchor" href="#为什么需要右值引用"></a> 为什么需要右值引用</h1>
+<h2 id="实现移动语义来避免拷贝"><a class="markdownIt-Anchor" href="#实现移动语义来避免拷贝"></a> 实现移动语义来避免拷贝</h2>
+<p>有一篇文章写得很好, 就是<a target="_blank" rel="noopener" href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2027.html#Move_Semantics">这个</a>. 下面是第一个可以减少拷贝的小例子. 如果想要交换两个对象, 通过移动语义, 可以在不复制第三个对象的前提下面交换两个对象.</p>
+<blockquote>
+<p>But, we didn’t want to have any copies of a or b, we just wanted to swap them. Let’s try again:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt; <span class="built_in">swap</span>(T&amp; a, T&amp; b)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">T <span class="title">tmp</span><span class="params">(std::move(a))</span></span>;</span><br><span class="line">    a = std::<span class="built_in">move</span>(b);   </span><br><span class="line">    b = std::<span class="built_in">move</span>(tmp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>这是一个很有意思的利用右值的操作, 总共有三个指针, 然后两份资源, 也就是交换过程中自始至终没有出现第三个资源. 也就是<strong>可以减少不必要的拷贝</strong>.</p>
+<p>这是一个右值的小应用, 我们再来看一个更加明显的应用, 下面一段代码选自 &lt;现代C++核心特性解析&gt;, 我们在C++98下面编译运行, 看一看在C++11, 也就是右值所在的版本出来之前, 会遇到哪些可能的性能上的问题. 值得注意的是, 我们仅考虑<strong>语义上</strong>的问题, 所以<strong>关闭返回值优化</strong>. 这样才能够实验得到完整的符合语法预期的结果. 编译命令使用:<code>g++ -fno-elide-constructors -std=c++98 cpp11_2.cpp</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BigMemoryPool</span> &#123;</span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> PoolSize = <span class="number">4096</span>;</span><br><span class="line">    <span class="built_in">BigMemoryPool</span>() : <span class="built_in">pool_</span>(<span class="keyword">new</span> <span class="type">char</span>[PoolSize]) &#123;&#125;</span><br><span class="line">    ~<span class="built_in">BigMemoryPool</span>() &#123;</span><br><span class="line">        <span class="keyword">if</span> (pool_ != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="keyword">delete</span>[] pool_;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">BigMemoryPool</span>(<span class="type">const</span> BigMemoryPool&amp; other) : <span class="built_in">pool_</span>(<span class="keyword">new</span> <span class="type">char</span>[PoolSize]) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;copy big memory pool.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">        <span class="built_in">memcpy</span>(pool_, other.pool_, PoolSize);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span>:</span><br><span class="line">    <span class="type">char</span>* pool_;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">BigMemoryPool <span class="title">get_pool</span><span class="params">(<span class="type">const</span> BigMemoryPool&amp; pool)</span> </span>&#123; <span class="keyword">return</span> pool; &#125;</span><br><span class="line"><span class="function">BigMemoryPool <span class="title">make_pool</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    BigMemoryPool pool;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">get_pool</span>(pool);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    BigMemoryPool my_pool = <span class="built_in">make_pool</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">copy big memory pool.</span><br><span class="line">copy big memory pool.</span><br><span class="line">copy big memory pool.</span><br></pre></td></tr></table></figure>
+<p>可以看见出现了三个输出&quot;copy big memory pool&quot;, 这说明我们拷贝了一个大数组三次, 这就是性能上的问题. 比较严重的是我们可以发现这次的拷贝, 其实是一种浪费. 我们可以考虑一下这三次拷贝分别是在哪里发生的. 这三次copy其实分别发生在:</p>
+<ol>
+<li>get_pool返回临时对象复制</li>
+<li>make_pool返回临时对象复制</li>
+<li>main函数中新构造的my_pool进行复制构造函数</li>
+</ol>
+<p>虽然上述结果是在关闭返回值优化情况下面进行的, 但是无论怎么讲, 从<strong>语义上</strong>来说, 上面这个代码确实性能很差, 只是编译器救了一手罢了, 之后我们会分析一下编译器如何优化的. 在这些个拷贝的过程中, 实际上是不必要的拷贝, 那个拷贝的来源其实马上就要作废了, 也就是完全可以把那个资源继承给目标, 这个思想就是<strong>移动语义</strong>. 在C++11之后我们可以定义移动构造函数, 编译命令是<code>g++ -fno-elide-constructors -std=c++11 cpp11_2.cpp</code>:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BigMemoryPool</span> &#123;</span><br><span class="line">   <span class="keyword">public</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> PoolSize = <span class="number">4096</span>;</span><br><span class="line">    <span class="built_in">BigMemoryPool</span>() : <span class="built_in">pool_</span>(<span class="keyword">new</span> <span class="type">char</span>[PoolSize]) &#123;&#125;</span><br><span class="line">    ~<span class="built_in">BigMemoryPool</span>() &#123;</span><br><span class="line">        <span class="keyword">if</span> (pool_ != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">delete</span>[] pool_;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//移动构造函数</span></span><br><span class="line">    <span class="built_in">BigMemoryPool</span>(BigMemoryPool&amp;&amp; other) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;move big memory pool.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">        pool_ = other.pool_;</span><br><span class="line">        other.pool_ = <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">BigMemoryPool</span>(<span class="type">const</span> BigMemoryPool&amp; other) : <span class="built_in">pool_</span>(<span class="keyword">new</span> <span class="type">char</span>[PoolSize]) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;copy big memory pool.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">        <span class="built_in">memcpy</span>(pool_, other.pool_, PoolSize);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span>:</span><br><span class="line">    <span class="type">char</span>* pool_;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">BigMemoryPool <span class="title">get_pool</span><span class="params">(<span class="type">const</span> BigMemoryPool&amp; pool)</span> </span>&#123; <span class="keyword">return</span> pool; &#125;</span><br><span class="line"><span class="function">BigMemoryPool <span class="title">make_pool</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    BigMemoryPool pool;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">get_pool</span>(pool);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    BigMemoryPool my_pool = <span class="built_in">make_pool</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//关闭返回值优化的C++11</span><br><span class="line">copy big memory pool.</span><br><span class="line">move big memory pool.</span><br><span class="line">move big memory pool.</span><br><span class="line">//关闭返回值优化的C++17</span><br><span class="line">copy big memory pool.</span><br></pre></td></tr></table></figure>
+<p>这样就只有一次copy. 然后观察我们新建的移动构造函数就会发现, 这个移动构造函数的效率确实比拷贝要高多了.  因为只设计一个指针的变动. 观察move函数的签名:<code>BigMemoryPool(BigMemoryPool&amp;&amp; other)</code>, 这里面函数的行参就是一个右值引用. 我们再来审视一下常见的一些操作:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">myclass a = b; //等同于 myclass a(b)调用拷贝构造函数</span><br><span class="line">myclass&amp;&amp; a = std::move(b); //等同于有 myclass a(b)调用move函数</span><br><span class="line">int a = 3;</span><br></pre></td></tr></table></figure>
+<p>我们希望从一个b新建一个跟他掌握资源相同的a, 我们如果使用第一种方式就是把b里面的内容拷贝一份给a, 第二种方法就是直接把b的资源move给a. 当然这个说法也不尽准确, 因为第二种方法是调用了移动构造函数, 你移动构造函数必须是真的做了move. 当然我们从语义上讨论问题就假定所有函数都是规范写法, 而且假定没有编译器优化.</p>
+<p>下面就是int a = 3, 这个式子其实从语义上来看, 右侧是一个int的右值, 左侧是一个a, 从语法上来看倒有些无法理解(草), 写成<code>int a(3)</code>就可以理解, 但是<code>int a = 3</code>就有点不符合一贯的理解方式. 或者写成<code>int a = int(3)</code>. 不过这都是咬文嚼字, 毕竟像int这种基础类型无论怎么说都不会遇到什么左右值的问题的, 只是好玩和有意思罢了.</p>
+<p>上面我们讨论了一下右值引用给C++带来的性能提升, 但是还有一个问题没有解决. 那就是我们其实可以发现如果使用C++17标准而且关闭返回值优化, 居然只有一个&quot;copy big memory pool&quot;. 顺带一提, 如果不关闭返回值优化, 也就是不加<code>-fno-elide-constructors</code>, 无论是03, 11, 17三个标准的输出都是同样的, 都是&quot;copy big memory pool.&quot; 首先解决第一个问题, 在通过flag关闭RVO之后, 为什么C++17的输出仍然像优化后一样? 这是因为<code>Prvalue semantics (&quot;guaranteed copy elision&quot;)</code>, <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/copy_elision">cppreference的参考</a>. 也就是这在C++17的观点看来不算是一种优化, 而是一个从语义上就能解释的东西, 也就是直接让这个优化从语义上能解释通.</p>
+<blockquote>
+<p>Note: This rule does not specify an optimization, and the Standard does not formally describe it as “copy elision” (because nothing is being elided). Instead, the C++17 core language specification of <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/value_category">prvalues</a> and <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/implicit_conversion#Temporary_materialization">temporaries</a> is fundamentally different from that of earlier C++ revisions: there is no longer a temporary to copy/move from. Another way to describe C++17 mechanics is “unmaterialized value passing” or “deferred temporary materialization”: prvalues are returned and used without ever materializing a temporary.</p>
+</blockquote>
+<p>而针对第二个问题, 实际上编译器在C++11之前就已经可以进行类似的优化了, 但是程序员无法控制. 我估计这个优化也只能应对简单的情况, 毕竟不靠程序员理清楚左右值语义光靠编译器还是困难.</p>
+<p><s>其实按照原设定本来这里有一段C++98(C++03)对于优化的汇编分析, 但是TM看不懂, 就不深究了. 反正虽然C++98的时候没有右值这个说法, 但是编译器进行了类似的优化.</s></p>
+<h2 id="完美转发"><a class="markdownIt-Anchor" href="#完美转发"></a> 完美转发</h2>
+<p>现在设想这样一个函数factory(), 它要求能够对于一个类型T, 返回这个T类型的shared_ptr, 并且在构造的同时返回. 也就是, 这个factory()就和类型T的构造函数一样, 只不过是返回一个实例的shared_ptr. 假设T只有一个参数, 那可能会这样写:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">class</span> <span class="title class_">A1</span>&gt;</span><br><span class="line"><span class="function">std::shared_ptr&lt;T&gt;</span></span><br><span class="line"><span class="function"><span class="title">factory</span><span class="params">(<span class="type">const</span> A1&amp; a1)</span>   <span class="comment">// one argument version</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> std::<span class="built_in">shared_ptr</span>&lt;T&gt;(<span class="keyword">new</span> <span class="built_in">T</span>(a1));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样看似乎是可行的, 对于一个类型A, 可以这样, <code>std::shared_ptr&lt;A&gt; tmp = factory&lt;A&gt;(3);</code></p>
+<p>但是假如A的构造函数接受的参数形式是一个可变的引用呢? 或者说你const&amp;固然能够接受无论是左值还是右值, 但是传进来之后就变成不可变引用了, 假如后续s还想修改就不行了. 那可能会说写两个不久行了, 一个接收右值, 一个接受左值. 但是这只是一个参数的情况, 如果构造函数有两个参数那就是需要排列组合, 三个四个就是灾难.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">class</span> <span class="title class_">A1</span>&gt;</span><br><span class="line"><span class="function">std::shared_ptr&lt;T&gt;</span></span><br><span class="line"><span class="function"><span class="title">factory</span><span class="params">(A1&amp;&amp; a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> std::<span class="built_in">shared_ptr</span>&lt;T&gt;(<span class="keyword">new</span> <span class="built_in">T</span>(std::forward&lt;A1&gt;(a1)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里原文章把它称之为:</p>
+<blockquote>
+<p>Rvalue references offer a simple, scalable solution to this problem:</p>
+</blockquote>
+<p>但是实际上尤其注意, 这里的A1&amp;&amp; a1, 并不是一个右值引用. 如果是一个右值引用的话, 岂不是无法接受左值了? 这是一种表示方法, 表示如果来了一个左值, a1就变成左值引用, 如果是一个右值, 那就是move给a1.</p>
+<p>那下面的<code>std::forward&lt;A1&gt;(a1)</code>是什么意思? 其实<code>static_cast&lt;A1&amp;&amp;&gt;(a1)</code>和这个是等价的. 如果a1是左值, 注意, 这里的左值必须是int&amp;, 才能完美转发:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">(<span class="type">int</span>&amp; a)</span> </span>&#123; std::cout &lt;&lt; <span class="string">&quot;int&amp;&quot;</span> &lt;&lt; std::endl; &#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">(<span class="type">int</span>&amp;&amp; a)</span> </span>&#123; std::cout &lt;&lt; <span class="string">&quot;int&amp;&amp;&quot;</span> &lt;&lt; std::endl; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> x = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">foo</span>(std::forward&lt;<span class="type">int</span>&gt;(x));</span><br><span class="line">    <span class="built_in">foo</span>(std::forward&lt;<span class="type">int</span>&gt;(<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;normal\n&quot;</span>;</span><br><span class="line">    <span class="built_in">foo</span>(x);</span><br><span class="line">    <span class="built_in">foo</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后输出:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>&amp;&amp;</span><br><span class="line"><span class="type">int</span>&amp;&amp;</span><br><span class="line">normal</span><br><span class="line"><span class="type">int</span>&amp;</span><br><span class="line"><span class="type">int</span>&amp;&amp;</span><br></pre></td></tr></table></figure>
+<p>哎!? 为啥上面也是两个右值? 这里时刻注意, 完美转发的保留左右值属性中的保留左值属性是<strong>引用类型</strong>. 一定时刻记住<code>forward&lt;T&gt;</code>和<code>static_cast&lt;T&amp;&amp;&gt;</code>作用差不多. 如果是一个T, 就变成T&amp;&amp;, 只有T&amp;才是T&amp;, 然后T&amp;&amp;变成T&amp;&amp;.</p>
+<p>右值引用和引用折叠共同完成了这个特性. 在完美转发中右值的引入让概念更加清晰, 但是在函数的形参里面的T&amp;&amp;并不是右值引用, 这个必须注意.</p>
+<h1 id="值类别"><a class="markdownIt-Anchor" href="#值类别"></a> 值类别</h1>
+<p><img src="https://i.stack.imgur.com/GNhBF.png" alt="" /></p>
+<p>这个图片来自于stackoverflow的一个回答, 借其图片一用. 而对于各个值的定义, 引用N3092的原文:</p>
+<blockquote>
+<p>An lvalue (so called, historically, because lvalues could appear on the left-hand side of an assignment expression) designates a function or an object. [ Example: If E is an expression of pointer type, then *E is an lvalue expression referring to the object or function to which E points. As another example, the result of calling a function whose return type is an lvalue reference is an lvalue. — end example ]</p>
+<p>An xvalue (an “eXpiring” value) also refers to an object, usually near the end of its lifetime (so that its resources may be moved, for example). An xvalue is the result of certain kinds of expressions involving rvalue references (8.3.2). [ Example: The result of calling a function whose return type is an rvalue reference is an xvalue. — end example ]</p>
+<p>A glvalue (“generalized” lvalue) is an lvalue or an xvalue.</p>
+<p>An rvalue (so called, historically, because rvalues could appear on the right-hand side of an assignment expressions) is an xvalue, a temporary object (12.2) or subobject thereof, or a value that is not associated with an object.</p>
+<p>A prvalue (“pure” rvalue) is an rvalue that is not an xvalue. [ Example: The result of calling a function whose return type is not a reference is a prvalue. The value of a literal such as 12, 7.3e5, or true is also a prvalue. — end example ]</p>
+</blockquote>
+<p>值得注意的是, 在标准里面详细提到了关于值转换部分.</p>
+<blockquote>
+<p>Whenever a glvalue appears in a context where a prvalue is expected, the glvalue is converted to a prvalue; see 4.1, 4.2, and 4.3.</p>
+</blockquote>
+<p>当需要一个纯右值的时候, 而出现了一个泛左值, 则会发生转换. 而这三个转换4.1, 4.2, 4.3分别是<code>Lvalue-to-rvalue convertion</code>, <code>Array-to-pointer convertion</code>, <code>Function-to-pointer convertion</code>. 最常见的第一个转换, 比如对于赋值运算符, 期望右侧是一个纯右值, 但是实际使用也会出现<code>b=a</code>这样, 这个时候就是发生了第一种转换.</p>
+<p>扯远了, 左值和纯右值是最好理解的. 在CPP11之前, 我们常说的左值实际上是泛左值(glvalue), 我们说的右值实际上是纯右值(prvalue). 想要理解CPP11的expresstion的分类, 其关键是理解这个多出来的东西, 将亡值(eXpiring value).</p>
+<blockquote>
+<p>[ Note: An expression is an xvalue if it is:</p>
+<p>— the result of calling a function, whether implicitly or explicitly, whose return type is an rvalue reference to object type,</p>
+<p>— a cast to an rvalue reference to object type,</p>
+<p>— a class member access expression designating a non-static data member in which the object expression is an xvalue, or</p>
+<p>— a .* pointer-to-member expression in which the first operand is an xvalue and the second operand is a pointer to data member.</p>
+<p>​	In general, the effect of this rule is that named rvalue references are treated as lvalues and unnamed rvalue references to objects are treated as xvalues; rvalue references to functions are treated as lvalues whether named or not. — end note ]</p>
+<p>[ Example:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">A</span> &#123;</span><br><span class="line">    <span class="type">int</span> m;</span><br><span class="line">&#125;;</span><br><span class="line">A&amp;&amp; <span class="keyword">operator</span>+(A, A);</span><br><span class="line"><span class="function">A&amp;&amp; <span class="title">f</span><span class="params">()</span></span>;</span><br><span class="line">A a;</span><br><span class="line">A&amp;&amp; ar = <span class="built_in">static_cast</span>&lt;A&amp;&amp;&gt;(a);</span><br></pre></td></tr></table></figure>
+<p>The expressions f(), f().m, static_cast&lt;A&amp;&amp;&gt;(a), and a + a are xvalues. The expression ar is an lvalue. — end example ]</p>
+</blockquote>
+<p>这是n3092的原文.</p>
+<p>第一种情况就是返回右值引用的函数的值. 比如<code>T&amp;&amp; f()</code>, 那么这里的f()的expression类别就是xvalue. (注意区分type和expression category, type就是int, double一类, exression category就是正在讨论的prvalue)</p>
+<p>第二个是static_cast&lt;T&amp;&amp;&gt;来的.</p>
+<p>第三个是一个xvalue的成员仍然是xvalue. 后面还比较容易看懂. 在总结里面说的更清楚, 起名的右值引用当左值, 没名的当将亡值, 对于函数的右值引用不管怎么样都当左值.</p>
+<p>这里需要区分函数的返回值和对函数的引用.</p>
+<p>xvalue究竟是用来干什么的? 为什么要引入它? xvalue标志着, 这个变量已经进入了生命周期末期, 可以把它的资源移动. 它是一种标志. 和右值不同, 就像这个语句<code>string&amp;&amp; a = string(&quot;wowo&quot;);</code>这里左侧就不是一个将亡值, 只是一个简单的用右值初始化一个变量. 从语法规定上看, string构造函数的返回值是string而不是string&amp;&amp;, 所以不是将亡值. 从语义上来理解, 这个构造过程并没有变量&quot;亡&quot;, 而诸如std::move(x)这样的语句是有可能引起x的死亡的, 依赖于move函数的具体实现, move之后没有办法保证x是有效的了. 而且std::move的返回值正是一个右值引用.</p>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
+<p>忽然觉得学习左右值没有什么用.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/cpp/" rel="tag"># cpp</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/06/18/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0arch%E7%B3%BB%E9%87%8D%E7%BD%AE%E7%89%88/" rel="prev" title="重新回到arch系重置版">
+                  <i class="fa fa-angle-left"></i> 重新回到arch系重置版
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Oiaom</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" integrity="sha256-3574TpfThVfeAhg+I4+N39EJiLN3QUkuEsMVe8hWAR4=" crossorigin="anonymous">
+
+
+
+</body>
+</html>
