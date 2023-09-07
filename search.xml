@@ -6,31 +6,27 @@
     <content><![CDATA[<p>曾经这里是一个暑假的计算机提升计划, 但是现在来看, 这个暑假甚至都没有时间把课内的知识复习完. 这确实是非常生草. 这个计划还是非常重要, 预计是半年一次, 也就是这个文章半年一更新. 既然已经重新确立了标准就得重新规划一下.</p>
 <span id="more"></span>
 <h1 id="大一"><a class="markdownIt-Anchor" href="#大一"></a> 大一</h1>
-<ul>
-<li>[x] 摆烂</li>
-</ul>
+<p>✅摆烂</p>
 <h1 id="大二上需要课外的东西寒假"><a class="markdownIt-Anchor" href="#大二上需要课外的东西寒假"></a> 大二上需要课外的东西(寒假)</h1>
-<ul>
-<li>[x] 理解透彻missing-semester的课程. 把课程里面的每一个笔记都尽量看懂.</li>
-<li>[ ] 好好学习(草)</li>
-<li>[ ] 看csapp(已改动, 把优先级提到lua之前.)</li>
-<li>[ ] 看lua的官方文档. (C语言复习)</li>
-<li>[ ] 了解一下rust</li>
-</ul>
+<p>✅理解透彻missing-semester的课程. 把课程里面的每一个笔记都尽量看懂.<br />
+❌好好学习(草)<br />
+❌看csapp(已改动, 把优先级提到lua之前.)<br />
+❌看lua的官方文档. (C语言复习)<br />
+✅了解一下rust</p>
 <h1 id="大二上之后的寒假"><a class="markdownIt-Anchor" href="#大二上之后的寒假"></a> 大二上之后的寒假</h1>
 <p>我现在看着以前的安排, 我估计是很难完成了, 因为考试又推迟了, 像是这种情况寒假就很难学到什么新东西了, 因为要卷绩点. 所以目标变一下:</p>
-<ul>
-<li>[ ] 好好复习备考 尤其是数据结构</li>
-<li>[ ] 了解一下STL的作用 为后面多刷LeetCode题目作准备</li>
-<li>[ ] 了解一下python 优先级高于rust</li>
-<li>[ ] 了解一下rust</li>
-</ul>
+<p>❌好好复习备考 尤其是数据结构<br />
+❌了解一下STL的作用 为后面多刷LeetCode题目作准备<br />
+❌了解一下python 优先级高于rust<br />
+✅了解一下rust</p>
 <p>这个寒假其实这些任务也很难完成, 因为还要肝原神~~(我超 原!).~~</p>
 <h1 id="大二下和暑假"><a class="markdownIt-Anchor" href="#大二下和暑假"></a> 大二下和暑假</h1>
-<ul>
-<li>[ ] 专心研究算法</li>
-<li>[ ] 假期看操作系统相关 csapp</li>
-</ul>
+<p>❌专心研究算法<br />
+✅假期看操作系统相关 csapp</p>
+<h1 id="大三上和寒假"><a class="markdownIt-Anchor" href="#大三上和寒假"></a> 大三上和寒假</h1>
+<p>🚧研究编译原理和计算机网络 两门课好好学<br />
+🚧学习一些C++新标准<br />
+🚧读CSAPP</p>
 ]]></content>
       <tags>
         <tag>study</tag>
@@ -4120,6 +4116,7 @@ m368.1 178.2c0-86.4-60.9-215.4-368.1-215.4-306.4 0-367.3 129-367.3 215.4 0 85.8
 <p>\textasciitilde <span class='katex-error' title='ParseError: KaTeX parse error: Undefined control sequence: \textasciitilde at position 1: \̲t̲e̲x̲t̲a̲s̲c̲i̲i̲t̲i̲l̲d̲e̲'>\textasciitilde</span> 波浪线 其实这个符号键盘上用~这个也行</p>
 <p>\cong <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≅</mo></mrow><annotation encoding="application/x-tex">\cong</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.589em;vertical-align:0em;"></span><span class="mrel">≅</span></span></span></span> 同构 全等</p>
 <p>\nabla <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∇</mi></mrow><annotation encoding="application/x-tex">\nabla</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">∇</span></span></span></span> 梯度</p>
+<p>❌ ✖️ 🚫👷‍♀️ 🚧🎉 ✅ 🎊📝 🔜常用emoji</p>
 ]]></content>
       <tags>
         <tag>study</tag>
