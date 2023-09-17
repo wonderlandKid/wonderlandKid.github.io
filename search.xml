@@ -34,6 +34,28 @@
       </tags>
   </entry>
   <entry>
+    <title>CPP中的cin和cout运行缓慢</title>
+    <url>/2023/09/13/CPP%E4%B8%AD%E7%9A%84cin%E5%92%8Ccout%E8%BF%90%E8%A1%8C%E7%BC%93%E6%85%A2/</url>
+    <content><![CDATA[<p>在昨天遇到了一个对时间要求非常苛刻的一个题目, 室友说它总是超时, 而且超很多, 大概在十几倍的水平, 后来对比了一下标准答案并且控制了一下变量, 发现是cin和cout的锅, 那么我们现在就来讨论一下cin和cout对于程序的影响.</p>
+<span id="more"></span>
+<h1 id="cin和cout很慢的原因"><a class="markdownIt-Anchor" href="#cin和cout很慢的原因"></a> cin和cout很慢的原因</h1>
+<h2 id="函数调用"><a class="markdownIt-Anchor" href="#函数调用"></a> 函数调用</h2>
+<p>&lt;&lt;是一个很多重载的函数, 函数调用会有开销.</p>
+<h2 id="和printf同步"><a class="markdownIt-Anchor" href="#和printf同步"></a> 和printf同步</h2>
+<p>因为cout格式化字符串并不方便, 所以一般和printf混用. 混用就有这个所谓同步问题.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;str1\n&quot;</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;str2\n&quot;</span>);</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;str3\n&quot;</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;str4\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*输出结果</span></span><br><span class="line"><span class="comment">str2</span></span><br><span class="line"><span class="comment">str4</span></span><br><span class="line"><span class="comment">str1</span></span><br><span class="line"><span class="comment">str3</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<p>ios::sync_with_stdio(false);使用这一段代码可以解除和stdio的sync, 可以加快速度, 但是就会和printf乱序执行.</p>
+<h2 id="endl频繁刷新缓冲区减速"><a class="markdownIt-Anchor" href="#endl频繁刷新缓冲区减速"></a> endl频繁刷新缓冲区减速</h2>
+<p>std::endl相当于<code>\n + std::flush</code>. 频繁使用endl换行会刷新缓冲区, 导致性能问题.</p>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
+<p>实战中, 一般先关闭和stdio的sync, 然后endl其实是一个大头耗时. 其实很多情况下不需要考虑cout带来的性能问题.</p>
+]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>cpp</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CPP中的右值引用</title>
     <url>/2023/09/04/CPP%E4%B8%AD%E7%9A%84%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/</url>
     <content><![CDATA[<p>我对C++真是又爱又恨, 但是静下心来又不得不学. 我认为现在作为一个计算机学生, C++和JAVA无论如何都要熟悉了解一门, 这里的了解当然并不单单是指语法(虽然语法也难学明白), 更是搜索能力, 解决问题能力, 阅读报错能力和项目经验的综合体现. 好好studyC++罢!<span id="more"></span></p>
