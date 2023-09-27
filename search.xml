@@ -34,6 +34,11 @@
       </tags>
   </entry>
   <entry>
+    <title>8086汇编上机</title>
+    <url>/2023/09/20/8086%E6%B1%87%E7%BC%96%E4%B8%8A%E6%9C%BA/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>CPP中的cin和cout运行缓慢</title>
     <url>/2023/09/13/CPP%E4%B8%AD%E7%9A%84cin%E5%92%8Ccout%E8%BF%90%E8%A1%8C%E7%BC%93%E6%85%A2/</url>
     <content><![CDATA[<p>在昨天遇到了一个对时间要求非常苛刻的一个题目, 室友说它总是超时, 而且超很多, 大概在十几倍的水平, 后来对比了一下标准答案并且控制了一下变量, 发现是cin和cout的锅, 那么我们现在就来讨论一下cin和cout对于程序的影响.</p>
