@@ -20,29 +20,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"dtfulffroot.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="由于一次不小心的事故, 整个装有linux系统的盘没了. 究其原因还是我对这个叫做btrfs的文件系统还有timeshift的备份逻辑不是特别了解, 这次翻车了之后肯定没有下次了. 正好, 我早就看那个next的主题不爽了, 主要是经常撞衫. 好吧hexo主题少其实不管用什么基本上都有可能撞衫… 我还是很喜欢yilia主题的, 但是其实我上次在部署的时候好像遇到了一些问题, 但是这次我是对我自己有">
+    <meta name="description" content="很多时候就在想, 究竟怎么调试才是优雅. vscode提供的调试是基于gdb的(如果你使用C&#x2F;C++的vscode插件), 当然也有vs提供的debugger, 也有使用codelldb的. 那么我们这次来看一眼终端调试程序.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从头开始">
-<meta property="og:url" content="http://dtfulffroot.github.io/2022/11/10/%E4%BB%8E%E5%A4%B4%E5%BC%80%E5%A7%8B/index.html">
+<meta property="og:title" content="gdb从无知到能用">
+<meta property="og:url" content="http://dtfulffroot.github.io/2023/10/14/gdb%E4%BB%8E%E6%97%A0%E7%9F%A5%E5%88%B0%E8%83%BD%E7%94%A8/index.html">
 <meta property="og:site_name" content="Dtfulffroot的小窝">
-<meta property="og:description" content="由于一次不小心的事故, 整个装有linux系统的盘没了. 究其原因还是我对这个叫做btrfs的文件系统还有timeshift的备份逻辑不是特别了解, 这次翻车了之后肯定没有下次了. 正好, 我早就看那个next的主题不爽了, 主要是经常撞衫. 好吧hexo主题少其实不管用什么基本上都有可能撞衫… 我还是很喜欢yilia主题的, 但是其实我上次在部署的时候好像遇到了一些问题, 但是这次我是对我自己有">
+<meta property="og:description" content="很多时候就在想, 究竟怎么调试才是优雅. vscode提供的调试是基于gdb的(如果你使用C&#x2F;C++的vscode插件), 当然也有vs提供的debugger, 也有使用codelldb的. 那么我们这次来看一眼终端调试程序.">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-11-10T13:42:20.000Z">
-<meta property="article:modified_time" content="2023-09-07T02:21:19.413Z">
+<meta property="article:published_time" content="2023-10-14T11:14:37.000Z">
+<meta property="article:modified_time" content="2023-10-17T08:59:08.672Z">
 <meta property="article:author" content="Dtfulffroot">
-<meta property="article:tag" content="touchfish">
-<meta property="article:tag" content="原先网站崩了">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="cpp">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://dtfulffroot.github.io/2022/11/10/%E4%BB%8E%E5%A4%B4%E5%BC%80%E5%A7%8B/">
+<link rel="canonical" href="http://dtfulffroot.github.io/2023/10/14/gdb%E4%BB%8E%E6%97%A0%E7%9F%A5%E5%88%B0%E8%83%BD%E7%94%A8/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://dtfulffroot.github.io/2022/11/10/%E4%BB%8E%E5%A4%B4%E5%BC%80%E5%A7%8B/","path":"2022/11/10/从头开始/","title":"从头开始"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://dtfulffroot.github.io/2023/10/14/gdb%E4%BB%8E%E6%97%A0%E7%9F%A5%E5%88%B0%E8%83%BD%E7%94%A8/","path":"2023/10/14/gdb从无知到能用/","title":"gdb从无知到能用"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>从头开始 | Dtfulffroot的小窝</title>
+<title>gdb从无知到能用 | Dtfulffroot的小窝</title>
   
 
 
@@ -128,7 +128,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -141,6 +141,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-text"> 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#breakpoint"><span class="nav-text"> breakpoint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#run%E5%92%8Ccontinue"><span class="nav-text"> run和continue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#step%E5%92%8Cnext"><span class="nav-text"> step和next</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#finish"><span class="nav-text"> finish</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#print"><span class="nav-text"> print</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#info"><span class="nav-text"> info</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#watch%E5%92%8Cdelete"><span class="nav-text"> watch和delete</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -188,7 +189,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dtfulffroot.github.io/2022/11/10/%E4%BB%8E%E5%A4%B4%E5%BC%80%E5%A7%8B/">
+    <link itemprop="mainEntityOfPage" href="http://dtfulffroot.github.io/2023/10/14/gdb%E4%BB%8E%E6%97%A0%E7%9F%A5%E5%88%B0%E8%83%BD%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://pic.imgdb.cn/item/61f4adc12ab3f51d91e32fd8.jpg">
@@ -201,12 +202,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="从头开始 | Dtfulffroot的小窝">
+      <meta itemprop="name" content="gdb从无知到能用 | Dtfulffroot的小窝">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          从头开始
+          gdb从无知到能用
         </h1>
 
         <div class="post-meta-container">
@@ -217,14 +218,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-11-10 21:42:20" itemprop="dateCreated datePublished" datetime="2022-11-10T21:42:20+08:00">2022-11-10</time>
+      <time title="创建时间：2023-10-14 19:14:37" itemprop="dateCreated datePublished" datetime="2023-10-14T19:14:37+08:00">2023-10-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-09-07 10:21:19" itemprop="dateModified" datetime="2023-09-07T10:21:19+08:00">2023-09-07</time>
+      <time title="修改时间：2023-10-17 16:59:08" itemprop="dateModified" datetime="2023-10-17T16:59:08+08:00">2023-10-17</time>
     </span>
 
   
@@ -236,9 +237,33 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>由于一次不小心的事故, 整个装有linux系统的盘没了. 究其原因还是我对这个叫做btrfs的文件系统还有timeshift的备份逻辑不是特别了解, 这次翻车了之后肯定没有下次了.</p>
-<p>正好, 我早就看那个next的主题不爽了, 主要是经常撞衫. <s>好吧hexo主题少其实不管用什么基本上都有可能撞衫…</s></p>
-<p>我还是很喜欢yilia主题的, 但是其实我上次在部署的时候好像遇到了一些问题, 但是这次我是对我自己有自信解决的.</p>
+    <div class="post-body" itemprop="articleBody"><p>很多时候就在想, 究竟怎么调试才是优雅. vscode提供的调试是基于gdb的(如果你使用C/C++的vscode插件), 当然也有vs提供的debugger, 也有使用codelldb的. 那么我们这次来看一眼终端调试程序. <span id="more"></span></p>
+<h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
+<p>为什么需要在terminal里面来使用gdb调试. 最直接的契机就是真的不想再配置环境了. 而且需要一个ARM汇编的调试环境. gdb首先是一个collection, 其实在配置很多调试环境的时候是可以通过gdb轻量级配置的, 比如rust. 使用rustc带上-g参数编译的可执行文件就可以通过gdb调试. 那么我最近需要了解的ARM汇编也可以通过gdb搭配gcc来调试. 包括C++也可以. 其实如果会gdb的话就会省去很多麻烦.</p>
+<h1 id="基本操作"><a class="markdownIt-Anchor" href="#基本操作"></a> 基本操作</h1>
+<h2 id="breakpoint"><a class="markdownIt-Anchor" href="#breakpoint"></a> breakpoint</h2>
+<p>调试的话首先是打断点. 打断点可以说是调试的首要操作. 在gdb中可以使用:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">break 10</span><br><span class="line">break main</span><br><span class="line">break filename:10</span><br><span class="line">break 20 if x == 42</span><br></pre></td></tr></table></figure>
+<p>等多种形式来打断点. 当然也可以<strong>使用b来简写break</strong>. 这其中比较惊喜的就是<code>break 20 if x == 42</code>, 例如我们在循环里面, 发现当下标为4的时候函数出问题, 我们想直接跳到这个循环, 则可以使用这种方式.</p>
+<h2 id="run和continue"><a class="markdownIt-Anchor" href="#run和continue"></a> run和continue</h2>
+<p>使用run或者是简写r来启动调试, 如果程序需要命令行参数, 则需要在run后面加上几个参数.</p>
+<p>运行到一个断点之后, 使用continue或者是c继续运行.</p>
+<h2 id="step和next"><a class="markdownIt-Anchor" href="#step和next"></a> step和next</h2>
+<p>next会向下一行, step是步入函数. 对于一个函数是next会直接执行一整行. 这个比较常见.</p>
+<p>这里有一个点, 默认情况下step会进入系统函数, 为了避免这一点, 可以编写gdb的配置文件.gdbinit.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set step-mode on</span><br></pre></td></tr></table></figure>
+<p>这样默认步入就不会步入系统函数.</p>
+<h2 id="finish"><a class="markdownIt-Anchor" href="#finish"></a> finish</h2>
+<p>跳出函数用的命令.</p>
+<h2 id="print"><a class="markdownIt-Anchor" href="#print"></a> print</h2>
+<p>可以打印一些变量. 这个print可以打印数组的部分元素. 比如:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print arr[1:2]</span><br></pre></td></tr></table></figure>
+<h2 id="info"><a class="markdownIt-Anchor" href="#info"></a> info</h2>
+<p>info是用来查看信息的, info可以查看一些常见的信息, 如果还记得的话vscode边栏里面就有一些信息.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">info stack</span><br><span class="line">info threads</span><br><span class="line">info breakpoints</span><br><span class="line">info registers</span><br><span class="line">info locals</span><br><span class="line">info source source_file_name</span><br><span class="line">info functions function_name</span><br></pre></td></tr></table></figure>
+<h2 id="watch和delete"><a class="markdownIt-Anchor" href="#watch和delete"></a> watch和delete</h2>
+<p>就是调试时候常用的监视器. watch可以是一个表达式啥的, 在表达式值发生变化的同时会停下来. 有一些信息.</p>
+<p>delete可以删除监视值.</p>
 
     </div>
 
@@ -248,19 +273,19 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/touchfish/" rel="tag"># touchfish</a>
-              <a href="/tags/%E5%8E%9F%E5%85%88%E7%BD%91%E7%AB%99%E5%B4%A9%E4%BA%86/" rel="tag"># 原先网站崩了</a>
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/cpp/" rel="tag"># cpp</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="/2023/10/09/CPP%E4%B8%AD%E7%9A%84container/" rel="prev" title="CPP中的container">
+                  <i class="fa fa-angle-left"></i> CPP中的container
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/11/10/manjarokde%E7%9A%84%E9%85%8D%E7%BD%AE/" rel="next" title="manjarokde的配置">
-                  manjarokde的配置 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
