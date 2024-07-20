@@ -282,67 +282,6 @@
       </tags>
   </entry>
   <entry>
-    <title>gdb从无知到能用</title>
-    <url>/2023/10/14/gdb%E4%BB%8E%E6%97%A0%E7%9F%A5%E5%88%B0%E8%83%BD%E7%94%A8/</url>
-    <content><![CDATA[<p>很多时候就在想, 究竟怎么调试才是优雅. vscode提供的调试是基于gdb的(如果你使用C/C++的vscode插件), 当然也有vs提供的debugger, 也有使用codelldb的. 那么我们这次来看一眼终端调试程序. <span id="more"></span></p>
-<h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
-<p>为什么需要在terminal里面来使用gdb调试. 最直接的契机就是真的不想再配置环境了. 而且需要一个ARM汇编的调试环境. gdb首先是一个collection, 其实在配置很多调试环境的时候是可以通过gdb轻量级配置的, 比如rust. 使用rustc带上-g参数编译的可执行文件就可以通过gdb调试. 那么我最近需要了解的ARM汇编也可以通过gdb搭配gcc来调试. 包括C++也可以. 其实如果会gdb的话就会省去很多麻烦.</p>
-<h1 id="基本操作"><a class="markdownIt-Anchor" href="#基本操作"></a> 基本操作</h1>
-<h2 id="breakpoint"><a class="markdownIt-Anchor" href="#breakpoint"></a> breakpoint</h2>
-<p>调试的话首先是打断点. 打断点可以说是调试的首要操作. 在gdb中可以使用:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">break 10</span><br><span class="line">break main</span><br><span class="line">break filename:10</span><br><span class="line">break 20 if x == 42</span><br></pre></td></tr></table></figure>
-<p>等多种形式来打断点. 当然也可以<strong>使用b来简写break</strong>. 这其中比较惊喜的就是<code>break 20 if x == 42</code>, 例如我们在循环里面, 发现当下标为4的时候函数出问题, 我们想直接跳到这个循环, 则可以使用这种方式.</p>
-<h2 id="run和continue"><a class="markdownIt-Anchor" href="#run和continue"></a> run和continue</h2>
-<p>使用run或者是简写r来启动调试, 如果程序需要命令行参数, 则需要在run后面加上几个参数.</p>
-<p>运行到一个断点之后, 使用continue或者是c继续运行.</p>
-<h2 id="step和next"><a class="markdownIt-Anchor" href="#step和next"></a> step和next</h2>
-<p>next会向下一行, step是步入函数. 对于一个函数是next会直接执行一整行. 这个比较常见.</p>
-<p>这里有一个点, 默认情况下step会进入系统函数, 为了避免这一点, 可以编写gdb的配置文件.gdbinit.</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set step-mode on</span><br></pre></td></tr></table></figure>
-<p>这样默认步入就不会步入系统函数.</p>
-<h2 id="finish"><a class="markdownIt-Anchor" href="#finish"></a> finish</h2>
-<p>跳出函数用的命令.</p>
-<h2 id="print"><a class="markdownIt-Anchor" href="#print"></a> print</h2>
-<p>可以打印一些变量. 这个print可以打印数组的部分元素. 比如:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">print arr[1:2]</span><br></pre></td></tr></table></figure>
-<h2 id="info"><a class="markdownIt-Anchor" href="#info"></a> info</h2>
-<p>info是用来查看信息的, info可以查看一些常见的信息, 如果还记得的话vscode边栏里面就有一些信息.</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">info stack</span><br><span class="line">info threads</span><br><span class="line">info breakpoints</span><br><span class="line">info registers</span><br><span class="line">info locals</span><br><span class="line">info source source_file_name</span><br><span class="line">info functions function_name</span><br></pre></td></tr></table></figure>
-<h2 id="watch和delete"><a class="markdownIt-Anchor" href="#watch和delete"></a> watch和delete</h2>
-<p>就是调试时候常用的监视器. watch可以是一个表达式啥的, 在表达式值发生变化的同时会停下来. 有一些信息.</p>
-<p>delete可以删除监视值. 当然也可以删除breakpoint这样的东西.</p>
-<h2 id="display"><a class="markdownIt-Anchor" href="#display"></a> display</h2>
-<p>display命令和可视化界面里面的watch界面也异曲同工之妙. 每当程序停下来的时候就会自动打印</p>
-]]></content>
-      <tags>
-        <tag>study</tag>
-        <tag>cpp</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode_204_计数质数</title>
-    <url>/2022/11/10/leetcode-204-%E8%AE%A1%E6%95%B0%E8%B4%A8%E6%95%B0/</url>
-    <content><![CDATA[<p>这一题暴力法肯定不行……</p>
-<p>但是还是有几个可以优化的地方, 首先就是, 如果想判断一个数是不是质数, 不需要让一个变量从2开始一直除到n-1, 事实上假如这个大数不是质数的话, 它的一个因数一定在sqrt(n)以内(小于等于), 所以循环做到这样就够了.</p>
-<span id="more"></span>
-<p>然后就是关于sqrt不需要放在for循环语句里面, 比如像是这样:</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;=<span class="built_in">sqrt</span>(n); i++)&#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>这样其实很不好, 每一次循环到这里都要算一次sqrt(n), 一个优化办法是使用一个已经算好的sqrt(n), 这样不用每次都算.</p>
-<p>实际上最后是使用这个叫做埃氏筛选的方法:</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">countPrimes</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">isPrime</span><span class="params">(n, <span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (isPrime[i]) &#123;</span><br><span class="line">                ans += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> ((<span class="type">long</span> <span class="type">long</span>)i * i &lt; n) &#123;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="type">int</span> j = i * i; j &lt; n; j += i) &#123;</span><br><span class="line">                        isPrime[j] = <span class="number">0</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#作者：LeetCode-Solution</span><br><span class="line">#链接：https:<span class="comment">//leetcode.cn/problems/count-primes/solution/ji-shu-zhi-shu-by-leetcode-solution/</span></span><br><span class="line">#来源：力扣（LeetCode）</span><br><span class="line">#著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</span><br></pre></td></tr></table></figure>
-<p>这是官网的解析. 先创建一个大数组(大小是n), 一开始全部置1表示默认全都是质数. 然后从2开始, 每次读到一个为1的数字, 就把所有它的倍数全部置0, 并且把最后的结果++, 读到0就跳过.</p>
-<p>我一开始没有细看上面的官方题解, 照着官方的思路写了一遍, 代码是下面:</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">countPrimes</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">prime</span><span class="params">(n + <span class="number">1</span>, <span class="number">1</span>)</span></span>;  <span class="comment">//使用n个1初始化prime</span></span><br><span class="line">    <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>; i &lt; n; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (prime[i]) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = i; j &lt;= n; j = j + i) &#123;</span><br><span class="line">          prime[j] = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        count++;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>但是实际上这样肯定是慢了. 可以发现大体思路都差不多, 但是有几点不同的就是这一段:</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> ((<span class="type">long</span> <span class="type">long</span>)i * i &lt; n) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> j = i * i; j &lt; n; j += i) &#123;</span><br><span class="line">    isPrime[j] = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在置0的时候, 我是把所有i到n之间的所有倍数置0, 而这里的代码只把i*i到n之间部分置0. 这就省下来了一部分. 简单来说, 对于合数(正是我们要标记的), 都可以分解成两个数的乘积(比如说是a乘b). 而如果a和b相等, 则这个合数会在循环变量为a的时候被标记. 如果说a和b不相等, 一定是一大一小. 为什么循环到i的时候, 只需要查看i*i到n的部分呢? 比如说<code>a&lt;b</code>那么<code>a*b</code>是落在<code>a*a ~ n</code>这个区间里面的, 所以等到循环变量为b(较大者)的时候就不用讨论<code>a*b</code>这个合数了. 所以对于每个循环来说都只需要讨论<code>i*i ~ n</code>. 然后官方题解里面有一个<code>if ((long long)i * i &lt; n)</code>此时也就很好理解了. 因为如果<code>i*i&gt;n</code>那么也就没有不被讨论的合数了. 所以虽然大致的思路能够知道, 在小细节上还是要多学习.</p>
-]]></content>
-      <tags>
-        <tag>study</tag>
-        <tag>leetcode</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>C语言学习</title>
     <url>/2022/11/10/C%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<p>这一个专栏以cprimer为主，记录一些C语言中需要注意的知识。大概能算是一篇读书笔记。每周一晚上的三节课一般都是用来看计算机专业书籍的，这个星期暂时定为cprimer，等到cprimer看得差不多了之后就来看《深入理解计算机操作系统》，着几本都是很好的书籍，当然还没有忘记《linux私房菜》。 <s>考古：基本上计划没完成 都鸽了 要不是有一天心血来潮估计这个都写不完了</s></p>
@@ -914,93 +853,64 @@ width就是打印的宽度。这样能够让输入输出更灵活了。</p>
       </tags>
   </entry>
   <entry>
-    <title>leetcode_28_寻找字符串_KMP</title>
-    <url>/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/</url>
-    <content><![CDATA[<p>从我学习数据结构以来, 这应该是碰到的第一个比较难的算法了, 学习算法虽然我已经大概了解了, 但是就是使用cpp实现的时候很难实现, 这次算是第一次实现比较难的算法, 最后还是失败了, leetcode上面的样例没有全过, 后来听了老师讲课才大概理解书本上面的代码是什么意思.</p>
-<p>先贴一下我最后过了的代码, 实际上也没有多厉害, 最后还是一直没过, 反正就是总是差一点.</p>
+    <title>gdb从无知到能用</title>
+    <url>/2023/10/14/gdb%E4%BB%8E%E6%97%A0%E7%9F%A5%E5%88%B0%E8%83%BD%E7%94%A8/</url>
+    <content><![CDATA[<p>很多时候就在想, 究竟怎么调试才是优雅. vscode提供的调试是基于gdb的(如果你使用C/C++的vscode插件), 当然也有vs提供的debugger, 也有使用codelldb的. 那么我们这次来看一眼终端调试程序. <span id="more"></span></p>
+<h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
+<p>为什么需要在terminal里面来使用gdb调试. 最直接的契机就是真的不想再配置环境了. 而且需要一个ARM汇编的调试环境. gdb首先是一个collection, 其实在配置很多调试环境的时候是可以通过gdb轻量级配置的, 比如rust. 使用rustc带上-g参数编译的可执行文件就可以通过gdb调试. 那么我最近需要了解的ARM汇编也可以通过gdb搭配gcc来调试. 包括C++也可以. 其实如果会gdb的话就会省去很多麻烦.</p>
+<h1 id="基本操作"><a class="markdownIt-Anchor" href="#基本操作"></a> 基本操作</h1>
+<h2 id="breakpoint"><a class="markdownIt-Anchor" href="#breakpoint"></a> breakpoint</h2>
+<p>调试的话首先是打断点. 打断点可以说是调试的首要操作. 在gdb中可以使用:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">break 10</span><br><span class="line">break main</span><br><span class="line">break filename:10</span><br><span class="line">break 20 if x == 42</span><br></pre></td></tr></table></figure>
+<p>等多种形式来打断点. 当然也可以<strong>使用b来简写break</strong>. 这其中比较惊喜的就是<code>break 20 if x == 42</code>, 例如我们在循环里面, 发现当下标为4的时候函数出问题, 我们想直接跳到这个循环, 则可以使用这种方式.</p>
+<h2 id="run和continue"><a class="markdownIt-Anchor" href="#run和continue"></a> run和continue</h2>
+<p>使用run或者是简写r来启动调试, 如果程序需要命令行参数, 则需要在run后面加上几个参数.</p>
+<p>运行到一个断点之后, 使用continue或者是c继续运行.</p>
+<h2 id="step和next"><a class="markdownIt-Anchor" href="#step和next"></a> step和next</h2>
+<p>next会向下一行, step是步入函数. 对于一个函数是next会直接执行一整行. 这个比较常见.</p>
+<p>这里有一个点, 默认情况下step会进入系统函数, 为了避免这一点, 可以编写gdb的配置文件.gdbinit.</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set step-mode on</span><br></pre></td></tr></table></figure>
+<p>这样默认步入就不会步入系统函数.</p>
+<h2 id="finish"><a class="markdownIt-Anchor" href="#finish"></a> finish</h2>
+<p>跳出函数用的命令.</p>
+<h2 id="print"><a class="markdownIt-Anchor" href="#print"></a> print</h2>
+<p>可以打印一些变量. 这个print可以打印数组的部分元素. 比如:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">print arr[1:2]</span><br></pre></td></tr></table></figure>
+<h2 id="info"><a class="markdownIt-Anchor" href="#info"></a> info</h2>
+<p>info是用来查看信息的, info可以查看一些常见的信息, 如果还记得的话vscode边栏里面就有一些信息.</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">info stack</span><br><span class="line">info threads</span><br><span class="line">info breakpoints</span><br><span class="line">info registers</span><br><span class="line">info locals</span><br><span class="line">info source source_file_name</span><br><span class="line">info functions function_name</span><br></pre></td></tr></table></figure>
+<h2 id="watch和delete"><a class="markdownIt-Anchor" href="#watch和delete"></a> watch和delete</h2>
+<p>就是调试时候常用的监视器. watch可以是一个表达式啥的, 在表达式值发生变化的同时会停下来. 有一些信息.</p>
+<p>delete可以删除监视值. 当然也可以删除breakpoint这样的东西.</p>
+<h2 id="display"><a class="markdownIt-Anchor" href="#display"></a> display</h2>
+<p>display命令和可视化界面里面的watch界面也异曲同工之妙. 每当程序停下来的时候就会自动打印</p>
+]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>cpp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode_204_计数质数</title>
+    <url>/2022/11/10/leetcode-204-%E8%AE%A1%E6%95%B0%E8%B4%A8%E6%95%B0/</url>
+    <content><![CDATA[<p>这一题暴力法肯定不行……</p>
+<p>但是还是有几个可以优化的地方, 首先就是, 如果想判断一个数是不是质数, 不需要让一个变量从2开始一直除到n-1, 事实上假如这个大数不是质数的话, 它的一个因数一定在sqrt(n)以内(小于等于), 所以循环做到这样就够了.</p>
 <span id="more"></span>
-<p><img src="https://pic1.imgdb.cn/item/63478d8c16f2c2beb111fc69.png" alt="img" /></p>
-<p>就总是像这种……</p>
-<p>我还是直接贴一下我最后过了的代码吧.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">strStr</span><span class="params">(string haystack, string needle)</span> </span>&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> needle_length = needle.<span class="built_in">size</span>();</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> haystack_length = haystack.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">if</span> (needle_length &gt; haystack_length) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> next[needle_length];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//先给needle生成next数组 让next[0]=-1真是方便</span></span><br><span class="line">    <span class="comment">//知道第前i个next数组, 求i+1位</span></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; needle_length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">      j = next[i];</span><br><span class="line">      <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; needle[i] != needle[j]) j = next[j];</span><br><span class="line">      next[i + <span class="number">1</span>] = ++j;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 还是重复使用i和j, 其中i指向长串. j指向短串</span></span><br><span class="line">    i = j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; haystack_length &amp;&amp; j &lt; needle_length) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">        i++;</span><br><span class="line">        j++;</span><br><span class="line">      &#125; <span class="keyword">else</span></span><br><span class="line">        j = next[j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j &gt;= needle_length)</span><br><span class="line">      <span class="keyword">return</span> i - j;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><img src="https://pic1.imgdb.cn/item/634ac26716f2c2beb1cc08e1.jpg" alt="img" /></p>
-<p>效果是真不戳! (其实leetcode平台确实是多次提交同一个代码会造成不一样的结果)</p>
-<p>对于整个题目, 是在haystack字符串里面寻找needle这个字符串, 首先假如说needle还长一些那肯定是没有办法找到的, 所以返回-1.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//先给needle生成next数组 让next[0]=-1真是方便</span></span><br><span class="line"><span class="comment">//知道第前i个next数组, 求i+1位</span></span><br><span class="line"><span class="type">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; needle_length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">  j = next[i];</span><br><span class="line">  <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; needle[i] != needle[j]) j = next[j];</span><br><span class="line">  next[i + <span class="number">1</span>] = ++j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>首先, 只有匹配失败的时候才会去寻找下一个可能性, 所以循环条件是不匹配, 但是假如j&lt;0了也就是说可能性已经用完了(因为只有next[0]是小于0的), 这个时候也不能循环了.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 还是重复使用i和j, 其中i指向长串. j指向短串</span></span><br><span class="line">    i = j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; haystack_length &amp;&amp; j &lt; needle_length) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">        i++;</span><br><span class="line">        j++;</span><br><span class="line">      &#125; <span class="keyword">else</span></span><br><span class="line">        j = next[j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j &gt;= needle_length)</span><br><span class="line">      <span class="keyword">return</span> i - j;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"><span class="comment">//排版有点小问题 不影响阅读</span></span><br></pre></td></tr></table></figure>
-<p>不想解说了, 太妙了, 多看几遍.</p>
-<p>当然匹配字符串还有很多其他的算法, 比如说BM算法. <s>我不想看了</s></p>
+<p>然后就是关于sqrt不需要放在for循环语句里面, 比如像是这样:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;=<span class="built_in">sqrt</span>(n); i++)&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>这样其实很不好, 每一次循环到这里都要算一次sqrt(n), 一个优化办法是使用一个已经算好的sqrt(n), 这样不用每次都算.</p>
+<p>实际上最后是使用这个叫做埃氏筛选的方法:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">countPrimes</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">isPrime</span><span class="params">(n, <span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (isPrime[i]) &#123;</span><br><span class="line">                ans += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> ((<span class="type">long</span> <span class="type">long</span>)i * i &lt; n) &#123;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="type">int</span> j = i * i; j &lt; n; j += i) &#123;</span><br><span class="line">                        isPrime[j] = <span class="number">0</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#作者：LeetCode-Solution</span><br><span class="line">#链接：https:<span class="comment">//leetcode.cn/problems/count-primes/solution/ji-shu-zhi-shu-by-leetcode-solution/</span></span><br><span class="line">#来源：力扣（LeetCode）</span><br><span class="line">#著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</span><br></pre></td></tr></table></figure>
+<p>这是官网的解析. 先创建一个大数组(大小是n), 一开始全部置1表示默认全都是质数. 然后从2开始, 每次读到一个为1的数字, 就把所有它的倍数全部置0, 并且把最后的结果++, 读到0就跳过.</p>
+<p>我一开始没有细看上面的官方题解, 照着官方的思路写了一遍, 代码是下面:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">countPrimes</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">prime</span><span class="params">(n + <span class="number">1</span>, <span class="number">1</span>)</span></span>;  <span class="comment">//使用n个1初始化prime</span></span><br><span class="line">    <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>; i &lt; n; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (prime[i]) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = i; j &lt;= n; j = j + i) &#123;</span><br><span class="line">          prime[j] = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        count++;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>但是实际上这样肯定是慢了. 可以发现大体思路都差不多, 但是有几点不同的就是这一段:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> ((<span class="type">long</span> <span class="type">long</span>)i * i &lt; n) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> j = i * i; j &lt; n; j += i) &#123;</span><br><span class="line">    isPrime[j] = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在置0的时候, 我是把所有i到n之间的所有倍数置0, 而这里的代码只把i*i到n之间部分置0. 这就省下来了一部分. 简单来说, 对于合数(正是我们要标记的), 都可以分解成两个数的乘积(比如说是a乘b). 而如果a和b相等, 则这个合数会在循环变量为a的时候被标记. 如果说a和b不相等, 一定是一大一小. 为什么循环到i的时候, 只需要查看i*i到n的部分呢? 比如说<code>a&lt;b</code>那么<code>a*b</code>是落在<code>a*a ~ n</code>这个区间里面的, 所以等到循环变量为b(较大者)的时候就不用讨论<code>a*b</code>这个合数了. 所以对于每个循环来说都只需要讨论<code>i*i ~ n</code>. 然后官方题解里面有一个<code>if ((long long)i * i &lt; n)</code>此时也就很好理解了. 因为如果<code>i*i&gt;n</code>那么也就没有不被讨论的合数了. 所以虽然大致的思路能够知道, 在小细节上还是要多学习.</p>
 ]]></content>
       <tags>
         <tag>study</tag>
         <tag>leetcode</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>manjarokde的配置</title>
-    <url>/2022/11/10/manjarokde%E7%9A%84%E9%85%8D%E7%BD%AE/</url>
-    <content><![CDATA[<p>这是一篇关于manjaro-kde版本的配置。</p>
-<p>其实一开始我是拒绝使用kde桌面的，因为上次kde装好了之后发现N卡驱动存在一点小问题。然而就在今天下午我的xfce桌面崩了，而且也不知道是怎么回事。。。</p>
-<span id="more"></span>
-<h1 id="联网换源"><a class="markdownIt-Anchor" href="#联网换源"></a> 联网换源</h1>
-<p>这个永远都是第一步：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo pacman-mirrors -i -c China -m rank</span><br></pre></td></tr></table></figure>
-<p>虽然manjaro添加archlinuxcn的源有风险，但是谁能拒绝新软件呢？这里还是使用阿里巴巴的开源镜像站：<a href="https://developer.aliyun.com/mirror/archlinuxcn?spm=a2c6h.13651102.0.0.3e221b111LkGYj">archlinuxcn-alibaba</a></p>
-<p>注意安装完成之后还要安装archlinuxcn-keyring。</p>
-<p>一切完成之后<code>sudo pacman -Syyu</code>。</p>
-<h1 id="家目录和时间差异的问题"><a class="markdownIt-Anchor" href="#家目录和时间差异的问题"></a> 家目录和时间差异的问题</h1>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo pacman -S xdg-user-dirs-gtk</span><br><span class="line">export LANG=en_US</span><br><span class="line">xdg-user-dirs-gtk-update</span><br></pre></td></tr></table></figure>
-<p>上面是解决家目录的问题。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo timedatectl set-local-rtc 1</span><br></pre></td></tr></table></figure>
-<p>输入这个改好时间，然后回windows矫正就完事了。这个问题的根本原因就是协调世界时的问题。。</p>
-<h1 id="软件安装"><a class="markdownIt-Anchor" href="#软件安装"></a> 软件安装</h1>
-<ul>
-<li>总命令：</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo pacman -S yay base-devel nodejs npm</span><br><span class="line">yay -S visual-studio-code-bin google-chrome neovim debtap timeshift neovim wemeet wechat-uos gdb icalingua++ wps-office-mui-zh-cn tlp obsidian gnome-keyring electron-netease-cloud-music qtcreator eclipse fcitx5-im fcitx5-rime rime-cloverpinyin</span><br></pre></td></tr></table></figure>
-<p>有一说一我没想到居然不预装gdb，我是没想到。</p>
-<p>eclipse和qt分别是java和QT C++的IDE，至于为什么不用idea，当然是学校的示范程序用的就是eclipse。（而且IDE并不影响编程技术）</p>
-<h2 id="先解决输入法的问题"><a class="markdownIt-Anchor" href="#先解决输入法的问题"></a> 先解决输入法的问题</h2>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo pacman -S yay base-devel</span><br></pre></td></tr></table></figure>
-<p>上面说的是一些最基本的打包工具的安装，在以后的安装软件的过程中很有可能会需要这些工具。</p>
-<p>刚开始是使用的学长的方案，但是现在发现搜狗输入法还是泰拉。。</p>
-<p><a href="https://zhuanlan.zhihu.com/p/114296129">manjarokde配置全攻略</a></p>
-<p>很多情况下我都是参考的这个配置攻略，作者一直在更新我也很喜欢。现在是用rime输入法。这个输入法比较不好的地方是，它下载的时候完全是看github的心情。原来这里使用的是搜狗拼音，但是实际用下来感觉不是很好（首先就是响应速度上面感觉很慢。。）</p>
-<p>其实刚刚配置出来的这个输入法不是很好用，因为词库比较差。。这个作者也写了一篇帖子，在刚刚的manjaro配置全攻略里面。作者甚至还保存了现成的词库文件，只需要解压到指定位置就能用。</p>
-<p>这个输入法一个比较麻烦的点就是配置是通过配置文件解决的，不过这对于linux用户来讲，估计已经是家常便饭了。</p>
-<h2 id="其他软件和让人觉得更舒服的配置"><a class="markdownIt-Anchor" href="#其他软件和让人觉得更舒服的配置"></a> 其他软件和让人觉得更舒服的配置</h2>
-<p>其他软件其实也没有什么，需要什么就安装什么就完事了。就是有的软件需要配置值得一说：</p>
-<h3 id="neovim"><a class="markdownIt-Anchor" href="#neovim"></a> neovim</h3>
-<p>配置详细见<a href="https://gitee.com/oiaom/my_vim">my_vim</a>。</p>
-<p><s>现在已经没有维护了</s></p>
-<h3 id="vscode"><a class="markdownIt-Anchor" href="#vscode"></a> vscode</h3>
-<p>安装之后（安装包的名字叫做visual-studio-code-bin），直接联网同步插件。manjarokde桌面我觉得比较适合编程的字体是一个叫做Noto Mono的字体。其实感觉很多方面已经赶得上微软雅黑和consola的混合字体了。而且由于是原装的字体，对于特殊符号包括emoji的支持显示好像稍微要好一些？当然这个字体还是有的时候不妥当，比如复制的复，给人一种短一截的感觉。所以使用思源黑体也是很好的选择。</p>
-<p>然后是没法登录同步的问题，这个是没有安装gnome-keyring的缘故。</p>
-<h3 id="显示缩放"><a class="markdownIt-Anchor" href="#显示缩放"></a> 显示缩放</h3>
-<p>这个不要去改字体，这样效果很不好。正确的打开方式应该是在显示器设置里面设置缩放为150还是比较合适的。注意改完之后会自动分配一个dpi，不要动它！</p>
-<h3 id="下载微信"><a class="markdownIt-Anchor" href="#下载微信"></a> 下载微信</h3>
-<p>现在AUR里面比较好用的微信的包的名字叫做 com.tencent.weixin，目前来看还是挺好用的。</p>
-<h3 id="typora"><a class="markdownIt-Anchor" href="#typora"></a> typora</h3>
-<p>这个虽然有一个报叫做typora-free但是实际上不魔法上网根本不行，所以还好我存了一个typora的deb包。然后使用debtap进行一个安装，debtap还是好用滴！</p>
-<h3 id="wps在150缩放下字体发虚问题"><a class="markdownIt-Anchor" href="#wps在150缩放下字体发虚问题"></a> WPS在150缩放下字体发虚问题</h3>
-<p>这个很简单解决。</p>
-<p><a href="https://aur.archlinux.org/packages/wps-office-mui-zh-cn">wps的aur</a></p>
-<p>里面可以找到解决办法。他这个是直接修改了bin文件，我的方案是只是更改启动器。右键左下角的启动器，再每个关于wps的启动项命令前面加上<code>env QT_SCREEN_SCALE_FACTORS=1</code>。注意改完之后不要有多余的空格什么的，就这句话加上一个空格加上后面的命令。</p>
-<p>例子wps文字的启动命令：<code>env QT_SCREEN_SCALE_FACTORS=1 /usr/bin/wps %U</code></p>
-<p>我的评价是要不直接把wps2019这个总的删除了，像微软那样也是分着的。</p>
-<h3 id="tlp记得启动"><a class="markdownIt-Anchor" href="#tlp记得启动"></a> tlp记得启动</h3>
-<p><code>sudo tlp start</code>就完事了，如果这个命令不能正常使用，就按照提示输入命令。</p>
-<h1 id="题外话"><a class="markdownIt-Anchor" href="#题外话"></a> 题外话</h1>
-<p>和xfce版本相比，kde有什么不一样呢？</p>
-<p>首先一点，那就是由于linux的极高的可配置性，即使当时安装的是xfce桌面想要配成kde桌面也还是非常容易的。所以这里仅仅是讨论两个桌面的预配置如何，不讨论自己配置的情况，毕竟要是真心喜欢kde的话xfce桌面的版本照样可以安装kde桌面这个包。</p>
-<p>首先是字体，kde的默认字体对于中文的显示就已经非常不错了，我原来使用xfce版本的时候经常还要在网上使用consolas和雅黑的混合字体，但是桌面毕竟还是有一些bug，有的地方显示是我设置的字体，有的地方不是。</p>
-<p>但是kde桌面的默认字体中文显示就非常优秀了。</p>
-<p>再就是缩放，我在xfce版本更改缩放的时候总感觉缩放不是很统一。（跟个人太菜有很大关系）有的时候更改还是觉得缩放不是很合适。感觉大小有一些不协调。在kde版本下在显示器设置里面改成150缩放或者说是125缩放不仅字体显示会更加清晰，而且综合起来观感比较好，非常协调。</p>
-]]></content>
-      <tags>
-        <tag>study</tag>
-        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -1331,6 +1241,30 @@ width就是打印的宽度。这样能够让输入输出更灵活了。</p>
       </tags>
   </entry>
   <entry>
+    <title>leetcode_28_寻找字符串_KMP</title>
+    <url>/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/</url>
+    <content><![CDATA[<p>从我学习数据结构以来, 这应该是碰到的第一个比较难的算法了, 学习算法虽然我已经大概了解了, 但是就是使用cpp实现的时候很难实现, 这次算是第一次实现比较难的算法, 最后还是失败了, leetcode上面的样例没有全过, 后来听了老师讲课才大概理解书本上面的代码是什么意思.</p>
+<p>先贴一下我最后过了的代码, 实际上也没有多厉害, 最后还是一直没过, 反正就是总是差一点.</p>
+<span id="more"></span>
+<p><img src="https://pic1.imgdb.cn/item/63478d8c16f2c2beb111fc69.png" alt="img" /></p>
+<p>就总是像这种……</p>
+<p>我还是直接贴一下我最后过了的代码吧.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">strStr</span><span class="params">(string haystack, string needle)</span> </span>&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> needle_length = needle.<span class="built_in">size</span>();</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> haystack_length = haystack.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">if</span> (needle_length &gt; haystack_length) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> next[needle_length];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//先给needle生成next数组 让next[0]=-1真是方便</span></span><br><span class="line">    <span class="comment">//知道第前i个next数组, 求i+1位</span></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; needle_length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">      j = next[i];</span><br><span class="line">      <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; needle[i] != needle[j]) j = next[j];</span><br><span class="line">      next[i + <span class="number">1</span>] = ++j;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 还是重复使用i和j, 其中i指向长串. j指向短串</span></span><br><span class="line">    i = j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; haystack_length &amp;&amp; j &lt; needle_length) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">        i++;</span><br><span class="line">        j++;</span><br><span class="line">      &#125; <span class="keyword">else</span></span><br><span class="line">        j = next[j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j &gt;= needle_length)</span><br><span class="line">      <span class="keyword">return</span> i - j;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://pic1.imgdb.cn/item/634ac26716f2c2beb1cc08e1.jpg" alt="img" /></p>
+<p>效果是真不戳! (其实leetcode平台确实是多次提交同一个代码会造成不一样的结果)</p>
+<p>对于整个题目, 是在haystack字符串里面寻找needle这个字符串, 首先假如说needle还长一些那肯定是没有办法找到的, 所以返回-1.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//先给needle生成next数组 让next[0]=-1真是方便</span></span><br><span class="line"><span class="comment">//知道第前i个next数组, 求i+1位</span></span><br><span class="line"><span class="type">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; needle_length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">  j = next[i];</span><br><span class="line">  <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; needle[i] != needle[j]) j = next[j];</span><br><span class="line">  next[i + <span class="number">1</span>] = ++j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先, 只有匹配失败的时候才会去寻找下一个可能性, 所以循环条件是不匹配, 但是假如j&lt;0了也就是说可能性已经用完了(因为只有next[0]是小于0的), 这个时候也不能循环了.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 还是重复使用i和j, 其中i指向长串. j指向短串</span></span><br><span class="line">    i = j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; haystack_length &amp;&amp; j &lt; needle_length) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">        i++;</span><br><span class="line">        j++;</span><br><span class="line">      &#125; <span class="keyword">else</span></span><br><span class="line">        j = next[j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j &gt;= needle_length)</span><br><span class="line">      <span class="keyword">return</span> i - j;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"><span class="comment">//排版有点小问题 不影响阅读</span></span><br></pre></td></tr></table></figure>
+<p>不想解说了, 太妙了, 多看几遍.</p>
+<p>当然匹配字符串还有很多其他的算法, 比如说BM算法. <s>我不想看了</s></p>
+]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode_50_快速幂</title>
     <url>/2022/11/10/leetcode-50-%E5%BF%AB%E9%80%9F%E5%B9%82/</url>
     <content><![CDATA[<p>因为老师上课讲过了这个方法, 所以我一开始是样例过了大半的, 我一开始的代码是这样:</p>
@@ -1346,6 +1280,115 @@ width就是打印的宽度。这样能够让输入输出更灵活了。</p>
       <tags>
         <tag>study</tag>
         <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>manjarokde的配置</title>
+    <url>/2022/11/10/manjarokde%E7%9A%84%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<p>这是一篇关于manjaro-kde版本的配置。</p>
+<p>其实一开始我是拒绝使用kde桌面的，因为上次kde装好了之后发现N卡驱动存在一点小问题。然而就在今天下午我的xfce桌面崩了，而且也不知道是怎么回事。。。</p>
+<span id="more"></span>
+<h1 id="联网换源"><a class="markdownIt-Anchor" href="#联网换源"></a> 联网换源</h1>
+<p>这个永远都是第一步：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo pacman-mirrors -i -c China -m rank</span><br></pre></td></tr></table></figure>
+<p>虽然manjaro添加archlinuxcn的源有风险，但是谁能拒绝新软件呢？这里还是使用阿里巴巴的开源镜像站：<a href="https://developer.aliyun.com/mirror/archlinuxcn?spm=a2c6h.13651102.0.0.3e221b111LkGYj">archlinuxcn-alibaba</a></p>
+<p>注意安装完成之后还要安装archlinuxcn-keyring。</p>
+<p>一切完成之后<code>sudo pacman -Syyu</code>。</p>
+<h1 id="家目录和时间差异的问题"><a class="markdownIt-Anchor" href="#家目录和时间差异的问题"></a> 家目录和时间差异的问题</h1>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo pacman -S xdg-user-dirs-gtk</span><br><span class="line">export LANG=en_US</span><br><span class="line">xdg-user-dirs-gtk-update</span><br></pre></td></tr></table></figure>
+<p>上面是解决家目录的问题。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo timedatectl set-local-rtc 1</span><br></pre></td></tr></table></figure>
+<p>输入这个改好时间，然后回windows矫正就完事了。这个问题的根本原因就是协调世界时的问题。。</p>
+<h1 id="软件安装"><a class="markdownIt-Anchor" href="#软件安装"></a> 软件安装</h1>
+<ul>
+<li>总命令：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo pacman -S yay base-devel nodejs npm</span><br><span class="line">yay -S visual-studio-code-bin google-chrome neovim debtap timeshift neovim wemeet wechat-uos gdb icalingua++ wps-office-mui-zh-cn tlp obsidian gnome-keyring electron-netease-cloud-music qtcreator eclipse fcitx5-im fcitx5-rime rime-cloverpinyin</span><br></pre></td></tr></table></figure>
+<p>有一说一我没想到居然不预装gdb，我是没想到。</p>
+<p>eclipse和qt分别是java和QT C++的IDE，至于为什么不用idea，当然是学校的示范程序用的就是eclipse。（而且IDE并不影响编程技术）</p>
+<h2 id="先解决输入法的问题"><a class="markdownIt-Anchor" href="#先解决输入法的问题"></a> 先解决输入法的问题</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo pacman -S yay base-devel</span><br></pre></td></tr></table></figure>
+<p>上面说的是一些最基本的打包工具的安装，在以后的安装软件的过程中很有可能会需要这些工具。</p>
+<p>刚开始是使用的学长的方案，但是现在发现搜狗输入法还是泰拉。。</p>
+<p><a href="https://zhuanlan.zhihu.com/p/114296129">manjarokde配置全攻略</a></p>
+<p>很多情况下我都是参考的这个配置攻略，作者一直在更新我也很喜欢。现在是用rime输入法。这个输入法比较不好的地方是，它下载的时候完全是看github的心情。原来这里使用的是搜狗拼音，但是实际用下来感觉不是很好（首先就是响应速度上面感觉很慢。。）</p>
+<p>其实刚刚配置出来的这个输入法不是很好用，因为词库比较差。。这个作者也写了一篇帖子，在刚刚的manjaro配置全攻略里面。作者甚至还保存了现成的词库文件，只需要解压到指定位置就能用。</p>
+<p>这个输入法一个比较麻烦的点就是配置是通过配置文件解决的，不过这对于linux用户来讲，估计已经是家常便饭了。</p>
+<h2 id="其他软件和让人觉得更舒服的配置"><a class="markdownIt-Anchor" href="#其他软件和让人觉得更舒服的配置"></a> 其他软件和让人觉得更舒服的配置</h2>
+<p>其他软件其实也没有什么，需要什么就安装什么就完事了。就是有的软件需要配置值得一说：</p>
+<h3 id="neovim"><a class="markdownIt-Anchor" href="#neovim"></a> neovim</h3>
+<p>配置详细见<a href="https://gitee.com/oiaom/my_vim">my_vim</a>。</p>
+<p><s>现在已经没有维护了</s></p>
+<h3 id="vscode"><a class="markdownIt-Anchor" href="#vscode"></a> vscode</h3>
+<p>安装之后（安装包的名字叫做visual-studio-code-bin），直接联网同步插件。manjarokde桌面我觉得比较适合编程的字体是一个叫做Noto Mono的字体。其实感觉很多方面已经赶得上微软雅黑和consola的混合字体了。而且由于是原装的字体，对于特殊符号包括emoji的支持显示好像稍微要好一些？当然这个字体还是有的时候不妥当，比如复制的复，给人一种短一截的感觉。所以使用思源黑体也是很好的选择。</p>
+<p>然后是没法登录同步的问题，这个是没有安装gnome-keyring的缘故。</p>
+<h3 id="显示缩放"><a class="markdownIt-Anchor" href="#显示缩放"></a> 显示缩放</h3>
+<p>这个不要去改字体，这样效果很不好。正确的打开方式应该是在显示器设置里面设置缩放为150还是比较合适的。注意改完之后会自动分配一个dpi，不要动它！</p>
+<h3 id="下载微信"><a class="markdownIt-Anchor" href="#下载微信"></a> 下载微信</h3>
+<p>现在AUR里面比较好用的微信的包的名字叫做 com.tencent.weixin，目前来看还是挺好用的。</p>
+<h3 id="typora"><a class="markdownIt-Anchor" href="#typora"></a> typora</h3>
+<p>这个虽然有一个报叫做typora-free但是实际上不魔法上网根本不行，所以还好我存了一个typora的deb包。然后使用debtap进行一个安装，debtap还是好用滴！</p>
+<h3 id="wps在150缩放下字体发虚问题"><a class="markdownIt-Anchor" href="#wps在150缩放下字体发虚问题"></a> WPS在150缩放下字体发虚问题</h3>
+<p>这个很简单解决。</p>
+<p><a href="https://aur.archlinux.org/packages/wps-office-mui-zh-cn">wps的aur</a></p>
+<p>里面可以找到解决办法。他这个是直接修改了bin文件，我的方案是只是更改启动器。右键左下角的启动器，再每个关于wps的启动项命令前面加上<code>env QT_SCREEN_SCALE_FACTORS=1</code>。注意改完之后不要有多余的空格什么的，就这句话加上一个空格加上后面的命令。</p>
+<p>例子wps文字的启动命令：<code>env QT_SCREEN_SCALE_FACTORS=1 /usr/bin/wps %U</code></p>
+<p>我的评价是要不直接把wps2019这个总的删除了，像微软那样也是分着的。</p>
+<h3 id="tlp记得启动"><a class="markdownIt-Anchor" href="#tlp记得启动"></a> tlp记得启动</h3>
+<p><code>sudo tlp start</code>就完事了，如果这个命令不能正常使用，就按照提示输入命令。</p>
+<h1 id="题外话"><a class="markdownIt-Anchor" href="#题外话"></a> 题外话</h1>
+<p>和xfce版本相比，kde有什么不一样呢？</p>
+<p>首先一点，那就是由于linux的极高的可配置性，即使当时安装的是xfce桌面想要配成kde桌面也还是非常容易的。所以这里仅仅是讨论两个桌面的预配置如何，不讨论自己配置的情况，毕竟要是真心喜欢kde的话xfce桌面的版本照样可以安装kde桌面这个包。</p>
+<p>首先是字体，kde的默认字体对于中文的显示就已经非常不错了，我原来使用xfce版本的时候经常还要在网上使用consolas和雅黑的混合字体，但是桌面毕竟还是有一些bug，有的地方显示是我设置的字体，有的地方不是。</p>
+<p>但是kde桌面的默认字体中文显示就非常优秀了。</p>
+<p>再就是缩放，我在xfce版本更改缩放的时候总感觉缩放不是很统一。（跟个人太菜有很大关系）有的时候更改还是觉得缩放不是很合适。感觉大小有一些不协调。在kde版本下在显示器设置里面改成150缩放或者说是125缩放不仅字体显示会更加清晰，而且综合起来观感比较好，非常协调。</p>
+]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>missing_semester粗看</title>
+    <url>/2022/11/10/missing-semester%E7%B2%97%E7%9C%8B/</url>
+    <content><![CDATA[<p>虽然Missing semester的网站很贴心准备了笔记, 但是笔记里面提到的知识点非常多而且繁杂. 还是有必要开一篇文章来注解一下. 官方对这个课真的很用心, 还有专门的中文翻译(当然这个有可能是别的中国人贡献的). 实际上即使是有笔记我还是没办法理解每一条命令的内涵, 也只是稍稍理解一下罢了.</p>
+<p><a href="https://missing-semester-cn.github.io/">官方笔记</a></p>
+<span id="more"></span>
+<h1 id="数据整理"><a class="markdownIt-Anchor" href="#数据整理"></a> 数据整理</h1>
+<h2 id="ssh"><a class="markdownIt-Anchor" href="#ssh"></a> ssh</h2>
+<p>虽然数据整理和SSH没有什么关系, 仅仅只是使用ssh举了一个例子. 但是秉持着探索的态度, 还是有必要了解一下ssh. 毕竟在我前面的学习生活中其实已经不少见了.</p>
+<p>ssh全名叫做Secure Shell. 提供了一种安全的方式登录远程桌面. 在同一个局域网下面ssh的用法十分简单, 我手机termux使用ssh可以在局域网下面轻松登录电脑的shell. 在tldr(一个我非常喜欢的简洁版本的man手册)里面列出来了一些最经典的ssh命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Secure Shell is a protocol used to securely log onto remote systems.It can be used for logging or executing commands on a remote server.More information: https://man.openbsd.org/ssh.</span><br><span class="line"></span><br><span class="line"> - Connect to a remote server:</span><br><span class="line">   ssh &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Connect to a remote server with a specific identity (private key):</span><br><span class="line">   ssh -i &#123;&#123;path/to/key_file&#125;&#125; &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Connect to a remote server using a specific port:</span><br><span class="line">   ssh &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125; -p &#123;&#123;2222&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Run a command on a remote server with a [t]ty allocation allowing interaction with the remote command:</span><br><span class="line">   ssh &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125; -t &#123;&#123;command&#125;&#125; &#123;&#123;command_arguments&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - SSH tunneling: Dynamic port forwarding (SOCKS proxy on localhost:1080):</span><br><span class="line">   ssh -D &#123;&#123;1080&#125;&#125; &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - SSH tunneling: Forward a specific port (localhost:9999 to example.org:80) along with disabling pseudo-[T]ty allocation and executio[N] of remote commands:</span><br><span class="line">   ssh -L &#123;&#123;9999&#125;&#125;:&#123;&#123;example.org&#125;&#125;:&#123;&#123;80&#125;&#125; -N -T &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - SSH jumping: Connect through a jumphost to a remote server (Multiple jump hops may be specified separated by comma characters):</span><br><span class="line">   ssh -J &#123;&#123;username&#125;&#125;@&#123;&#123;jump_host&#125;&#125; &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Agent forwarding: Forward the authentication information to the remote machine (see man ssh_config for available options):</span><br><span class="line">   ssh -A &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>当然在使用ssh的过程中还可以配置免密码登录之类的操作, [这个B站视频](<a href="https://oiaom.github.io/2022/08/29/missing-semester/%E3%80%90%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E5%9C%B0%E8%AE%BF%E9%97%AE%E8%BF%9C%E7%A8%8B%E4%B8%BB%E6%9C%BA%EF%BC%9FSSH%E4%B8%8Efrp%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B%E3%80%91">https://oiaom.github.io/2022/08/29/missing-semester/【如何优雅地访问远程主机？SSH与frp内网穿透配置教程】</a> <a href="https://www.bilibili.com/video/BV13L411w7XU?share_source=copy_web&amp;vd_source=c825e8a8735a644c2c384d551af8125e">https://www.bilibili.com/video/BV13L411w7XU?share_source=copy_web&amp;vd_source=c825e8a8735a644c2c384d551af8125e</a>)讲得很好.</p>
+<p>不过在这里ssh其实也就是起到一个来输出日志的作用, 目的还是讲解grep的用法.</p>
+<p>其中有一个很妙的思想. 首先ssh传输是比较慢的, 远程运行命令和本机运行命令是远远快于ssh的传输的.</p>
+<p>看下面命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh myserver journalctl | grep sshd</span><br></pre></td></tr></table></figure>
+<p>这个意思是, 把这个日志打印出来, 并且过滤出含有sshd的内容.</p>
+<p>但是这个缺陷很大. 首先, 我是在本机上面运行这条命令, grep是在本机上面运行的, 所以对于ssh来说, 还是需要传输完整的日志输出到本机, 之后本机执行grep来过滤到我需要的数据. 中间传输比较慢.</p>
+<p>所以可以作如下改进:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh &#x27;myserver journalctl | grep sshd&#x27;</span><br></pre></td></tr></table></figure>
+<p>但是不知道是不是因为手机是termux的缘故, 目前还没有成功打印出来正常的ssh日志.</p>
+<h2 id="正则表达式"><a class="markdownIt-Anchor" href="#正则表达式"></a> 正则表达式</h2>
+<p>正则表达式在计算机中的应用很广泛, 很多代码补全的插件就是使用这个工具来判断的. 对于基本的正则表达式了解可以参看:<a href="https://www.bilibili.com/video/BV1da4y1p7iZ?share_source=copy_web&amp;vd_source=c825e8a8735a644c2c384d551af8125e">10分钟快速掌握正则表达式</a></p>
+<p>详细一点的文档可以参看:<a href="https://github.com/ziishaned/learn-regex/blob/master/translations/README-cn.md">ziishaned/learn-regex</a></p>
+<p>我估计在我看llvm的那个时候可以用到相关知识, 所以这个文档我就是粗略地过一遍吧.</p>
+<h2 id="awk"><a class="markdownIt-Anchor" href="#awk"></a> awk</h2>
+<p>grep, sed, awk是比较出名的处理文本的三个工具.</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  ~ which awk         </span><br><span class="line">/usr/bin/awk</span><br><span class="line">➜  ~ ls -l /usr/bin/awk</span><br><span class="line">lrwxrwxrwx root root 21 B Thu Aug 11 07:05:20 2022  /usr/bin/awk ⇒ /etc/alternatives/awk</span><br><span class="line">➜  ~ </span><br></pre></td></tr></table></figure>
+<p>这是我电脑上面的awk情况.</p>
+<p>这个工具非常抽象, 我就不学了. <a href="https://www.runoob.com/linux/linux-comm-awk.html">菜鸟教程点此</a></p>
+<p>虽然在grep sed awk里面awk应该是最强大的.</p>
+<h1 id="命令行环境"><a class="markdownIt-Anchor" href="#命令行环境"></a> 命令行环境</h1>
+<h2 id="kill命令"><a class="markdownIt-Anchor" href="#kill命令"></a> kill命令</h2>
+<p><a href="https://www.runoob.com/linux/linux-comm-kill.html">菜鸟教程kill</a></p>
+<h2 id="ps命令"><a class="markdownIt-Anchor" href="#ps命令"></a> ps命令</h2>
+<p><a href="https://www.runoob.com/linux/linux-comm-ps.html">菜鸟教程ps</a></p>
+<p>这个内容太杂了, 我还是多学一点东西之后再来学吧, 只是粗略地看了一遍.</p>
+]]></content>
+      <tags>
+        <tag>touchfish</tag>
+        <tag>残缺的笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -1520,6 +1563,42 @@ width就是打印的宽度。这样能够让输入输出更灵活了。</p>
       </tags>
   </entry>
   <entry>
+    <title>从头开始</title>
+    <url>/2022/11/10/%E4%BB%8E%E5%A4%B4%E5%BC%80%E5%A7%8B/</url>
+    <content><![CDATA[<p>由于一次不小心的事故, 整个装有linux系统的盘没了. 究其原因还是我对这个叫做btrfs的文件系统还有timeshift的备份逻辑不是特别了解, 这次翻车了之后肯定没有下次了.</p>
+<p>正好, 我早就看那个next的主题不爽了, 主要是经常撞衫. <s>好吧hexo主题少其实不管用什么基本上都有可能撞衫…</s></p>
+<p>我还是很喜欢yilia主题的, 但是其实我上次在部署的时候好像遇到了一些问题, 但是这次我是对我自己有自信解决的.</p>
+]]></content>
+      <tags>
+        <tag>touchfish</tag>
+        <tag>原先网站崩了</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我的大学生活</title>
+    <url>/2022/11/10/%E6%88%91%E7%9A%84%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
+    <content><![CDATA[<p>就很突然，我刚刚进入大学，本来我设想的大学生活是当一个宅，像隐士那样的……</p>
+<span id="more"></span>
+<p>然后每天玩累了就学，学累了就玩。偶尔上网找找乐子。。</p>
+<p>然后我还在家里面的时候就听说俄罗斯和乌克兰打起来了。阿哲。。。</p>
+<p>其实我以前对西方文化并没有很抵触，因为喜欢计算机嘛，好多大人物还有技术还有工具都是西方的。所以原先看到有人有一些比较激进的论调就会很反感，觉得还没有到那种程度。</p>
+<p>然而就是这次战争，让我们看见了西方的力量。这里单单是指掌控全球舆论的力量，是一种实力带来的话语权。</p>
+<p>知名网站GitHub、node的官网、react的网站还有pytorch，这里面的有些我比较熟悉，有些我在用…… 都在官网打出了声援乌克兰的旗号。</p>
+<p>然后，截止写这个评论的时候，俄罗斯已经经历了几千项制裁，具体我也懒得查，这不是我想表达的重点。</p>
+<p>我想表达的重点是，原来我之前喜欢用的，听说很好的，各种产品网站互联网工具居然都不是自己的，随时都有“反叛”的可能。（原谅我用词过重，因为就目前而言这些人和组织只是声援了乌克兰）</p>
+<p>就在前几日看到的新闻，npm的一个包的作者添加了恶意代码，加入是俄罗斯的IP下载了这个包，这个包会尝试覆盖根目录下的文件，简单来说就是搞破坏。</p>
+<p>人在一生中会不会有这样一个时刻，在这个时刻之前，一切都风平浪静，非常和谐，然后马上就进入到一种截然不同的境地？俄罗斯恐怕就经受了这样一种情况。我也感觉非常魔幻，好像一瞬间，全世界都与俄罗斯为敌了。世界上的许多声音都站向乌克兰一方。</p>
+<p>当我还没有从这个世界性的大事走出来的时候，我所在的吉林又爆发了疫情。我现在身在寝室楼无法出门。说实话就我个人来讲，我上网课真的是没有好好听，真的是完全没有把网课当回事。生活作息完全乱掉了还没有学到什么东西。真的是非常混乱。</p>
+<p>一切的种种都和我预想的大学生活有差别。我并没有像预想的那样在大学好好学习，完全都不玩。我曾经以为我对计算机很有兴趣（现在也是），但是我现在发现这个兴趣还没有大到能够克服娱乐项目的程度。。。。</p>
+<p>非常有幸在短暂的一生中还能经历几次大事，先是疫情后是俄乌战争。无论种种这也是长大的过程吧。</p>
+<p>还是希望在以后的日子里能够在计算机这一条道路上坚定地走下去。最近网上多有劝退计算机的留言，什么越来越卷了之类。但是无论如何我希望我能记住，我学计算机主要的原因不是赚钱（当然赚钱也重要），而是我一开始就被它所吸引。从小学开始接触计算机，到长大一点为了如何让英雄联盟流畅地运行在电脑上绞尽脑汁，再到高二因为百度上的一句玩笑话接触linux，再到高三初下定决心非计算机不读…… 直到现在有些时候因为一些manjaro的小bug焦头烂额。希望我会带着对计算机的热爱一直走下去。虽然说发生了很多事情。</p>
+]]></content>
+      <tags>
+        <tag>touchfish</tag>
+        <tag>空虚地思考</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>virtualbox安装macos</title>
     <url>/2023/12/01/virtualbox%E5%AE%89%E8%A3%85macos/</url>
     <content><![CDATA[<p>因为选了IOS开发的缘故, 加之一直以来对于</p>
@@ -1530,58 +1609,23 @@ width就是打印的宽度。这样能够让输入输出更灵活了。</p>
       </tags>
   </entry>
   <entry>
-    <title>missing_semester粗看</title>
-    <url>/2022/11/10/missing-semester%E7%B2%97%E7%9C%8B/</url>
-    <content><![CDATA[<p>虽然Missing semester的网站很贴心准备了笔记, 但是笔记里面提到的知识点非常多而且繁杂. 还是有必要开一篇文章来注解一下. 官方对这个课真的很用心, 还有专门的中文翻译(当然这个有可能是别的中国人贡献的). 实际上即使是有笔记我还是没办法理解每一条命令的内涵, 也只是稍稍理解一下罢了.</p>
-<p><a href="https://missing-semester-cn.github.io/">官方笔记</a></p>
+    <title>月色真美小评</title>
+    <url>/2022/11/10/%E6%9C%88%E8%89%B2%E7%9C%9F%E7%BE%8E%E5%B0%8F%E8%AF%84/</url>
+    <content><![CDATA[<p>说实话嗷, 我是看了这么久的番剧, 还没有什么番剧有二刷的欲望. 但是月色真美确实让我想再看一遍.</p>
+<p>首先是制作精良, 画风非常喜欢. 这种画风并不是一般日漫的那种大眼画风, 而是一种很特别的, 让人看上去很舒服的画风. <s>好吧虽然眼睛比例还是挺大的</s></p>
 <span id="more"></span>
-<h1 id="数据整理"><a class="markdownIt-Anchor" href="#数据整理"></a> 数据整理</h1>
-<h2 id="ssh"><a class="markdownIt-Anchor" href="#ssh"></a> ssh</h2>
-<p>虽然数据整理和SSH没有什么关系, 仅仅只是使用ssh举了一个例子. 但是秉持着探索的态度, 还是有必要了解一下ssh. 毕竟在我前面的学习生活中其实已经不少见了.</p>
-<p>ssh全名叫做Secure Shell. 提供了一种安全的方式登录远程桌面. 在同一个局域网下面ssh的用法十分简单, 我手机termux使用ssh可以在局域网下面轻松登录电脑的shell. 在tldr(一个我非常喜欢的简洁版本的man手册)里面列出来了一些最经典的ssh命令:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Secure Shell is a protocol used to securely log onto remote systems.It can be used for logging or executing commands on a remote server.More information: https://man.openbsd.org/ssh.</span><br><span class="line"></span><br><span class="line"> - Connect to a remote server:</span><br><span class="line">   ssh &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Connect to a remote server with a specific identity (private key):</span><br><span class="line">   ssh -i &#123;&#123;path/to/key_file&#125;&#125; &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Connect to a remote server using a specific port:</span><br><span class="line">   ssh &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125; -p &#123;&#123;2222&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Run a command on a remote server with a [t]ty allocation allowing interaction with the remote command:</span><br><span class="line">   ssh &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125; -t &#123;&#123;command&#125;&#125; &#123;&#123;command_arguments&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - SSH tunneling: Dynamic port forwarding (SOCKS proxy on localhost:1080):</span><br><span class="line">   ssh -D &#123;&#123;1080&#125;&#125; &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - SSH tunneling: Forward a specific port (localhost:9999 to example.org:80) along with disabling pseudo-[T]ty allocation and executio[N] of remote commands:</span><br><span class="line">   ssh -L &#123;&#123;9999&#125;&#125;:&#123;&#123;example.org&#125;&#125;:&#123;&#123;80&#125;&#125; -N -T &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - SSH jumping: Connect through a jumphost to a remote server (Multiple jump hops may be specified separated by comma characters):</span><br><span class="line">   ssh -J &#123;&#123;username&#125;&#125;@&#123;&#123;jump_host&#125;&#125; &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Agent forwarding: Forward the authentication information to the remote machine (see man ssh_config for available options):</span><br><span class="line">   ssh -A &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br></pre></td></tr></table></figure>
-<p>当然在使用ssh的过程中还可以配置免密码登录之类的操作, [这个B站视频](<a href="https://oiaom.github.io/2022/08/29/missing-semester/%E3%80%90%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E5%9C%B0%E8%AE%BF%E9%97%AE%E8%BF%9C%E7%A8%8B%E4%B8%BB%E6%9C%BA%EF%BC%9FSSH%E4%B8%8Efrp%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B%E3%80%91">https://oiaom.github.io/2022/08/29/missing-semester/【如何优雅地访问远程主机？SSH与frp内网穿透配置教程】</a> <a href="https://www.bilibili.com/video/BV13L411w7XU?share_source=copy_web&amp;vd_source=c825e8a8735a644c2c384d551af8125e">https://www.bilibili.com/video/BV13L411w7XU?share_source=copy_web&amp;vd_source=c825e8a8735a644c2c384d551af8125e</a>)讲得很好.</p>
-<p>不过在这里ssh其实也就是起到一个来输出日志的作用, 目的还是讲解grep的用法.</p>
-<p>其中有一个很妙的思想. 首先ssh传输是比较慢的, 远程运行命令和本机运行命令是远远快于ssh的传输的.</p>
-<p>看下面命令:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh myserver journalctl | grep sshd</span><br></pre></td></tr></table></figure>
-<p>这个意思是, 把这个日志打印出来, 并且过滤出含有sshd的内容.</p>
-<p>但是这个缺陷很大. 首先, 我是在本机上面运行这条命令, grep是在本机上面运行的, 所以对于ssh来说, 还是需要传输完整的日志输出到本机, 之后本机执行grep来过滤到我需要的数据. 中间传输比较慢.</p>
-<p>所以可以作如下改进:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh &#x27;myserver journalctl | grep sshd&#x27;</span><br></pre></td></tr></table></figure>
-<p>但是不知道是不是因为手机是termux的缘故, 目前还没有成功打印出来正常的ssh日志.</p>
-<h2 id="正则表达式"><a class="markdownIt-Anchor" href="#正则表达式"></a> 正则表达式</h2>
-<p>正则表达式在计算机中的应用很广泛, 很多代码补全的插件就是使用这个工具来判断的. 对于基本的正则表达式了解可以参看:<a href="https://www.bilibili.com/video/BV1da4y1p7iZ?share_source=copy_web&amp;vd_source=c825e8a8735a644c2c384d551af8125e">10分钟快速掌握正则表达式</a></p>
-<p>详细一点的文档可以参看:<a href="https://github.com/ziishaned/learn-regex/blob/master/translations/README-cn.md">ziishaned/learn-regex</a></p>
-<p>我估计在我看llvm的那个时候可以用到相关知识, 所以这个文档我就是粗略地过一遍吧.</p>
-<h2 id="awk"><a class="markdownIt-Anchor" href="#awk"></a> awk</h2>
-<p>grep, sed, awk是比较出名的处理文本的三个工具.</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  ~ which awk         </span><br><span class="line">/usr/bin/awk</span><br><span class="line">➜  ~ ls -l /usr/bin/awk</span><br><span class="line">lrwxrwxrwx root root 21 B Thu Aug 11 07:05:20 2022  /usr/bin/awk ⇒ /etc/alternatives/awk</span><br><span class="line">➜  ~ </span><br></pre></td></tr></table></figure>
-<p>这是我电脑上面的awk情况.</p>
-<p>这个工具非常抽象, 我就不学了. <a href="https://www.runoob.com/linux/linux-comm-awk.html">菜鸟教程点此</a></p>
-<p>虽然在grep sed awk里面awk应该是最强大的.</p>
-<h1 id="命令行环境"><a class="markdownIt-Anchor" href="#命令行环境"></a> 命令行环境</h1>
-<h2 id="kill命令"><a class="markdownIt-Anchor" href="#kill命令"></a> kill命令</h2>
-<p><a href="https://www.runoob.com/linux/linux-comm-kill.html">菜鸟教程kill</a></p>
-<h2 id="ps命令"><a class="markdownIt-Anchor" href="#ps命令"></a> ps命令</h2>
-<p><a href="https://www.runoob.com/linux/linux-comm-ps.html">菜鸟教程ps</a></p>
-<p>这个内容太杂了, 我还是多学一点东西之后再来学吧, 只是粗略地看了一遍.</p>
+<p><img src="https://pic.imgdb.cn/item/630c82ec16f2c2beb12c74d3.jpg" alt="alt" /></p>
+<p>不会给人一种”逼人”的感觉, 太漂亮的女主或者太帅气的男主会让人有一种疏离感, 你在看别人拉扯, 觉得很甜, 没什么代入感. 或者说这样类似的东西看得越多, 自己越是苦闷. 人经常感叹的”这样的xxx现实生活中可能没有吧”.</p>
+<p>这个番就没有这样的感觉, 确实能很清晰地感受到男女主之间的情感线, 这就是这个番最突出的特点: 真情实感无论在什么时候都是更打动人的.</p>
+<p>在看番剧的时候, 有的时候会有一些奇怪的点, 比如很难理解, 经常弹幕都会说这为什么不A上去, 这样的人为什么还要继续谈恋爱此类, 还有一些莫名其妙的情节, 一点小误会闹好几集. 是, 我理解, 这样写编剧可以更好地发糖, 或者说这样一些情节能够所谓推进情感线, 虽然观众看完之后, 就是在这些情节结束之后吗, 会感到很舒服, 啊终于合好了之类, 但是在看的时候会有一些疑问, 或者是会有一些吐槽, 让人感觉有些”出戏”.</p>
+<p>出现这样离谱情节或者老套情节的原因就是这是为了甜而甜, 有一些番啊(只是比较少的一部分), 确实可以称得上是”工业糖精”, B站弹幕这样称呼是有原因的, 因为是把甜当成了目的, 所以会有一些看上去很熟悉的部分, 忽视了中间的情感. 说实话其实这样也行, 毕竟大家看番也就看一乐呵, 但是假如在做到这样的同时加上感情的塑造, 这样是不是更加好呢?</p>
+<p>这部剧设定的时候在初中, 真的是非常真实, 很好地把握了初中时期男女主的情感变化. 没有像是很多其他番剧里面的主动啊智斗啊, 通篇给人一种未成熟的感觉(当然有些地方确实是有一些过了, 其实现在初中生知道事情也挺多了hhhhh). 但是无论如何是很真实的. 包括最开始两人也不知道什么是所谓”交往”, 只是想要在一起.</p>
+<p>最后是一个特点是对这个叙事的把握, 不会是那种大把大把撒糖(虽然这样也好, 也有很多人喜欢看, 我有的时候也看一下), 而是一种注重现实规律的缓慢发展.</p>
+<p>不管怎么说真情实感就是最好的招牌了, 在我心里我暂时宣布这是最好的恋爱番, 但是不一定是最甜的.(其实我是不想写了)</p>
 ]]></content>
       <tags>
         <tag>touchfish</tag>
-        <tag>残缺的笔记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>从头开始</title>
-    <url>/2022/11/10/%E4%BB%8E%E5%A4%B4%E5%BC%80%E5%A7%8B/</url>
-    <content><![CDATA[<p>由于一次不小心的事故, 整个装有linux系统的盘没了. 究其原因还是我对这个叫做btrfs的文件系统还有timeshift的备份逻辑不是特别了解, 这次翻车了之后肯定没有下次了.</p>
-<p>正好, 我早就看那个next的主题不爽了, 主要是经常撞衫. <s>好吧hexo主题少其实不管用什么基本上都有可能撞衫…</s></p>
-<p>我还是很喜欢yilia主题的, 但是其实我上次在部署的时候好像遇到了一些问题, 但是这次我是对我自己有自信解决的.</p>
-]]></content>
-      <tags>
-        <tag>touchfish</tag>
-        <tag>原先网站崩了</tag>
+        <tag>影评</tag>
       </tags>
   </entry>
   <entry>
@@ -1721,177 +1765,355 @@ m368.1 178.2c0-86.4-60.9-215.4-368.1-215.4-306.4 0-367.3 129-367.3 215.4 0 85.8
       </tags>
   </entry>
   <entry>
-    <title>月色真美小评</title>
-    <url>/2022/11/10/%E6%9C%88%E8%89%B2%E7%9C%9F%E7%BE%8E%E5%B0%8F%E8%AF%84/</url>
-    <content><![CDATA[<p>说实话嗷, 我是看了这么久的番剧, 还没有什么番剧有二刷的欲望. 但是月色真美确实让我想再看一遍.</p>
-<p>首先是制作精良, 画风非常喜欢. 这种画风并不是一般日漫的那种大眼画风, 而是一种很特别的, 让人看上去很舒服的画风. <s>好吧虽然眼睛比例还是挺大的</s></p>
+    <title>正则表达式</title>
+    <url>/2022/11/10/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <content><![CDATA[<h2 id="1-基本匹配"><a class="markdownIt-Anchor" href="#1-基本匹配"></a> 1. 基本匹配</h2>
+<p>正则表达式其实就是在执行搜索时的格式，它由一些字母和数字组合而成。<br />
+例如：一个正则表达式 <code>the</code>，它表示一个规则：由字母<code>t</code>开始，接着是<code>h</code>，再接着是<code>e</code>。</p>
 <span id="more"></span>
-<p><img src="https://pic.imgdb.cn/item/630c82ec16f2c2beb12c74d3.jpg" alt="alt" /></p>
-<p>不会给人一种”逼人”的感觉, 太漂亮的女主或者太帅气的男主会让人有一种疏离感, 你在看别人拉扯, 觉得很甜, 没什么代入感. 或者说这样类似的东西看得越多, 自己越是苦闷. 人经常感叹的”这样的xxx现实生活中可能没有吧”.</p>
-<p>这个番就没有这样的感觉, 确实能很清晰地感受到男女主之间的情感线, 这就是这个番最突出的特点: 真情实感无论在什么时候都是更打动人的.</p>
-<p>在看番剧的时候, 有的时候会有一些奇怪的点, 比如很难理解, 经常弹幕都会说这为什么不A上去, 这样的人为什么还要继续谈恋爱此类, 还有一些莫名其妙的情节, 一点小误会闹好几集. 是, 我理解, 这样写编剧可以更好地发糖, 或者说这样一些情节能够所谓推进情感线, 虽然观众看完之后, 就是在这些情节结束之后吗, 会感到很舒服, 啊终于合好了之类, 但是在看的时候会有一些疑问, 或者是会有一些吐槽, 让人感觉有些”出戏”.</p>
-<p>出现这样离谱情节或者老套情节的原因就是这是为了甜而甜, 有一些番啊(只是比较少的一部分), 确实可以称得上是”工业糖精”, B站弹幕这样称呼是有原因的, 因为是把甜当成了目的, 所以会有一些看上去很熟悉的部分, 忽视了中间的情感. 说实话其实这样也行, 毕竟大家看番也就看一乐呵, 但是假如在做到这样的同时加上感情的塑造, 这样是不是更加好呢?</p>
-<p>这部剧设定的时候在初中, 真的是非常真实, 很好地把握了初中时期男女主的情感变化. 没有像是很多其他番剧里面的主动啊智斗啊, 通篇给人一种未成熟的感觉(当然有些地方确实是有一些过了, 其实现在初中生知道事情也挺多了hhhhh). 但是无论如何是很真实的. 包括最开始两人也不知道什么是所谓”交往”, 只是想要在一起.</p>
-<p>最后是一个特点是对这个叙事的把握, 不会是那种大把大把撒糖(虽然这样也好, 也有很多人喜欢看, 我有的时候也看一下), 而是一种注重现实规律的缓慢发展.</p>
-<p>不管怎么说真情实感就是最好的招牌了, 在我心里我暂时宣布这是最好的恋爱番, 但是不一定是最甜的.(其实我是不想写了)</p>
-]]></content>
-      <tags>
-        <tag>touchfish</tag>
-        <tag>影评</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>我的大学生活</title>
-    <url>/2022/11/10/%E6%88%91%E7%9A%84%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%B4%BB/</url>
-    <content><![CDATA[<p>就很突然，我刚刚进入大学，本来我设想的大学生活是当一个宅，像隐士那样的……</p>
-<span id="more"></span>
-<p>然后每天玩累了就学，学累了就玩。偶尔上网找找乐子。。</p>
-<p>然后我还在家里面的时候就听说俄罗斯和乌克兰打起来了。阿哲。。。</p>
-<p>其实我以前对西方文化并没有很抵触，因为喜欢计算机嘛，好多大人物还有技术还有工具都是西方的。所以原先看到有人有一些比较激进的论调就会很反感，觉得还没有到那种程度。</p>
-<p>然而就是这次战争，让我们看见了西方的力量。这里单单是指掌控全球舆论的力量，是一种实力带来的话语权。</p>
-<p>知名网站GitHub、node的官网、react的网站还有pytorch，这里面的有些我比较熟悉，有些我在用…… 都在官网打出了声援乌克兰的旗号。</p>
-<p>然后，截止写这个评论的时候，俄罗斯已经经历了几千项制裁，具体我也懒得查，这不是我想表达的重点。</p>
-<p>我想表达的重点是，原来我之前喜欢用的，听说很好的，各种产品网站互联网工具居然都不是自己的，随时都有“反叛”的可能。（原谅我用词过重，因为就目前而言这些人和组织只是声援了乌克兰）</p>
-<p>就在前几日看到的新闻，npm的一个包的作者添加了恶意代码，加入是俄罗斯的IP下载了这个包，这个包会尝试覆盖根目录下的文件，简单来说就是搞破坏。</p>
-<p>人在一生中会不会有这样一个时刻，在这个时刻之前，一切都风平浪静，非常和谐，然后马上就进入到一种截然不同的境地？俄罗斯恐怕就经受了这样一种情况。我也感觉非常魔幻，好像一瞬间，全世界都与俄罗斯为敌了。世界上的许多声音都站向乌克兰一方。</p>
-<p>当我还没有从这个世界性的大事走出来的时候，我所在的吉林又爆发了疫情。我现在身在寝室楼无法出门。说实话就我个人来讲，我上网课真的是没有好好听，真的是完全没有把网课当回事。生活作息完全乱掉了还没有学到什么东西。真的是非常混乱。</p>
-<p>一切的种种都和我预想的大学生活有差别。我并没有像预想的那样在大学好好学习，完全都不玩。我曾经以为我对计算机很有兴趣（现在也是），但是我现在发现这个兴趣还没有大到能够克服娱乐项目的程度。。。。</p>
-<p>非常有幸在短暂的一生中还能经历几次大事，先是疫情后是俄乌战争。无论种种这也是长大的过程吧。</p>
-<p>还是希望在以后的日子里能够在计算机这一条道路上坚定地走下去。最近网上多有劝退计算机的留言，什么越来越卷了之类。但是无论如何我希望我能记住，我学计算机主要的原因不是赚钱（当然赚钱也重要），而是我一开始就被它所吸引。从小学开始接触计算机，到长大一点为了如何让英雄联盟流畅地运行在电脑上绞尽脑汁，再到高二因为百度上的一句玩笑话接触linux，再到高三初下定决心非计算机不读…… 直到现在有些时候因为一些manjaro的小bug焦头烂额。希望我会带着对计算机的热爱一直走下去。虽然说发生了很多事情。</p>
-]]></content>
-      <tags>
-        <tag>touchfish</tag>
-        <tag>空虚地思考</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>计算机学习计划(置顶)</title>
-    <url>/2022/11/10/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/</url>
-    <content><![CDATA[<p>曾经这里是一个暑假的计算机提升计划, 但是现在来看, 这个暑假甚至都没有时间把课内的知识复习完. 这确实是非常生草. 这个计划还是非常重要, 预计是半年一次, 也就是这个文章半年一更新. 既然已经重新确立了标准就得重新规划一下. 🚧✅❌</p>
-<span id="more"></span>
-<h1 id="大一"><a class="markdownIt-Anchor" href="#大一"></a> 大一</h1>
-<p>✅摆烂</p>
-<h1 id="大二上需要课外的东西寒假"><a class="markdownIt-Anchor" href="#大二上需要课外的东西寒假"></a> 大二上需要课外的东西(寒假)</h1>
-<p>✅理解透彻missing-semester的课程. 把课程里面的每一个笔记都尽量看懂.<br />
-✅好好学习(草)<br />
-❌看csapp(已改动, 把优先级提到lua之前.)<br />
-❌看lua的官方文档. (C语言复习)<br />
-✅了解一下rust</p>
-<h1 id="大二上之后的寒假"><a class="markdownIt-Anchor" href="#大二上之后的寒假"></a> 大二上之后的寒假</h1>
-<p>我现在看着以前的安排, 我估计是很难完成了, 因为考试又推迟了, 像是这种情况寒假就很难学到什么新东西了, 因为要卷绩点. 所以目标变一下:</p>
-<p>❌好好复习备考 尤其是数据结构<br />
-❌了解一下STL的作用 为后面多刷LeetCode题目作准备<br />
-❌了解一下python 优先级高于rust<br />
-✅了解一下rust</p>
-<p>这个寒假其实这些任务也很难完成, 因为还要肝原神~~(我超 原!).~~</p>
-<h1 id="大二下和暑假"><a class="markdownIt-Anchor" href="#大二下和暑假"></a> 大二下和暑假</h1>
-<p>❌专心研究算法<br />
-✅假期看操作系统相关 csapp</p>
-<h1 id="大三上"><a class="markdownIt-Anchor" href="#大三上"></a> 大三上</h1>
-<p>❌研究编译原理和计算机网络 两门课好好学<br />
-❌学习一些C++新标准<br />
-❌读CSAPP</p>
-<h1 id="大三上寒假"><a class="markdownIt-Anchor" href="#大三上寒假"></a> 大三上寒假</h1>
-<p>🚧收集考研相关信息<br />
-🚧肝完leetcode75题<br />
-🚧读完C++并发编程<br />
-🚧拔智齿</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;the&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/dmRygT/1">在线练习</a></p>
+<p>正则表达式<code>123</code>匹配字符串<code>123</code>。它逐个字符的与输入的正则表达式做比较。</p>
+<p>正则表达式是大小写敏感的，所以<code>The</code>不会匹配<code>the</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;The&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/1paXsy/1">在线练习</a></p>
+<h2 id="2-元字符"><a class="markdownIt-Anchor" href="#2-元字符"></a> 2. 元字符</h2>
+<p>正则表达式主要依赖于元字符。<br />
+元字符不代表他们本身的字面意思，他们都有特殊的含义。一些元字符写在方括号中的时候有一些特殊的意思。以下是一些元字符的介绍：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">元字符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">.</td>
+<td>句号匹配任意单个字符除了换行符。</td>
+</tr>
+<tr>
+<td style="text-align:center">[ ]</td>
+<td>字符种类。匹配方括号内的任意字符。</td>
+</tr>
+<tr>
+<td style="text-align:center">[^ ]</td>
+<td>否定的字符种类。匹配除了方括号里的任意字符</td>
+</tr>
+<tr>
+<td style="text-align:center">*</td>
+<td>匹配&gt;=0个重复的在*号之前的字符。</td>
+</tr>
+<tr>
+<td style="text-align:center">+</td>
+<td>匹配&gt;=1个重复的+号前的字符。</td>
+</tr>
+<tr>
+<td style="text-align:center">?</td>
+<td>标记?之前的字符为可选.</td>
+</tr>
+<tr>
+<td style="text-align:center">{n,m}</td>
+<td>匹配num个大括号之前的字符或字符集 (n &lt;= num &lt;= m).</td>
+</tr>
+<tr>
+<td style="text-align:center">(xyz)</td>
+<td>字符集，匹配与 xyz 完全相等的字符串.</td>
+</tr>
+<tr>
+<td style="text-align:center">管道符</td>
+<td>或运算符，匹配符号前或后的字符.</td>
+</tr>
+<tr>
+<td style="text-align:center">\</td>
+<td>转义字符,用于匹配一些保留的字符.</td>
+</tr>
+<tr>
+<td style="text-align:center">^</td>
+<td>从开始行开始匹配.</td>
+</tr>
+<tr>
+<td style="text-align:center">$</td>
+<td>从末端开始匹配.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="21-点运算符"><a class="markdownIt-Anchor" href="#21-点运算符"></a> 2.1 点运算符 <code>.</code></h2>
+<p><code>.</code>是元字符中最简单的例子。<br />
+<code>.</code>匹配任意单个字符，但不匹配换行符。<br />
+例如，表达式<code>.ar</code>匹配一个任意字符后面跟着是<code>a</code>和<code>r</code>的字符串。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;.ar&quot; =&gt; The car parked in the garage.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/xc9GkU/1">在线练习</a></p>
+<h2 id="22-字符集"><a class="markdownIt-Anchor" href="#22-字符集"></a> 2.2 字符集</h2>
+<p>字符集也叫做字符类。<br />
+方括号用来指定一个字符集。<br />
+在方括号中使用连字符来指定字符集的范围。<br />
+在方括号中的字符集不关心顺序。<br />
+例如，表达式<code>[Tt]he</code> 匹配 <code>the</code> 和 <code>The</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[Tt]he&quot; =&gt; The car parked in the garage.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/2ITLQ4/1">在线练习</a></p>
+<p>方括号的句号就表示句号。<br />
+表达式 <code>ar[.]</code> 匹配 <code>ar.</code>字符串</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;ar[.]&quot; =&gt; A garage is a good place to park a car.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/wL3xtE/1">在线练习</a></p>
+<h3 id="221-否定字符集"><a class="markdownIt-Anchor" href="#221-否定字符集"></a> 2.2.1 否定字符集</h3>
+<p>一般来说 <code>^</code> 表示一个字符串的开头，但它用在一个方括号的开头的时候，它表示这个字符集是否定的。<br />
+例如，表达式<code>[^c]ar</code> 匹配一个后面跟着<code>ar</code>的除了<code>c</code>的任意字符。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[^c]ar&quot; =&gt; The car parked in the garage.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/nNNlq3/1">在线练习</a></p>
+<h2 id="23-重复次数"><a class="markdownIt-Anchor" href="#23-重复次数"></a> 2.3 重复次数</h2>
+<p>后面跟着元字符 <code>+</code>，<code>*</code> or <code>?</code> 的，用来指定匹配子模式的次数。<br />
+这些元字符在不同的情况下有着不同的意思。</p>
+<h3 id="231-号"><a class="markdownIt-Anchor" href="#231-号"></a> 2.3.1 <code>*</code> 号</h3>
+<p><code>*</code>号匹配 在<code>*</code>之前的字符出现<code>大于等于0</code>次。<br />
+例如，表达式 <code>a*</code> 匹配0或更多个以a开头的字符。表达式<code>[a-z]*</code> 匹配一个行中所有以小写字母开头的字符串。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[a-z]*&quot; =&gt; The car parked in the garage #21.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/7m8me5/1">在线练习</a></p>
+<p><code>*</code>字符和<code>.</code>字符搭配可以匹配所有的字符<code>.*</code>。<br />
+<code>*</code>和表示匹配空格的符号<code>\s</code>连起来用，如表达式<code>\s*cat\s*</code>匹配0或更多个空格开头和0或更多个空格结尾的cat字符串。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;\s*cat\s*&quot; =&gt; The fat cat sat on the concatenation.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/gGrwuz/1">在线练习</a></p>
+<h3 id="232-号"><a class="markdownIt-Anchor" href="#232-号"></a> 2.3.2 <code>+</code> 号</h3>
+<p><code>+</code>号匹配<code>+</code>号之前的字符出现 &gt;=1 次。<br />
+例如表达式<code>c.+t</code> 匹配以首字母<code>c</code>开头以<code>t</code>结尾，中间跟着至少一个字符的字符串。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;c.+t&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/Dzf9Aa/1">在线练习</a></p>
+<h3 id="233-号"><a class="markdownIt-Anchor" href="#233-号"></a> 2.3.3 <code>?</code> 号</h3>
+<p>在正则表达式中元字符 <code>?</code> 标记在符号前面的字符为可选，即出现 0 或 1 次。<br />
+例如，表达式 <code>[T]?he</code> 匹配字符串 <code>he</code> 和 <code>The</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[T]he&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/cIg9zm/1">在线练习</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[T]?he&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/kPpO2x/1">在线练习</a></p>
+<h2 id="24-号"><a class="markdownIt-Anchor" href="#24-号"></a> 2.4 <code>&#123;&#125;</code> 号</h2>
+<p>在正则表达式中 <code>&#123;&#125;</code> 是一个量词，常用来限定一个或一组字符可以重复出现的次数。<br />
+例如， 表达式 <code>[0-9]&#123;2,3&#125;</code> 匹配最少 2 位最多 3 位 0~9 的数字。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[0-9]&#123;2,3&#125;&quot; =&gt; The number was 9.9997 but we rounded it off to 10.0.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/juM86s/1">在线练习</a></p>
+<p>我们可以省略第二个参数。<br />
+例如，<code>[0-9]&#123;2,&#125;</code> 匹配至少两位 0~9 的数字。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[0-9]&#123;2,&#125;&quot; =&gt; The number was 9.9997 but we rounded it off to 10.0.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/Gdy4w5/1">在线练习</a></p>
+<p>如果逗号也省略掉则表示重复固定的次数。<br />
+例如，<code>[0-9]&#123;3&#125;</code> 匹配3位数字</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[0-9]&#123;3&#125;&quot; =&gt; The number was 9.9997 but we rounded it off to 10.0.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/Sivu30/1">在线练习</a></p>
+<h2 id="25-特征标群"><a class="markdownIt-Anchor" href="#25-特征标群"></a> 2.5 <code>(...)</code> 特征标群</h2>
+<p>特征标群是一组写在 <code>(...)</code> 中的子模式。<code>(...)</code> 中包含的内容将会被看成一个整体，和数学中小括号（ ）的作用相同。例如, 表达式 <code>(ab)*</code> 匹配连续出现 0 或更多个 <code>ab</code>。如果没有使用 <code>(...)</code> ，那么表达式 <code>ab*</code> 将匹配连续出现 0 或更多个 <code>b</code> 。再比如之前说的 <code>&#123;&#125;</code> 是用来表示前面一个字符出现指定次数。但如果在 <code>&#123;&#125;</code> 前加上特征标群 <code>(...)</code> 则表示整个标群内的字符重复 N 次。</p>
+<p>我们还可以在 <code>()</code> 中用或字符 <code>|</code> 表示或。例如，<code>(c|g|p)ar</code> 匹配 <code>car</code> 或 <code>gar</code> 或 <code>par</code>.</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(c|g|p)ar&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/tUxrBG/1">在线练习</a></p>
+<h2 id="26-或运算符"><a class="markdownIt-Anchor" href="#26-或运算符"></a> 2.6 <code>|</code> 或运算符</h2>
+<p>或运算符就表示或，用作判断条件。</p>
+<p>例如 <code>(T|t)he|car</code> 匹配 <code>(T|t)he</code> 或 <code>car</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(T|t)he|car&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/fBXyX0/1">在线练习</a></p>
+<h2 id="27-转码特殊字符"><a class="markdownIt-Anchor" href="#27-转码特殊字符"></a> 2.7 转码特殊字符</h2>
+<p>反斜线 <code>\</code> 在表达式中用于转码紧跟其后的字符。用于指定 <code>&#123; &#125; [ ] / \ + * . $ ^ | ?</code> 这些特殊字符。如果想要匹配这些特殊字符则要在其前面加上反斜线 <code>\</code>。</p>
+<p>例如 <code>.</code> 是用来匹配除换行符外的所有字符的。如果想要匹配句子中的 <code>.</code> 则要写成 <code>\.</code> 以下这个例子 <code>\.?</code>是选择性匹配<code>.</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(f|c|m)at\.?&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/DOc5Nu/1">在线练习</a></p>
+<h2 id="28-锚点"><a class="markdownIt-Anchor" href="#28-锚点"></a> 2.8 锚点</h2>
+<p>在正则表达式中，想要匹配指定开头或结尾的字符串就要使用到锚点。<code>^</code> 指定开头，<code>$</code> 指定结尾。</p>
+<h3 id="281-号"><a class="markdownIt-Anchor" href="#281-号"></a> 2.8.1 <code>^</code> 号</h3>
+<p><code>^</code> 用来检查匹配的字符串是否在所匹配字符串的开头。</p>
+<p>例如，在 <code>abc</code> 中使用表达式 <code>^a</code> 会得到结果 <code>a</code>。但如果使用 <code>^b</code> 将匹配不到任何结果。因为在字符串 <code>abc</code> 中并不是以 <code>b</code> 开头。</p>
+<p>例如，<code>^(T|t)he</code> 匹配以 <code>The</code> 或 <code>the</code> 开头的字符串。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(T|t)he&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/5ljjgB/1">在线练习</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;^(T|t)he&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/jXrKne/1">在线练习</a></p>
+<h3 id="282-号"><a class="markdownIt-Anchor" href="#282-号"></a> 2.8.2 <code>$</code> 号</h3>
+<p>同理于 <code>^</code> 号，<code>$</code> 号用来匹配字符是否是最后一个。</p>
+<p>例如，<code>(at\.)$</code> 匹配以 <code>at.</code> 结尾的字符串。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(at\.)&quot; =&gt; The fat cat. sat. on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/y4Au4D/1">在线练习</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(at\.)$&quot; =&gt; The fat cat. sat. on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/t0AkOd/1">在线练习</a></p>
+<h2 id="3-简写字符集"><a class="markdownIt-Anchor" href="#3-简写字符集"></a> 3. 简写字符集</h2>
+<p>正则表达式提供一些常用的字符集简写。如下:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">简写</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">.</td>
+<td>除换行符外的所有字符</td>
+</tr>
+<tr>
+<td style="text-align:center">\w</td>
+<td>匹配所有字母数字，等同于 <code>[a-zA-Z0-9_]</code></td>
+</tr>
+<tr>
+<td style="text-align:center">\W</td>
+<td>匹配所有非字母数字，即符号，等同于： <code>[^\w]</code></td>
+</tr>
+<tr>
+<td style="text-align:center">\d</td>
+<td>匹配数字： <code>[0-9]</code></td>
+</tr>
+<tr>
+<td style="text-align:center">\D</td>
+<td>匹配非数字： <code>[^\d]</code></td>
+</tr>
+<tr>
+<td style="text-align:center">\s</td>
+<td>匹配所有空格字符，等同于： <code>[\t\n\f\r\p&#123;Z&#125;]</code></td>
+</tr>
+<tr>
+<td style="text-align:center">\S</td>
+<td>匹配所有非空格字符： <code>[^\s]</code></td>
+</tr>
+<tr>
+<td style="text-align:center">\f</td>
+<td>匹配一个换页符</td>
+</tr>
+<tr>
+<td style="text-align:center">\n</td>
+<td>匹配一个换行符</td>
+</tr>
+<tr>
+<td style="text-align:center">\r</td>
+<td>匹配一个回车符</td>
+</tr>
+<tr>
+<td style="text-align:center">\t</td>
+<td>匹配一个制表符</td>
+</tr>
+<tr>
+<td style="text-align:center">\v</td>
+<td>匹配一个垂直制表符</td>
+</tr>
+<tr>
+<td style="text-align:center">\p</td>
+<td>匹配 CR/LF（等同于 <code>\r\n</code>），用来匹配 DOS 行终止符</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-零宽度断言前后预查"><a class="markdownIt-Anchor" href="#4-零宽度断言前后预查"></a> 4. 零宽度断言（前后预查）</h2>
+<p>先行断言和后发断言（合称 lookaround）都属于<strong>非捕获组</strong>（用于匹配模式，但不包括在匹配列表中）。当我们需要一个模式的前面或后面有另一个特定的模式时，就可以使用它们。</p>
+<p>例如，我们希望从下面的输入字符串 字符开头的数字，我们将使用以下的正则表达式 <code>(?&lt;=\$)[0-9\.]*</code>。意思是：获取所有包含 <code>.</code> 并且前面是 <code>$</code> 的数字。</p>
+<p>零宽度断言如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">符号</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">?=</td>
+<td>正先行断言-存在</td>
+</tr>
+<tr>
+<td style="text-align:center">?!</td>
+<td>负先行断言-排除</td>
+</tr>
+<tr>
+<td style="text-align:center">?&lt;=</td>
+<td>正后发断言-存在</td>
+</tr>
+<tr>
+<td style="text-align:center">?&lt;!</td>
+<td>负后发断言-排除</td>
+</tr>
+</tbody>
+</table>
+<h3 id="41-正先行断言"><a class="markdownIt-Anchor" href="#41-正先行断言"></a> 4.1 <code>?=...</code> 正先行断言</h3>
+<p><code>?=...</code> 正先行断言，表示第一部分表达式之后必须跟着 <code>?=...</code>定义的表达式。</p>
+<p>返回结果只包含满足匹配条件的第一部分表达式。<br />
+定义一个正先行断言要使用 <code>()</code>。在括号内部使用一个问号和等号： <code>(?=...)</code>。</p>
+<p>正先行断言的内容写在括号中的等号后面。<br />
+例如，表达式 <code>(T|t)he(?=\sfat)</code> 匹配 <code>The</code> 和 <code>the</code>，在括号中我们又定义了正先行断言 <code>(?=\sfat)</code> ，即 <code>The</code> 和 <code>the</code> 后面紧跟着 <code>(空格)fat</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(T|t)he(?=\sfat)&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/IDDARt/1">在线练习</a></p>
+<h3 id="42-负先行断言"><a class="markdownIt-Anchor" href="#42-负先行断言"></a> 4.2 <code>?!...</code> 负先行断言</h3>
+<p>负先行断言 <code>?!</code> 用于筛选所有匹配结果，筛选条件为 其后不跟随着断言中定义的格式。<br />
+<code>正先行断言</code> 定义和 <code>负先行断言</code> 一样，区别就是 <code>=</code> 替换成 <code>!</code> 也就是 <code>(?!...)</code>。</p>
+<p>表达式 <code>(T|t)he(?!\sfat)</code> 匹配 <code>The</code> 和 <code>the</code>，且其后不跟着 <code>(空格)fat</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(T|t)he(?!\sfat)&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/V32Npg/1">在线练习</a></p>
+<h3 id="43-正后发断言"><a class="markdownIt-Anchor" href="#43-正后发断言"></a> 4.3 <code>?&lt;= ...</code> 正后发断言</h3>
+<p>正后发断言 记作<code>(?&lt;=...)</code> 用于筛选所有匹配结果，筛选条件为 其前跟随着断言中定义的格式。<br />
+例如，表达式 <code>(?&lt;=(T|t)he\s)(fat|mat)</code> 匹配 <code>fat</code> 和 <code>mat</code>，且其前跟着 <code>The</code> 或 <code>the</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(?&lt;=(T|t)he\s)(fat|mat)&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/avH165/1">在线练习</a></p>
+<h3 id="44-负后发断言"><a class="markdownIt-Anchor" href="#44-负后发断言"></a> 4.4 <code>?&lt;!...</code> 负后发断言</h3>
+<p>负后发断言 记作 <code>(?&lt;!...)</code> 用于筛选所有匹配结果，筛选条件为 其前不跟随着断言中定义的格式。<br />
+例如，表达式 <code>(?&lt;!(T|t)he\s)(cat)</code> 匹配 <code>cat</code>，且其前不跟着 <code>The</code> 或 <code>the</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(?&lt;!(T|t)he\s)(cat)&quot; =&gt; The cat sat on cat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/8Efx5G/1">在线练习</a></p>
+<h2 id="5-标志"><a class="markdownIt-Anchor" href="#5-标志"></a> 5. 标志</h2>
+<p>标志也叫模式修正符，因为它可以用来修改表达式的搜索结果。<br />
+这些标志可以任意的组合使用，它也是整个正则表达式的一部分。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">标志</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">i</td>
+<td>忽略大小写。</td>
+</tr>
+<tr>
+<td style="text-align:center">g</td>
+<td>全局搜索。</td>
+</tr>
+<tr>
+<td style="text-align:center">m</td>
+<td>多行修饰符：锚点元字符 <code>^</code> <code>$</code> 工作范围在每行的起始。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="51-忽略大小写-case-insensitive"><a class="markdownIt-Anchor" href="#51-忽略大小写-case-insensitive"></a> 5.1 忽略大小写 (Case Insensitive)</h3>
+<p>修饰语 <code>i</code> 用于忽略大小写。<br />
+例如，表达式 <code>/The/gi</code> 表示在全局搜索 <code>The</code>，在后面的 <code>i</code> 将其条件修改为忽略大小写，则变成搜索 <code>the</code> 和 <code>The</code>，<code>g</code> 表示全局搜索。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;The&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/dpQyf9/1">在线练习</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/The/gi&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/ahfiuh/1">在线练习</a></p>
+<h3 id="52-全局搜索-global-search"><a class="markdownIt-Anchor" href="#52-全局搜索-global-search"></a> 5.2 全局搜索 (Global search)</h3>
+<p>修饰符 <code>g</code> 常用于执行一个全局搜索匹配，即（不仅仅返回第一个匹配的，而是返回全部）。<br />
+例如，表达式 <code>/.(at)/g</code> 表示搜索 任意字符（除了换行）+ <code>at</code>，并返回全部结果。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/.(at)/&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/jnk6gM/1">在线练习</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/.(at)/g&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/dO1nef/1">在线练习</a></p>
+<h3 id="53-多行修饰符-multiline"><a class="markdownIt-Anchor" href="#53-多行修饰符-multiline"></a> 5.3 多行修饰符 (Multiline)</h3>
+<p>多行修饰符 <code>m</code> 常用于执行一个多行匹配。</p>
+<p>像之前介绍的 <code>(^,$)</code> 用于检查格式是否是在待检测字符串的开头或结尾。但我们如果想要它在每行的开头和结尾生效，我们需要用到多行修饰符 <code>m</code>。</p>
+<p>例如，表达式 <code>/at(.)?$/gm</code> 表示小写字符 <code>a</code> 后跟小写字符 <code>t</code> ，末尾可选除换行符外任意字符。根据 <code>m</code> 修饰符，现在表达式匹配每行的结尾。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/.at(.)?$/&quot; =&gt; The fat</span><br><span class="line">                cat sat</span><br><span class="line">                on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/hoGMkP/1">在线练习</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/.at(.)?$/gm&quot; =&gt; The fat</span><br><span class="line">                  cat sat</span><br><span class="line">                  on the mat.</span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/E88WE2/1">在线练习</a></p>
+<h3 id="6-贪婪匹配与惰性匹配-greedy-vs-lazy-matching"><a class="markdownIt-Anchor" href="#6-贪婪匹配与惰性匹配-greedy-vs-lazy-matching"></a> 6. 贪婪匹配与惰性匹配 (Greedy vs lazy matching)</h3>
+<p>正则表达式默认采用贪婪匹配模式，在该模式下意味着会匹配尽可能长的子串。我们可以使用 <code>?</code> 将贪婪匹配模式转化为惰性匹配模式。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/(.*at)/&quot; =&gt; The fat cat sat on the mat. </span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/AyAdgJ/1">在线练习</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/(.*?at)/&quot; =&gt; The fat cat sat on the mat. </span><br></pre></td></tr></table></figure>
+<p><a href="https://regex101.com/r/AyAdgJ/2">在线练习</a></p>
+<h2 id="贡献"><a class="markdownIt-Anchor" href="#贡献"></a> 贡献</h2>
+<ul>
+<li>报告问题</li>
+<li>开放合并请求</li>
+<li>传播此文档</li>
+<li>直接和我联系 <a href="mailto:ziishaned@gmail.com">ziishaned@gmail.com</a> 或<a href="https://twitter.com/ziishaned"><img src="https://img.shields.io/twitter/url/https/twitter.com/ziishaned.svg?style=social&amp;label=Follow%20%40ziishaned" alt="Twitter URL" /></a></li>
+</ul>
+<h2 id="许可证"><a class="markdownIt-Anchor" href="#许可证"></a> 许可证</h2>
+<p>MIT © <a href="https://twitter.com/ziishaned">Zeeshan Ahmad</a></p>
 ]]></content>
       <tags>
         <tag>study</tag>
-        <tag>flag</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>论解决问题的方法论</title>
-    <url>/2022/11/10/%E8%AE%BA%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%9A%84%E6%96%B9%E6%B3%95%E8%AE%BA/</url>
-    <content><![CDATA[<h1 id="发生什么事了"><a class="markdownIt-Anchor" href="#发生什么事了"></a> 发生什么事了</h1>
-<p>故事还是得从几天前说起，看了O老师的一个关于排版的视频，我深受启发。</p>
-<p><a href="https://www.bilibili.com/video/BV1GY411E7Jr?share_source=copy_web">一件吵了100多年的小事…… - oooooohmygosh</a></p>
-<p>这个视频讲到了关于引号的问题，探讨了一下现在这一套标点符号系统是如何来的。提到的中文方引号让我很感兴趣，像这样：「」</p>
-<span id="more"></span>
-<p>当时我记在心里面，准备写一个文探讨一下markdown的排版。（正在被中文括号 英文引号 中文引号折磨中）后来没写成。</p>
-<p>今天一个朋友问了我一个字符串的问题，好嘛，我回答完了去自己写的博客看看错了没，结果居然发现我博客上面写的笔记有数组越界的问题。就在我修改的过程中，看到了让强迫症无法容忍的一幕。</p>
-<p><img src="https://pic.imgdb.cn/item/625aa64e239250f7c5020069.png" alt="img" /></p>
-<p>上网搜索的时候发现这是一个小bug，官方有一个暂时的方法就是使用中文的方括号代替引号。（闭环了，我一下子就想到了OOOOO老师提出来的那个括号的问题）</p>
-<p>好吧，这个markdown排版的问题最终我还是出现了，那么正好以此作为例子，探讨一下我解决问题的方法论。</p>
-<h1 id="问题定位"><a class="markdownIt-Anchor" href="#问题定位"></a> 问题定位</h1>
-<p>许多人一上来就直接上网搜索，这样确实没有问题。但是如果要更快地解决必须搜索地更加精准。这里使用hexo的next主题出现这样的问题，那是主题的锅还是hexo的问题呢？换用landscape主题之后发现这个问题还是存在，但是明显好很多。所以肯定使用next主题的人更容易提出这个问题。所以搜索关键词里面加上一个next就更容易搜出来想要的结果。</p>
-<h1 id="搜索"><a class="markdownIt-Anchor" href="#搜索"></a> 搜索</h1>
-<p>假如对html还有css还有hexo什么相关的东西比较了解，那估计自己就能解决。但是我对于这几个东西并没有充分的了解，所以对于我来说还是搜索比较好。</p>
-<p>那该如何搜索呢？网上已经有很多帖子描述了如何善用搜索引擎，像只搜出来文件啊，站内搜索啊等等，但是对于一般的这种问题怎么解决？</p>
-<p>应该在搜索框里面输入：hexo博客next主题中文引号渲染错误怎么办 吗？</p>
-<p>这样是不好的，这样百度把这句话当做一个元素来搜索这句话在哪篇文章里面出现……</p>
-<p>不过这个情况也能搜出来，只能说搜索引擎比较聪明。但是我一直觉得这样搜不好。</p>
-<p>如果是我，我会这样搜：hexo next 引号</p>
-<p>然后找到符合自己问题描述的帖子就好了。我找到了这个：<a href="https://liuqinh2s.github.io/blog/2019/04/15/hexo%E6%8A%8A%E8%8B%B1%E6%96%87%E5%BC%95%E5%8F%B7%E6%B8%B2%E6%9F%93%E6%88%90%E4%B8%AD%E6%96%87%E5%BC%95%E5%8F%B7%E7%9A%84%E9%97%AE%E9%A2%98/">解决问题的帖子</a></p>
-<h1 id="信息来源"><a class="markdownIt-Anchor" href="#信息来源"></a> 信息来源</h1>
-<p>然后就是判断信息来源是否可靠，主要是平时经常在csdn上面看到描述非常贴合自己问题的，但是实际上却非常水，给出来的答案没有什么用。但是上面说的那个帖子确确实实真的是跟我的问题一模一样，但是这个帖子如何并不重要，更重要的是它给出来github上面这个问题的参考链接，然后其中有一个问题完完全全跟我遇到的问题一模一样！这启示了我，因为用的next主题本来就是github里面的一个项目，以后就应该直接搜索github的issue，能得到更加官方的解释。搜bing也是一种绕远路。。</p>
-<p>但是只是理想情况，在next的主题仓库里面的issue下面搜索引号似乎效果并没有那么好。。搜索引号出来一些issue，最后一个才是我想要的，还得花点时间一个一个找。不过要是能找到官方的解决方法，那也是值得的。</p>
-<h1 id="解决问题"><a class="markdownIt-Anchor" href="#解决问题"></a> 解决问题</h1>
-<p>既然已经找到了一个issue有项目的参与者亲自回复，那肯定就不用去看开头那个博客了。里面有这样一段话：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">## 适用默认的 hexo-renderer-marked</span><br><span class="line">marked:</span><br><span class="line">-  smartypants: true</span><br><span class="line">+  smartypants: false</span><br></pre></td></tr></table></figure>
-<p>这里面的加号减号是更改的意思。那就是某一个配置文件里面会有smartypants这一项。我第一反应就是hexo根目录下的config文件（因为哪一个主题都存在问题所以不用管主题里面的配置文件，跟它没关系了），发现并没有这一项。（没有也不能添加啊，这里面说更改肯定是原来已经有这一项了）</p>
-<p>那就疯狂地找这个配置文件呗，首先已经缩小了范围，肯定不在主题文件夹里面。</p>
-<p>然后在~/node_modules下找到了一个叫做hexo-renderer-marked的文件夹，这和上面的那个完全一样。我打开却没有发现任何配置文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">~/blog/node_modules/hexo-renderer-marked  ls                                     </span><br><span class="line"></span><br><span class="line">index.js  lib  LICENSE  package.json  README.md</span><br></pre></td></tr></table></figure>
-<p>遇到这种情况，<a href="http://xn--README-9f2j034eslf4z3ek7a4jm059a4id.md">首先看对应项目的README.md</a>，这是官方文档。</p>
-<p>然后文档里面这么说：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">You can configure this plugin in `_config.yml`.</span><br><span class="line"></span><br><span class="line">``` yaml</span><br><span class="line">marked:</span><br><span class="line">  gfm: true</span><br><span class="line">  pedantic: false</span><br><span class="line">  breaks: true</span><br><span class="line">  smartLists: true</span><br><span class="line">  smartypants: true</span><br><span class="line">  quotes: &#x27;“”‘’&#x27;</span><br><span class="line">  modifyAnchors: 0</span><br><span class="line">  anchorAlias: false</span><br><span class="line">  autolink: true</span><br><span class="line">  mangle: true</span><br><span class="line">  sanitizeUrl: false</span><br><span class="line">  dompurify: false,</span><br><span class="line">  headerIds: true</span><br><span class="line">  lazyload: false</span><br><span class="line">  prependRoot: false</span><br><span class="line">  postAsset: false</span><br><span class="line">  external_link:</span><br><span class="line">    enable: false</span><br><span class="line">    exclude: []</span><br><span class="line">    nofollow: false</span><br><span class="line">  disableNunjucks: false</span><br><span class="line">  descriptionLists: true</span><br><span class="line">```</span><br></pre></td></tr></table></figure>
-<p>我第一反应是，你的这个文件在哪里？是指那个configyml？</p>
-<p>考虑到这是一个默认的hexo的渲染器，这里面的很有可能是指根目录下的configyml。那试一下。将上面这一段直接复制到configyml里面。</p>
-<p>再按照上面的方法把smartypants改成false。然后问题解决 了？</p>
-<p>好嘛，结果引号是正常了，我的\标记用不了，简而言之就是没有阅读全文按钮了，所有的文案全都在首页上展示。。。。</p>
-<p>但是既然只能这么解决，那就必须换一个方法来控制文章截断，\的方法已经无法使用了。</p>
-<p>我这里选择的是description方法控制截断。每一篇文章在写的时候就是用description描述，这样的话就可以截断了，引号也总算正常了。。。</p>
-<h1 id="后记"><a class="markdownIt-Anchor" href="#后记"></a> 后记</h1>
-<p>真的是处处充满妥协。。。因为我对这些知识知之甚少，为了解决这个渲染问题放弃了使用\这么好用的标记符。如果我对于相关知识了解我也许可以自己去动一下，但是现在只能暂时这样了。。。实际上对于markdown渲染我一直非常好奇，有的时候渲染非常规整，有的时候空格会异常。。等到以后也许有时间还是得稍微了解一下网页相关知识，即使将来并不从事前端工作。</p>
-<h1 id="后后记"><a class="markdownIt-Anchor" href="#后后记"></a> 后后记</h1>
-<p>别在那里用你那什么Next主题了, 今天仙贝展示了一个matery主题, 真的是功能该有的都有了, 好像也没发现有什么bug, 属于是连根拔起地解决问题了.</p>
-]]></content>
-      <tags>
-        <tag>touchfish</tag>
-        <tag>空虚地思考</tag>
-        <tag>方法论</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>重新回到arch系</title>
-    <url>/2023/03/09/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0arch%E7%B3%BB/</url>
-    <content><![CDATA[<p>现在是2023年的3月份, Ubuntu23.04即将发布, 带来一个新的更加精简的镜像, 并且带来许多新特性. 但是我却尝试回到了endeavoros. <span id="more"></span></p>
-<p>一直以来, arch系和Ubuntu相对比一直差点意思. 首先是arch自己, 装完桌面后配置过于麻烦, 是在是让人难以忍受. manjaro也不是很好, 突出表现在驱动, 对于N卡的驱动比arch实在是差太多了. 使用manjaro玩MC会画面撕裂, 罪魁祸首还是采取了一个hybrid的显卡驱动方法(当然自2023年以来我也没有再去试manjaro了). 而且manjaro毕竟不是arch, 在使用一些aur软件或者是GitHub的开源项目过程中, 万一出了问题, 有时候没法复现. 毕竟aur是给arch用的而不是给manjaro用的.</p>
-<p>对于一些对arch亲缘比较近的发行版, 对于N卡的方案就好很多, 对于笔记本的双显卡切换试用<code>nvidia-prime</code>的方案, 也就是默认是一种混合的模式, 如果需要使用独显, 显示地用<code>prime-run</code>. 虽然说这个方案没有彻底关闭nvidia省电但是毕竟是官方的方案, 比manjaro的要好.</p>
-<p>当然archwiki也提供了一些其他的方案, 其中有一些方案是需要手动做一些看似很危险的操作, 改一些平时我从来不会去看的文件, 和内核相关. 这些方案确实很吓人, 毕竟如果linux桌面没了还好, kernel panic处理起来可是麻烦多了.</p>
-<p>所以看来看去, 好用的其实就一个首推的, <code>optimus-manager</code>. 这应该是算一个首选. 但是这个也确实有一些弊端, 首先就是它已经很久没有更新了(虽然说It works well so no maintainance is needed). 而且optimus也需要搭配一些其他的包比如说bbswitch一起使用来&quot;延长电池续航时间&quot;. 配置起来还是麻烦.</p>
-<p><code>envycontrol</code>是最新的, 也是目前最优的解. 也是目前我正在使用的, 非常好用, 方便程度相当于Ubuntu里面的<code>prime-select</code>. 我也在近期重新回到了arch发行版, 也是今天的主角: <strong>endeavoros</strong>.</p>
-<p>如果是想要安装xfce的版本那没有什么大问题, 直接安装就行, 默认下面就是给你安装xfce桌面. 但是如果你想安装其他的桌面环境比如说我最喜欢的KDE, 或者是gnome. 那么就需要先<strong>换源</strong>. 保证pacman不会报网络相关的错误. 而且如果不换源的话很有可能它会给你报错, 就说连不上网络, 无法使用online模式, 而offline只有xfce这一种桌面环境. 联网了之后的选择是十分丰富的.</p>
-<p>其实和manjaro确实差不太多, 可以参看manjaro那一篇文章. 关于Ubuntu的那一篇文章写的是真的详细. 在进入live环境的时候如果选择了nvidia的那个选择项, 那么在安装完成之后应该会是自动安装的N卡驱动. 然后再搭配上最新的envycontrol, 简直是完美.</p>
-<p>可以说流畅地用上了arch系简直是走上了人生巅峰的感觉.</p>
-<h1 id="pacman包管理器"><a class="markdownIt-Anchor" href="#pacman包管理器"></a> pacman包管理器</h1>
-<p>对于安装, 多是S开头. 没有什么稀奇的地方.</p>
-<p><code>pacman -Rs package_name</code>: 相比普通的-R, 这个会remove所有的dependencies.</p>
-<p><code>pacman -Rn package_name</code>: prevent backup files of package.</p>
-<p>显然-Rsn是未来经常用的命令了.</p>
-<p><code>pacman -Syu</code>: 更新整个系统. 如果是Syyu, 就是强制重新sync repo, 即使repo已经报告它没有被更新.</p>
-<p>除开更新下载和安装, 查询也是包管理器重要的功能. 随着对linux系统使用的深入, 查询命令确实用得越来越多.</p>
-<blockquote>
-<p>Pacman queries the local package database with the <code>-Q</code> flag, the sync database with the <code>-S</code> flag and the files database with the <code>-F</code> flag. See <code>pacman -Q --help</code>, <code>pacman -S --help</code> and <code>pacman -F --help</code> for the respective suboptions of each flag.</p>
-</blockquote>
-<p><code>pacman -Ss string1 string2 ...</code>: 在远端搜索这个包的名字, 列出描述. 这个描述还是比较简略, 但是关键是它显示了每个包来自于哪个仓库:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜  ~ sudo pacman -Ss neovim     </span><br><span class="line">community/neovide 0.10.3-1</span><br><span class="line">    No Nonsense Neovim Client in Rust</span><br><span class="line">community/neovim 0.8.3-1 [installed]</span><br><span class="line">    Fork of Vim aiming to improve user experience, plugins, and GUIs</span><br><span class="line">...省略, 类似这一种显示信息.</span><br></pre></td></tr></table></figure>
-<p>如果觉得信息太少, 使用-Si查看extensive的信息.</p>
-<p>对于已经install的包, 可以使用-Q选项来查询:</p>
-<p><code>pacman -Qs neovim</code></p>
-<p>同样的:</p>
-<p><code>pacman -Qi neovim</code></p>
-<p>如果想要查看一个包安装在哪些目录, 使用-Ql, 这样一下子确实输出很多目录.</p>
-<p>然后还有一个特别乐的, 可以看一个文件是谁在maintain:</p>
-<p><code>pacman -Qo filepath</code></p>
-<p>我就是通过这么命令验证了<code>/etc/environment</code>这个文件是属于哪一个包, 在群友的帮助下确实学到了很多.</p>
-]]></content>
-      <tags>
-        <tag>linux</tag>
-        <tag>touchfish</tag>
+        <tag>笔记摘抄</tag>
       </tags>
   </entry>
   <entry>
@@ -3235,355 +3457,133 @@ rm -f bar.o
       </tags>
   </entry>
   <entry>
-    <title>正则表达式</title>
-    <url>/2022/11/10/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
-    <content><![CDATA[<h2 id="1-基本匹配"><a class="markdownIt-Anchor" href="#1-基本匹配"></a> 1. 基本匹配</h2>
-<p>正则表达式其实就是在执行搜索时的格式，它由一些字母和数字组合而成。<br />
-例如：一个正则表达式 <code>the</code>，它表示一个规则：由字母<code>t</code>开始，接着是<code>h</code>，再接着是<code>e</code>。</p>
+    <title>计算机学习计划(置顶)</title>
+    <url>/2022/11/10/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/</url>
+    <content><![CDATA[<p>曾经这里是一个暑假的计算机提升计划, 但是现在来看, 这个暑假甚至都没有时间把课内的知识复习完. 这确实是非常生草. 这个计划还是非常重要, 预计是半年一次, 也就是这个文章半年一更新. 既然已经重新确立了标准就得重新规划一下. 🚧✅❌</p>
 <span id="more"></span>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;the&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/dmRygT/1">在线练习</a></p>
-<p>正则表达式<code>123</code>匹配字符串<code>123</code>。它逐个字符的与输入的正则表达式做比较。</p>
-<p>正则表达式是大小写敏感的，所以<code>The</code>不会匹配<code>the</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;The&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/1paXsy/1">在线练习</a></p>
-<h2 id="2-元字符"><a class="markdownIt-Anchor" href="#2-元字符"></a> 2. 元字符</h2>
-<p>正则表达式主要依赖于元字符。<br />
-元字符不代表他们本身的字面意思，他们都有特殊的含义。一些元字符写在方括号中的时候有一些特殊的意思。以下是一些元字符的介绍：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">元字符</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">.</td>
-<td>句号匹配任意单个字符除了换行符。</td>
-</tr>
-<tr>
-<td style="text-align:center">[ ]</td>
-<td>字符种类。匹配方括号内的任意字符。</td>
-</tr>
-<tr>
-<td style="text-align:center">[^ ]</td>
-<td>否定的字符种类。匹配除了方括号里的任意字符</td>
-</tr>
-<tr>
-<td style="text-align:center">*</td>
-<td>匹配&gt;=0个重复的在*号之前的字符。</td>
-</tr>
-<tr>
-<td style="text-align:center">+</td>
-<td>匹配&gt;=1个重复的+号前的字符。</td>
-</tr>
-<tr>
-<td style="text-align:center">?</td>
-<td>标记?之前的字符为可选.</td>
-</tr>
-<tr>
-<td style="text-align:center">{n,m}</td>
-<td>匹配num个大括号之前的字符或字符集 (n &lt;= num &lt;= m).</td>
-</tr>
-<tr>
-<td style="text-align:center">(xyz)</td>
-<td>字符集，匹配与 xyz 完全相等的字符串.</td>
-</tr>
-<tr>
-<td style="text-align:center">管道符</td>
-<td>或运算符，匹配符号前或后的字符.</td>
-</tr>
-<tr>
-<td style="text-align:center">\</td>
-<td>转义字符,用于匹配一些保留的字符.</td>
-</tr>
-<tr>
-<td style="text-align:center">^</td>
-<td>从开始行开始匹配.</td>
-</tr>
-<tr>
-<td style="text-align:center">$</td>
-<td>从末端开始匹配.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="21-点运算符"><a class="markdownIt-Anchor" href="#21-点运算符"></a> 2.1 点运算符 <code>.</code></h2>
-<p><code>.</code>是元字符中最简单的例子。<br />
-<code>.</code>匹配任意单个字符，但不匹配换行符。<br />
-例如，表达式<code>.ar</code>匹配一个任意字符后面跟着是<code>a</code>和<code>r</code>的字符串。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;.ar&quot; =&gt; The car parked in the garage.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/xc9GkU/1">在线练习</a></p>
-<h2 id="22-字符集"><a class="markdownIt-Anchor" href="#22-字符集"></a> 2.2 字符集</h2>
-<p>字符集也叫做字符类。<br />
-方括号用来指定一个字符集。<br />
-在方括号中使用连字符来指定字符集的范围。<br />
-在方括号中的字符集不关心顺序。<br />
-例如，表达式<code>[Tt]he</code> 匹配 <code>the</code> 和 <code>The</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[Tt]he&quot; =&gt; The car parked in the garage.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/2ITLQ4/1">在线练习</a></p>
-<p>方括号的句号就表示句号。<br />
-表达式 <code>ar[.]</code> 匹配 <code>ar.</code>字符串</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;ar[.]&quot; =&gt; A garage is a good place to park a car.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/wL3xtE/1">在线练习</a></p>
-<h3 id="221-否定字符集"><a class="markdownIt-Anchor" href="#221-否定字符集"></a> 2.2.1 否定字符集</h3>
-<p>一般来说 <code>^</code> 表示一个字符串的开头，但它用在一个方括号的开头的时候，它表示这个字符集是否定的。<br />
-例如，表达式<code>[^c]ar</code> 匹配一个后面跟着<code>ar</code>的除了<code>c</code>的任意字符。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[^c]ar&quot; =&gt; The car parked in the garage.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/nNNlq3/1">在线练习</a></p>
-<h2 id="23-重复次数"><a class="markdownIt-Anchor" href="#23-重复次数"></a> 2.3 重复次数</h2>
-<p>后面跟着元字符 <code>+</code>，<code>*</code> or <code>?</code> 的，用来指定匹配子模式的次数。<br />
-这些元字符在不同的情况下有着不同的意思。</p>
-<h3 id="231-号"><a class="markdownIt-Anchor" href="#231-号"></a> 2.3.1 <code>*</code> 号</h3>
-<p><code>*</code>号匹配 在<code>*</code>之前的字符出现<code>大于等于0</code>次。<br />
-例如，表达式 <code>a*</code> 匹配0或更多个以a开头的字符。表达式<code>[a-z]*</code> 匹配一个行中所有以小写字母开头的字符串。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[a-z]*&quot; =&gt; The car parked in the garage #21.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/7m8me5/1">在线练习</a></p>
-<p><code>*</code>字符和<code>.</code>字符搭配可以匹配所有的字符<code>.*</code>。<br />
-<code>*</code>和表示匹配空格的符号<code>\s</code>连起来用，如表达式<code>\s*cat\s*</code>匹配0或更多个空格开头和0或更多个空格结尾的cat字符串。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;\s*cat\s*&quot; =&gt; The fat cat sat on the concatenation.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/gGrwuz/1">在线练习</a></p>
-<h3 id="232-号"><a class="markdownIt-Anchor" href="#232-号"></a> 2.3.2 <code>+</code> 号</h3>
-<p><code>+</code>号匹配<code>+</code>号之前的字符出现 &gt;=1 次。<br />
-例如表达式<code>c.+t</code> 匹配以首字母<code>c</code>开头以<code>t</code>结尾，中间跟着至少一个字符的字符串。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;c.+t&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/Dzf9Aa/1">在线练习</a></p>
-<h3 id="233-号"><a class="markdownIt-Anchor" href="#233-号"></a> 2.3.3 <code>?</code> 号</h3>
-<p>在正则表达式中元字符 <code>?</code> 标记在符号前面的字符为可选，即出现 0 或 1 次。<br />
-例如，表达式 <code>[T]?he</code> 匹配字符串 <code>he</code> 和 <code>The</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[T]he&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/cIg9zm/1">在线练习</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[T]?he&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/kPpO2x/1">在线练习</a></p>
-<h2 id="24-号"><a class="markdownIt-Anchor" href="#24-号"></a> 2.4 <code>&#123;&#125;</code> 号</h2>
-<p>在正则表达式中 <code>&#123;&#125;</code> 是一个量词，常用来限定一个或一组字符可以重复出现的次数。<br />
-例如， 表达式 <code>[0-9]&#123;2,3&#125;</code> 匹配最少 2 位最多 3 位 0~9 的数字。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[0-9]&#123;2,3&#125;&quot; =&gt; The number was 9.9997 but we rounded it off to 10.0.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/juM86s/1">在线练习</a></p>
-<p>我们可以省略第二个参数。<br />
-例如，<code>[0-9]&#123;2,&#125;</code> 匹配至少两位 0~9 的数字。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[0-9]&#123;2,&#125;&quot; =&gt; The number was 9.9997 but we rounded it off to 10.0.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/Gdy4w5/1">在线练习</a></p>
-<p>如果逗号也省略掉则表示重复固定的次数。<br />
-例如，<code>[0-9]&#123;3&#125;</code> 匹配3位数字</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[0-9]&#123;3&#125;&quot; =&gt; The number was 9.9997 but we rounded it off to 10.0.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/Sivu30/1">在线练习</a></p>
-<h2 id="25-特征标群"><a class="markdownIt-Anchor" href="#25-特征标群"></a> 2.5 <code>(...)</code> 特征标群</h2>
-<p>特征标群是一组写在 <code>(...)</code> 中的子模式。<code>(...)</code> 中包含的内容将会被看成一个整体，和数学中小括号（ ）的作用相同。例如, 表达式 <code>(ab)*</code> 匹配连续出现 0 或更多个 <code>ab</code>。如果没有使用 <code>(...)</code> ，那么表达式 <code>ab*</code> 将匹配连续出现 0 或更多个 <code>b</code> 。再比如之前说的 <code>&#123;&#125;</code> 是用来表示前面一个字符出现指定次数。但如果在 <code>&#123;&#125;</code> 前加上特征标群 <code>(...)</code> 则表示整个标群内的字符重复 N 次。</p>
-<p>我们还可以在 <code>()</code> 中用或字符 <code>|</code> 表示或。例如，<code>(c|g|p)ar</code> 匹配 <code>car</code> 或 <code>gar</code> 或 <code>par</code>.</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(c|g|p)ar&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/tUxrBG/1">在线练习</a></p>
-<h2 id="26-或运算符"><a class="markdownIt-Anchor" href="#26-或运算符"></a> 2.6 <code>|</code> 或运算符</h2>
-<p>或运算符就表示或，用作判断条件。</p>
-<p>例如 <code>(T|t)he|car</code> 匹配 <code>(T|t)he</code> 或 <code>car</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(T|t)he|car&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/fBXyX0/1">在线练习</a></p>
-<h2 id="27-转码特殊字符"><a class="markdownIt-Anchor" href="#27-转码特殊字符"></a> 2.7 转码特殊字符</h2>
-<p>反斜线 <code>\</code> 在表达式中用于转码紧跟其后的字符。用于指定 <code>&#123; &#125; [ ] / \ + * . $ ^ | ?</code> 这些特殊字符。如果想要匹配这些特殊字符则要在其前面加上反斜线 <code>\</code>。</p>
-<p>例如 <code>.</code> 是用来匹配除换行符外的所有字符的。如果想要匹配句子中的 <code>.</code> 则要写成 <code>\.</code> 以下这个例子 <code>\.?</code>是选择性匹配<code>.</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(f|c|m)at\.?&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/DOc5Nu/1">在线练习</a></p>
-<h2 id="28-锚点"><a class="markdownIt-Anchor" href="#28-锚点"></a> 2.8 锚点</h2>
-<p>在正则表达式中，想要匹配指定开头或结尾的字符串就要使用到锚点。<code>^</code> 指定开头，<code>$</code> 指定结尾。</p>
-<h3 id="281-号"><a class="markdownIt-Anchor" href="#281-号"></a> 2.8.1 <code>^</code> 号</h3>
-<p><code>^</code> 用来检查匹配的字符串是否在所匹配字符串的开头。</p>
-<p>例如，在 <code>abc</code> 中使用表达式 <code>^a</code> 会得到结果 <code>a</code>。但如果使用 <code>^b</code> 将匹配不到任何结果。因为在字符串 <code>abc</code> 中并不是以 <code>b</code> 开头。</p>
-<p>例如，<code>^(T|t)he</code> 匹配以 <code>The</code> 或 <code>the</code> 开头的字符串。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(T|t)he&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/5ljjgB/1">在线练习</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;^(T|t)he&quot; =&gt; The car is parked in the garage.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/jXrKne/1">在线练习</a></p>
-<h3 id="282-号"><a class="markdownIt-Anchor" href="#282-号"></a> 2.8.2 <code>$</code> 号</h3>
-<p>同理于 <code>^</code> 号，<code>$</code> 号用来匹配字符是否是最后一个。</p>
-<p>例如，<code>(at\.)$</code> 匹配以 <code>at.</code> 结尾的字符串。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(at\.)&quot; =&gt; The fat cat. sat. on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/y4Au4D/1">在线练习</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(at\.)$&quot; =&gt; The fat cat. sat. on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/t0AkOd/1">在线练习</a></p>
-<h2 id="3-简写字符集"><a class="markdownIt-Anchor" href="#3-简写字符集"></a> 3. 简写字符集</h2>
-<p>正则表达式提供一些常用的字符集简写。如下:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">简写</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">.</td>
-<td>除换行符外的所有字符</td>
-</tr>
-<tr>
-<td style="text-align:center">\w</td>
-<td>匹配所有字母数字，等同于 <code>[a-zA-Z0-9_]</code></td>
-</tr>
-<tr>
-<td style="text-align:center">\W</td>
-<td>匹配所有非字母数字，即符号，等同于： <code>[^\w]</code></td>
-</tr>
-<tr>
-<td style="text-align:center">\d</td>
-<td>匹配数字： <code>[0-9]</code></td>
-</tr>
-<tr>
-<td style="text-align:center">\D</td>
-<td>匹配非数字： <code>[^\d]</code></td>
-</tr>
-<tr>
-<td style="text-align:center">\s</td>
-<td>匹配所有空格字符，等同于： <code>[\t\n\f\r\p&#123;Z&#125;]</code></td>
-</tr>
-<tr>
-<td style="text-align:center">\S</td>
-<td>匹配所有非空格字符： <code>[^\s]</code></td>
-</tr>
-<tr>
-<td style="text-align:center">\f</td>
-<td>匹配一个换页符</td>
-</tr>
-<tr>
-<td style="text-align:center">\n</td>
-<td>匹配一个换行符</td>
-</tr>
-<tr>
-<td style="text-align:center">\r</td>
-<td>匹配一个回车符</td>
-</tr>
-<tr>
-<td style="text-align:center">\t</td>
-<td>匹配一个制表符</td>
-</tr>
-<tr>
-<td style="text-align:center">\v</td>
-<td>匹配一个垂直制表符</td>
-</tr>
-<tr>
-<td style="text-align:center">\p</td>
-<td>匹配 CR/LF（等同于 <code>\r\n</code>），用来匹配 DOS 行终止符</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-零宽度断言前后预查"><a class="markdownIt-Anchor" href="#4-零宽度断言前后预查"></a> 4. 零宽度断言（前后预查）</h2>
-<p>先行断言和后发断言（合称 lookaround）都属于<strong>非捕获组</strong>（用于匹配模式，但不包括在匹配列表中）。当我们需要一个模式的前面或后面有另一个特定的模式时，就可以使用它们。</p>
-<p>例如，我们希望从下面的输入字符串 字符开头的数字，我们将使用以下的正则表达式 <code>(?&lt;=\$)[0-9\.]*</code>。意思是：获取所有包含 <code>.</code> 并且前面是 <code>$</code> 的数字。</p>
-<p>零宽度断言如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">符号</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">?=</td>
-<td>正先行断言-存在</td>
-</tr>
-<tr>
-<td style="text-align:center">?!</td>
-<td>负先行断言-排除</td>
-</tr>
-<tr>
-<td style="text-align:center">?&lt;=</td>
-<td>正后发断言-存在</td>
-</tr>
-<tr>
-<td style="text-align:center">?&lt;!</td>
-<td>负后发断言-排除</td>
-</tr>
-</tbody>
-</table>
-<h3 id="41-正先行断言"><a class="markdownIt-Anchor" href="#41-正先行断言"></a> 4.1 <code>?=...</code> 正先行断言</h3>
-<p><code>?=...</code> 正先行断言，表示第一部分表达式之后必须跟着 <code>?=...</code>定义的表达式。</p>
-<p>返回结果只包含满足匹配条件的第一部分表达式。<br />
-定义一个正先行断言要使用 <code>()</code>。在括号内部使用一个问号和等号： <code>(?=...)</code>。</p>
-<p>正先行断言的内容写在括号中的等号后面。<br />
-例如，表达式 <code>(T|t)he(?=\sfat)</code> 匹配 <code>The</code> 和 <code>the</code>，在括号中我们又定义了正先行断言 <code>(?=\sfat)</code> ，即 <code>The</code> 和 <code>the</code> 后面紧跟着 <code>(空格)fat</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(T|t)he(?=\sfat)&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/IDDARt/1">在线练习</a></p>
-<h3 id="42-负先行断言"><a class="markdownIt-Anchor" href="#42-负先行断言"></a> 4.2 <code>?!...</code> 负先行断言</h3>
-<p>负先行断言 <code>?!</code> 用于筛选所有匹配结果，筛选条件为 其后不跟随着断言中定义的格式。<br />
-<code>正先行断言</code> 定义和 <code>负先行断言</code> 一样，区别就是 <code>=</code> 替换成 <code>!</code> 也就是 <code>(?!...)</code>。</p>
-<p>表达式 <code>(T|t)he(?!\sfat)</code> 匹配 <code>The</code> 和 <code>the</code>，且其后不跟着 <code>(空格)fat</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(T|t)he(?!\sfat)&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/V32Npg/1">在线练习</a></p>
-<h3 id="43-正后发断言"><a class="markdownIt-Anchor" href="#43-正后发断言"></a> 4.3 <code>?&lt;= ...</code> 正后发断言</h3>
-<p>正后发断言 记作<code>(?&lt;=...)</code> 用于筛选所有匹配结果，筛选条件为 其前跟随着断言中定义的格式。<br />
-例如，表达式 <code>(?&lt;=(T|t)he\s)(fat|mat)</code> 匹配 <code>fat</code> 和 <code>mat</code>，且其前跟着 <code>The</code> 或 <code>the</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(?&lt;=(T|t)he\s)(fat|mat)&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/avH165/1">在线练习</a></p>
-<h3 id="44-负后发断言"><a class="markdownIt-Anchor" href="#44-负后发断言"></a> 4.4 <code>?&lt;!...</code> 负后发断言</h3>
-<p>负后发断言 记作 <code>(?&lt;!...)</code> 用于筛选所有匹配结果，筛选条件为 其前不跟随着断言中定义的格式。<br />
-例如，表达式 <code>(?&lt;!(T|t)he\s)(cat)</code> 匹配 <code>cat</code>，且其前不跟着 <code>The</code> 或 <code>the</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;(?&lt;!(T|t)he\s)(cat)&quot; =&gt; The cat sat on cat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/8Efx5G/1">在线练习</a></p>
-<h2 id="5-标志"><a class="markdownIt-Anchor" href="#5-标志"></a> 5. 标志</h2>
-<p>标志也叫模式修正符，因为它可以用来修改表达式的搜索结果。<br />
-这些标志可以任意的组合使用，它也是整个正则表达式的一部分。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">标志</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">i</td>
-<td>忽略大小写。</td>
-</tr>
-<tr>
-<td style="text-align:center">g</td>
-<td>全局搜索。</td>
-</tr>
-<tr>
-<td style="text-align:center">m</td>
-<td>多行修饰符：锚点元字符 <code>^</code> <code>$</code> 工作范围在每行的起始。</td>
-</tr>
-</tbody>
-</table>
-<h3 id="51-忽略大小写-case-insensitive"><a class="markdownIt-Anchor" href="#51-忽略大小写-case-insensitive"></a> 5.1 忽略大小写 (Case Insensitive)</h3>
-<p>修饰语 <code>i</code> 用于忽略大小写。<br />
-例如，表达式 <code>/The/gi</code> 表示在全局搜索 <code>The</code>，在后面的 <code>i</code> 将其条件修改为忽略大小写，则变成搜索 <code>the</code> 和 <code>The</code>，<code>g</code> 表示全局搜索。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;The&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/dpQyf9/1">在线练习</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/The/gi&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/ahfiuh/1">在线练习</a></p>
-<h3 id="52-全局搜索-global-search"><a class="markdownIt-Anchor" href="#52-全局搜索-global-search"></a> 5.2 全局搜索 (Global search)</h3>
-<p>修饰符 <code>g</code> 常用于执行一个全局搜索匹配，即（不仅仅返回第一个匹配的，而是返回全部）。<br />
-例如，表达式 <code>/.(at)/g</code> 表示搜索 任意字符（除了换行）+ <code>at</code>，并返回全部结果。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/.(at)/&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/jnk6gM/1">在线练习</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/.(at)/g&quot; =&gt; The fat cat sat on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/dO1nef/1">在线练习</a></p>
-<h3 id="53-多行修饰符-multiline"><a class="markdownIt-Anchor" href="#53-多行修饰符-multiline"></a> 5.3 多行修饰符 (Multiline)</h3>
-<p>多行修饰符 <code>m</code> 常用于执行一个多行匹配。</p>
-<p>像之前介绍的 <code>(^,$)</code> 用于检查格式是否是在待检测字符串的开头或结尾。但我们如果想要它在每行的开头和结尾生效，我们需要用到多行修饰符 <code>m</code>。</p>
-<p>例如，表达式 <code>/at(.)?$/gm</code> 表示小写字符 <code>a</code> 后跟小写字符 <code>t</code> ，末尾可选除换行符外任意字符。根据 <code>m</code> 修饰符，现在表达式匹配每行的结尾。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/.at(.)?$/&quot; =&gt; The fat</span><br><span class="line">                cat sat</span><br><span class="line">                on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/hoGMkP/1">在线练习</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/.at(.)?$/gm&quot; =&gt; The fat</span><br><span class="line">                  cat sat</span><br><span class="line">                  on the mat.</span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/E88WE2/1">在线练习</a></p>
-<h3 id="6-贪婪匹配与惰性匹配-greedy-vs-lazy-matching"><a class="markdownIt-Anchor" href="#6-贪婪匹配与惰性匹配-greedy-vs-lazy-matching"></a> 6. 贪婪匹配与惰性匹配 (Greedy vs lazy matching)</h3>
-<p>正则表达式默认采用贪婪匹配模式，在该模式下意味着会匹配尽可能长的子串。我们可以使用 <code>?</code> 将贪婪匹配模式转化为惰性匹配模式。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/(.*at)/&quot; =&gt; The fat cat sat on the mat. </span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/AyAdgJ/1">在线练习</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;/(.*?at)/&quot; =&gt; The fat cat sat on the mat. </span><br></pre></td></tr></table></figure>
-<p><a href="https://regex101.com/r/AyAdgJ/2">在线练习</a></p>
-<h2 id="贡献"><a class="markdownIt-Anchor" href="#贡献"></a> 贡献</h2>
-<ul>
-<li>报告问题</li>
-<li>开放合并请求</li>
-<li>传播此文档</li>
-<li>直接和我联系 <a href="mailto:ziishaned@gmail.com">ziishaned@gmail.com</a> 或<a href="https://twitter.com/ziishaned"><img src="https://img.shields.io/twitter/url/https/twitter.com/ziishaned.svg?style=social&amp;label=Follow%20%40ziishaned" alt="Twitter URL" /></a></li>
-</ul>
-<h2 id="许可证"><a class="markdownIt-Anchor" href="#许可证"></a> 许可证</h2>
-<p>MIT © <a href="https://twitter.com/ziishaned">Zeeshan Ahmad</a></p>
+<h1 id="大一"><a class="markdownIt-Anchor" href="#大一"></a> 大一</h1>
+<p>✅摆烂</p>
+<h1 id="大二上需要课外的东西寒假"><a class="markdownIt-Anchor" href="#大二上需要课外的东西寒假"></a> 大二上需要课外的东西(寒假)</h1>
+<p>✅理解透彻missing-semester的课程. 把课程里面的每一个笔记都尽量看懂.<br />
+✅好好学习(草)<br />
+❌看csapp(已改动, 把优先级提到lua之前.)<br />
+❌看lua的官方文档. (C语言复习)<br />
+✅了解一下rust</p>
+<h1 id="大二上之后的寒假"><a class="markdownIt-Anchor" href="#大二上之后的寒假"></a> 大二上之后的寒假</h1>
+<p>我现在看着以前的安排, 我估计是很难完成了, 因为考试又推迟了, 像是这种情况寒假就很难学到什么新东西了, 因为要卷绩点. 所以目标变一下:</p>
+<p>❌好好复习备考 尤其是数据结构<br />
+❌了解一下STL的作用 为后面多刷LeetCode题目作准备<br />
+❌了解一下python 优先级高于rust<br />
+✅了解一下rust</p>
+<p>这个寒假其实这些任务也很难完成, 因为还要肝原神~~(我超 原!).~~</p>
+<h1 id="大二下和暑假"><a class="markdownIt-Anchor" href="#大二下和暑假"></a> 大二下和暑假</h1>
+<p>❌专心研究算法<br />
+✅假期看操作系统相关 csapp</p>
+<h1 id="大三上"><a class="markdownIt-Anchor" href="#大三上"></a> 大三上</h1>
+<p>❌研究编译原理和计算机网络 两门课好好学<br />
+❌学习一些C++新标准<br />
+❌读CSAPP</p>
+<h1 id="大三上寒假"><a class="markdownIt-Anchor" href="#大三上寒假"></a> 大三上寒假</h1>
+<p>🚧收集考研相关信息<br />
+🚧肝完leetcode75题<br />
+🚧读完C++并发编程<br />
+🚧拔智齿</p>
 ]]></content>
       <tags>
         <tag>study</tag>
-        <tag>笔记摘抄</tag>
+        <tag>flag</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>论解决问题的方法论</title>
+    <url>/2022/11/10/%E8%AE%BA%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%9A%84%E6%96%B9%E6%B3%95%E8%AE%BA/</url>
+    <content><![CDATA[<h1 id="发生什么事了"><a class="markdownIt-Anchor" href="#发生什么事了"></a> 发生什么事了</h1>
+<p>故事还是得从几天前说起，看了O老师的一个关于排版的视频，我深受启发。</p>
+<p><a href="https://www.bilibili.com/video/BV1GY411E7Jr?share_source=copy_web">一件吵了100多年的小事…… - oooooohmygosh</a></p>
+<p>这个视频讲到了关于引号的问题，探讨了一下现在这一套标点符号系统是如何来的。提到的中文方引号让我很感兴趣，像这样：「」</p>
+<span id="more"></span>
+<p>当时我记在心里面，准备写一个文探讨一下markdown的排版。（正在被中文括号 英文引号 中文引号折磨中）后来没写成。</p>
+<p>今天一个朋友问了我一个字符串的问题，好嘛，我回答完了去自己写的博客看看错了没，结果居然发现我博客上面写的笔记有数组越界的问题。就在我修改的过程中，看到了让强迫症无法容忍的一幕。</p>
+<p><img src="https://pic.imgdb.cn/item/625aa64e239250f7c5020069.png" alt="img" /></p>
+<p>上网搜索的时候发现这是一个小bug，官方有一个暂时的方法就是使用中文的方括号代替引号。（闭环了，我一下子就想到了OOOOO老师提出来的那个括号的问题）</p>
+<p>好吧，这个markdown排版的问题最终我还是出现了，那么正好以此作为例子，探讨一下我解决问题的方法论。</p>
+<h1 id="问题定位"><a class="markdownIt-Anchor" href="#问题定位"></a> 问题定位</h1>
+<p>许多人一上来就直接上网搜索，这样确实没有问题。但是如果要更快地解决必须搜索地更加精准。这里使用hexo的next主题出现这样的问题，那是主题的锅还是hexo的问题呢？换用landscape主题之后发现这个问题还是存在，但是明显好很多。所以肯定使用next主题的人更容易提出这个问题。所以搜索关键词里面加上一个next就更容易搜出来想要的结果。</p>
+<h1 id="搜索"><a class="markdownIt-Anchor" href="#搜索"></a> 搜索</h1>
+<p>假如对html还有css还有hexo什么相关的东西比较了解，那估计自己就能解决。但是我对于这几个东西并没有充分的了解，所以对于我来说还是搜索比较好。</p>
+<p>那该如何搜索呢？网上已经有很多帖子描述了如何善用搜索引擎，像只搜出来文件啊，站内搜索啊等等，但是对于一般的这种问题怎么解决？</p>
+<p>应该在搜索框里面输入：hexo博客next主题中文引号渲染错误怎么办 吗？</p>
+<p>这样是不好的，这样百度把这句话当做一个元素来搜索这句话在哪篇文章里面出现……</p>
+<p>不过这个情况也能搜出来，只能说搜索引擎比较聪明。但是我一直觉得这样搜不好。</p>
+<p>如果是我，我会这样搜：hexo next 引号</p>
+<p>然后找到符合自己问题描述的帖子就好了。我找到了这个：<a href="https://liuqinh2s.github.io/blog/2019/04/15/hexo%E6%8A%8A%E8%8B%B1%E6%96%87%E5%BC%95%E5%8F%B7%E6%B8%B2%E6%9F%93%E6%88%90%E4%B8%AD%E6%96%87%E5%BC%95%E5%8F%B7%E7%9A%84%E9%97%AE%E9%A2%98/">解决问题的帖子</a></p>
+<h1 id="信息来源"><a class="markdownIt-Anchor" href="#信息来源"></a> 信息来源</h1>
+<p>然后就是判断信息来源是否可靠，主要是平时经常在csdn上面看到描述非常贴合自己问题的，但是实际上却非常水，给出来的答案没有什么用。但是上面说的那个帖子确确实实真的是跟我的问题一模一样，但是这个帖子如何并不重要，更重要的是它给出来github上面这个问题的参考链接，然后其中有一个问题完完全全跟我遇到的问题一模一样！这启示了我，因为用的next主题本来就是github里面的一个项目，以后就应该直接搜索github的issue，能得到更加官方的解释。搜bing也是一种绕远路。。</p>
+<p>但是只是理想情况，在next的主题仓库里面的issue下面搜索引号似乎效果并没有那么好。。搜索引号出来一些issue，最后一个才是我想要的，还得花点时间一个一个找。不过要是能找到官方的解决方法，那也是值得的。</p>
+<h1 id="解决问题"><a class="markdownIt-Anchor" href="#解决问题"></a> 解决问题</h1>
+<p>既然已经找到了一个issue有项目的参与者亲自回复，那肯定就不用去看开头那个博客了。里面有这样一段话：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">## 适用默认的 hexo-renderer-marked</span><br><span class="line">marked:</span><br><span class="line">-  smartypants: true</span><br><span class="line">+  smartypants: false</span><br></pre></td></tr></table></figure>
+<p>这里面的加号减号是更改的意思。那就是某一个配置文件里面会有smartypants这一项。我第一反应就是hexo根目录下的config文件（因为哪一个主题都存在问题所以不用管主题里面的配置文件，跟它没关系了），发现并没有这一项。（没有也不能添加啊，这里面说更改肯定是原来已经有这一项了）</p>
+<p>那就疯狂地找这个配置文件呗，首先已经缩小了范围，肯定不在主题文件夹里面。</p>
+<p>然后在~/node_modules下找到了一个叫做hexo-renderer-marked的文件夹，这和上面的那个完全一样。我打开却没有发现任何配置文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">~/blog/node_modules/hexo-renderer-marked  ls                                     </span><br><span class="line"></span><br><span class="line">index.js  lib  LICENSE  package.json  README.md</span><br></pre></td></tr></table></figure>
+<p>遇到这种情况，<a href="http://xn--README-9f2j034eslf4z3ek7a4jm059a4id.md">首先看对应项目的README.md</a>，这是官方文档。</p>
+<p>然后文档里面这么说：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">You can configure this plugin in `_config.yml`.</span><br><span class="line"></span><br><span class="line">``` yaml</span><br><span class="line">marked:</span><br><span class="line">  gfm: true</span><br><span class="line">  pedantic: false</span><br><span class="line">  breaks: true</span><br><span class="line">  smartLists: true</span><br><span class="line">  smartypants: true</span><br><span class="line">  quotes: &#x27;“”‘’&#x27;</span><br><span class="line">  modifyAnchors: 0</span><br><span class="line">  anchorAlias: false</span><br><span class="line">  autolink: true</span><br><span class="line">  mangle: true</span><br><span class="line">  sanitizeUrl: false</span><br><span class="line">  dompurify: false,</span><br><span class="line">  headerIds: true</span><br><span class="line">  lazyload: false</span><br><span class="line">  prependRoot: false</span><br><span class="line">  postAsset: false</span><br><span class="line">  external_link:</span><br><span class="line">    enable: false</span><br><span class="line">    exclude: []</span><br><span class="line">    nofollow: false</span><br><span class="line">  disableNunjucks: false</span><br><span class="line">  descriptionLists: true</span><br><span class="line">```</span><br></pre></td></tr></table></figure>
+<p>我第一反应是，你的这个文件在哪里？是指那个configyml？</p>
+<p>考虑到这是一个默认的hexo的渲染器，这里面的很有可能是指根目录下的configyml。那试一下。将上面这一段直接复制到configyml里面。</p>
+<p>再按照上面的方法把smartypants改成false。然后问题解决 了？</p>
+<p>好嘛，结果引号是正常了，我的\标记用不了，简而言之就是没有阅读全文按钮了，所有的文案全都在首页上展示。。。。</p>
+<p>但是既然只能这么解决，那就必须换一个方法来控制文章截断，\的方法已经无法使用了。</p>
+<p>我这里选择的是description方法控制截断。每一篇文章在写的时候就是用description描述，这样的话就可以截断了，引号也总算正常了。。。</p>
+<h1 id="后记"><a class="markdownIt-Anchor" href="#后记"></a> 后记</h1>
+<p>真的是处处充满妥协。。。因为我对这些知识知之甚少，为了解决这个渲染问题放弃了使用\这么好用的标记符。如果我对于相关知识了解我也许可以自己去动一下，但是现在只能暂时这样了。。。实际上对于markdown渲染我一直非常好奇，有的时候渲染非常规整，有的时候空格会异常。。等到以后也许有时间还是得稍微了解一下网页相关知识，即使将来并不从事前端工作。</p>
+<h1 id="后后记"><a class="markdownIt-Anchor" href="#后后记"></a> 后后记</h1>
+<p>别在那里用你那什么Next主题了, 今天仙贝展示了一个matery主题, 真的是功能该有的都有了, 好像也没发现有什么bug, 属于是连根拔起地解决问题了.</p>
+]]></content>
+      <tags>
+        <tag>touchfish</tag>
+        <tag>空虚地思考</tag>
+        <tag>方法论</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>重新回到arch系</title>
+    <url>/2023/03/09/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0arch%E7%B3%BB/</url>
+    <content><![CDATA[<p>现在是2023年的3月份, Ubuntu23.04即将发布, 带来一个新的更加精简的镜像, 并且带来许多新特性. 但是我却尝试回到了endeavoros. <span id="more"></span></p>
+<p>一直以来, arch系和Ubuntu相对比一直差点意思. 首先是arch自己, 装完桌面后配置过于麻烦, 是在是让人难以忍受. manjaro也不是很好, 突出表现在驱动, 对于N卡的驱动比arch实在是差太多了. 使用manjaro玩MC会画面撕裂, 罪魁祸首还是采取了一个hybrid的显卡驱动方法(当然自2023年以来我也没有再去试manjaro了). 而且manjaro毕竟不是arch, 在使用一些aur软件或者是GitHub的开源项目过程中, 万一出了问题, 有时候没法复现. 毕竟aur是给arch用的而不是给manjaro用的.</p>
+<p>对于一些对arch亲缘比较近的发行版, 对于N卡的方案就好很多, 对于笔记本的双显卡切换试用<code>nvidia-prime</code>的方案, 也就是默认是一种混合的模式, 如果需要使用独显, 显示地用<code>prime-run</code>. 虽然说这个方案没有彻底关闭nvidia省电但是毕竟是官方的方案, 比manjaro的要好.</p>
+<p>当然archwiki也提供了一些其他的方案, 其中有一些方案是需要手动做一些看似很危险的操作, 改一些平时我从来不会去看的文件, 和内核相关. 这些方案确实很吓人, 毕竟如果linux桌面没了还好, kernel panic处理起来可是麻烦多了.</p>
+<p>所以看来看去, 好用的其实就一个首推的, <code>optimus-manager</code>. 这应该是算一个首选. 但是这个也确实有一些弊端, 首先就是它已经很久没有更新了(虽然说It works well so no maintainance is needed). 而且optimus也需要搭配一些其他的包比如说bbswitch一起使用来&quot;延长电池续航时间&quot;. 配置起来还是麻烦.</p>
+<p><code>envycontrol</code>是最新的, 也是目前最优的解. 也是目前我正在使用的, 非常好用, 方便程度相当于Ubuntu里面的<code>prime-select</code>. 我也在近期重新回到了arch发行版, 也是今天的主角: <strong>endeavoros</strong>.</p>
+<p>如果是想要安装xfce的版本那没有什么大问题, 直接安装就行, 默认下面就是给你安装xfce桌面. 但是如果你想安装其他的桌面环境比如说我最喜欢的KDE, 或者是gnome. 那么就需要先<strong>换源</strong>. 保证pacman不会报网络相关的错误. 而且如果不换源的话很有可能它会给你报错, 就说连不上网络, 无法使用online模式, 而offline只有xfce这一种桌面环境. 联网了之后的选择是十分丰富的.</p>
+<p>其实和manjaro确实差不太多, 可以参看manjaro那一篇文章. 关于Ubuntu的那一篇文章写的是真的详细. 在进入live环境的时候如果选择了nvidia的那个选择项, 那么在安装完成之后应该会是自动安装的N卡驱动. 然后再搭配上最新的envycontrol, 简直是完美.</p>
+<p>可以说流畅地用上了arch系简直是走上了人生巅峰的感觉.</p>
+<h1 id="pacman包管理器"><a class="markdownIt-Anchor" href="#pacman包管理器"></a> pacman包管理器</h1>
+<p>对于安装, 多是S开头. 没有什么稀奇的地方.</p>
+<p><code>pacman -Rs package_name</code>: 相比普通的-R, 这个会remove所有的dependencies.</p>
+<p><code>pacman -Rn package_name</code>: prevent backup files of package.</p>
+<p>显然-Rsn是未来经常用的命令了.</p>
+<p><code>pacman -Syu</code>: 更新整个系统. 如果是Syyu, 就是强制重新sync repo, 即使repo已经报告它没有被更新.</p>
+<p>除开更新下载和安装, 查询也是包管理器重要的功能. 随着对linux系统使用的深入, 查询命令确实用得越来越多.</p>
+<blockquote>
+<p>Pacman queries the local package database with the <code>-Q</code> flag, the sync database with the <code>-S</code> flag and the files database with the <code>-F</code> flag. See <code>pacman -Q --help</code>, <code>pacman -S --help</code> and <code>pacman -F --help</code> for the respective suboptions of each flag.</p>
+</blockquote>
+<p><code>pacman -Ss string1 string2 ...</code>: 在远端搜索这个包的名字, 列出描述. 这个描述还是比较简略, 但是关键是它显示了每个包来自于哪个仓库:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜  ~ sudo pacman -Ss neovim     </span><br><span class="line">community/neovide 0.10.3-1</span><br><span class="line">    No Nonsense Neovim Client in Rust</span><br><span class="line">community/neovim 0.8.3-1 [installed]</span><br><span class="line">    Fork of Vim aiming to improve user experience, plugins, and GUIs</span><br><span class="line">...省略, 类似这一种显示信息.</span><br></pre></td></tr></table></figure>
+<p>如果觉得信息太少, 使用-Si查看extensive的信息.</p>
+<p>对于已经install的包, 可以使用-Q选项来查询:</p>
+<p><code>pacman -Qs neovim</code></p>
+<p>同样的:</p>
+<p><code>pacman -Qi neovim</code></p>
+<p>如果想要查看一个包安装在哪些目录, 使用-Ql, 这样一下子确实输出很多目录.</p>
+<p>然后还有一个特别乐的, 可以看一个文件是谁在maintain:</p>
+<p><code>pacman -Qo filepath</code></p>
+<p>我就是通过这么命令验证了<code>/etc/environment</code>这个文件是属于哪一个包, 在群友的帮助下确实学到了很多.</p>
+]]></content>
+      <tags>
+        <tag>touchfish</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -3625,8 +3625,8 @@ rm -f bar.o
 <p>我就是通过这么命令验证了<code>/etc/environment</code>这个文件是属于哪一个包, 在群友的帮助下确实学到了很多.</p>
 ]]></content>
       <tags>
-        <tag>linux</tag>
         <tag>touchfish</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
