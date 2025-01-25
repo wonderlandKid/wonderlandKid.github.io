@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://pic.imgdb.cn/item/66ab69ecd9c307b7e945ca17.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://pic.imgdb.cn/item/66ab69ecd9c307b7e945ca17.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dtfulffroot.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在学习java的时候, 遇到了这个foreach语句. 于是写一篇文章讨论一下这一段源代码: 1234567891011121314public void forEach(Consumer&lt;? super E&gt; action) &amp;#123;	Objects.requireNonNull(action);	int expectedModCount &#x3D; this.modCount;	Obj">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java中的foreach">
+<meta property="og:url" content="http://dtfulffroot.github.io/2025/01/25/java%E4%B8%AD%E7%9A%84foreach/index.html">
+<meta property="og:site_name" content="dtfulffroot的小窝">
+<meta property="og:description" content="在学习java的时候, 遇到了这个foreach语句. 于是写一篇文章讨论一下这一段源代码: 1234567891011121314public void forEach(Consumer&lt;? super E&gt; action) &amp;#123;	Objects.requireNonNull(action);	int expectedModCount &#x3D; this.modCount;	Obj">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-25T02:16:24.000Z">
+<meta property="article:modified_time" content="2025-01-25T03:37:28.279Z">
+<meta property="article:author" content="dtfulffroot">
+<meta property="article:tag" content="study">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://dtfulffroot.github.io/2025/01/25/java%E4%B8%AD%E7%9A%84foreach/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://dtfulffroot.github.io/2025/01/25/java%E4%B8%AD%E7%9A%84foreach/","path":"2025/01/25/java中的foreach/","title":"java中的foreach"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>java中的foreach | dtfulffroot的小窝</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">dtfulffroot的小窝</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="dtfulffroot"
+      src="https://pic.imgdb.cn/item/66ab69ecd9c307b7e945ca17.png">
+  <p class="site-author-name" itemprop="name">dtfulffroot</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dtfulffroot.github.io/2025/01/25/java%E4%B8%AD%E7%9A%84foreach/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://pic.imgdb.cn/item/66ab69ecd9c307b7e945ca17.png">
+      <meta itemprop="name" content="dtfulffroot">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="dtfulffroot的小窝">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="java中的foreach | dtfulffroot的小窝">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java中的foreach
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-01-25 10:16:24 / 修改时间：11:37:28" itemprop="dateCreated datePublished" datetime="2025-01-25T10:16:24+08:00">2025-01-25</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在学习java的时候, 遇到了这个foreach语句. 于是写一篇文章讨论一下这一段源代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">forEach</span><span class="params">(Consumer&lt;? <span class="built_in">super</span> E&gt; action)</span> &#123;</span><br><span class="line">	Objects.requireNonNull(action);</span><br><span class="line">	<span class="type">int</span> <span class="variable">expectedModCount</span> <span class="operator">=</span> <span class="built_in">this</span>.modCount;</span><br><span class="line">	Object[] es = <span class="built_in">this</span>.elementData;</span><br><span class="line">	<span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="built_in">this</span>.size;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; <span class="built_in">this</span>.modCount == expectedModCount &amp;&amp; i &lt; size; ++i) &#123;</span><br><span class="line">		action.accept(elementAt(es, i));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">this</span>.modCount != expectedModCount) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ConcurrentModificationException</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>其中, 我们先简单解释其他语句的作用. <code>Objects.requireNonNull(action);</code>作用是判断传入的<strong>对象实例</strong>是不是为空. 要是为空就直接抛出异常了. 然后是所谓modCount, 这个成员变量实际上是ArrayList里面检查多线程修改错误的一个常见的方式, 大概意思就是在foreach的时候不能修改就是了.</p>
+<p>然后就是中间的最关键的, 在ArrayList的实现里面, 实际上就是一个下标遍历, 然后把自己的数据传入给action实例的accept方法.</p>
+<p>我们也可以看看Consumer到底是个什么:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Consumer</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">accept</span><span class="params">(T var1)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> Consumer&lt;T&gt; <span class="title function_">andThen</span><span class="params">(Consumer&lt;? <span class="built_in">super</span> T&gt; after)</span> &#123;</span><br><span class="line">        Objects.requireNonNull(after);</span><br><span class="line">        <span class="keyword">return</span> (t) -&gt; &#123;</span><br><span class="line">            <span class="built_in">this</span>.accept(t);</span><br><span class="line">            after.accept(t);</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>发现这是一个<code>@FunctionalInterface</code>, 意思是这是一个<strong>函数式接口</strong>, 仅仅包含一个抽象方法. 这样规定是为了后面可以用lambda表达式来简化.</p>
+<p>所以现在我们来讨论接收参数中的<code>Consumer&lt;? super E&gt; action</code>到底是什么意思. 现在假设我们要通过foreach来遍历ArrayList这个Collection, 我们有哪几种写法? 最直接的就是这样:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; al = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(<span class="number">10</span>);</span><br><span class="line">        al.add(<span class="number">1</span>);</span><br><span class="line">        al.add(<span class="number">2</span>);</span><br><span class="line">        al.add(<span class="number">3</span>);</span><br><span class="line">        al.add(<span class="number">4</span>);</span><br><span class="line">        <span class="type">MyUtil</span> <span class="variable">mu</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyUtil</span>();</span><br><span class="line">        al.forEach(mu);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyUtil</span> <span class="keyword">implements</span> <span class="title class_">Consumer</span>&lt;Integer&gt; &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">accept</span><span class="params">(Integer integer)</span> &#123;</span><br><span class="line">        System.out.println(integer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参数要求是一个<code>Consumer&lt;? super E&gt; action</code>, 这实际上是一个<strong>接口多态</strong>, 只要实现了这个接口的类, 都可以传入以<code>Consumer&lt;? super E&gt; action</code>作为形参的函数. 这里有一个非常重要的, 那就是这里的E实际上在新建ArrayList的时候就已经确定了. 这里形参上的E和ArrayList初始化的E是一样的. 也就是对于确定的ArrayList, 这里的形参类型实际上就是<code>Consumer&lt;? super Integer&gt; action</code>而已, 也就是这里形参的类必须是实现了<code>Consumer&lt;Integer&gt;</code>接口或者是<code>Consumer&lt;Integer的父类&gt;</code>的接口的类型了.</p>
+<p>然后我们可以进一步使用匿名内部类的方法来写这里:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; al = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(<span class="number">10</span>);</span><br><span class="line">        al.add(<span class="number">1</span>);</span><br><span class="line">        al.add(<span class="number">2</span>);</span><br><span class="line">        al.add(<span class="number">3</span>);</span><br><span class="line">        al.add(<span class="number">4</span>);</span><br><span class="line">        al.forEach(<span class="keyword">new</span> <span class="title class_">Consumer</span>&lt;Integer&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">accept</span><span class="params">(Integer integer)</span> &#123;</span><br><span class="line">                System.out.println(integer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后就是lambda表达式, 为什么能够使用lambda表达式是因为标注了函数式接口, 也就是说函数式接口反正只有一个抽象方法, 所以重要的是方法而不是类的示例. 也就是说对于只有一个抽象方法的接口, 而且我本来不是需要你类的示例, 我本来就是只需要你一个抽象方法, 这样的形参其实传一个函数就可以了, lambda表达式就是这样一种简化的写法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">al.forEach((Integer it)-&gt;&#123;</span><br><span class="line">	<span class="type">Integer</span> <span class="variable">itnew</span> <span class="operator">=</span> it + <span class="number">2</span>;</span><br><span class="line">	System.out.println(it);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>甚至还有更进一步的<strong>方法引用机制</strong>, lambda表达式实际上是从调用实例中的方法到只传方法的一个跨越, 所以更进一步我传入已经存在的方法不就好了吗?</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">al.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>注意这里是双冒号. 双冒号表示, 我只是引用你这个函数的名字(或者理解C++里面的函数指针), 而不是想要调用方法. 因为使用点号后面跟变量是访问变量, 跟函数名字就是想要调用函数, 但是函数引用只是参数传递, 不是调用, 所以使用双冒号. java里面关于lambda表达式的类型是要赋值给函数接口的对象.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 无参数，无返回值 → Runnable</span></span><br><span class="line"><span class="type">Runnable</span> <span class="variable">task</span> <span class="operator">=</span> () -&gt; System.out.println(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">task.run(); <span class="comment">// 输出: Hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 无参数，返回一个值 → Supplier&lt;T&gt;</span></span><br><span class="line">Supplier&lt;String&gt; supplier = () -&gt; <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line"><span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> supplier.get(); <span class="comment">// result = &quot;Hello&quot;</span></span><br></pre></td></tr></table></figure>
+<p>等会, 有个问题. 接口为什么&quot;实例化&quot;了? 左边类型是确定了泛型类型的接口啊?</p>
+<p>实际上这里也是一个底层隐含的操作:</p>
+<blockquote>
+<p>编译器会将 Lambda 表达式转换为一个匿名类，实现函数式接口的唯一抽象方法。例如，上述代码等价于：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Runnable</span> <span class="variable">task</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>这是AI指出来的.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/study/" rel="tag"># study</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/14/gdb%E4%BB%8E%E6%97%A0%E7%9F%A5%E5%88%B0%E8%83%BD%E7%94%A8/" rel="prev" title="gdb从无知到能用">
+                  <i class="fa fa-angle-left"></i> gdb从无知到能用
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">dtfulffroot</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" integrity="sha256-3574TpfThVfeAhg+I4+N39EJiLN3QUkuEsMVe8hWAR4=" crossorigin="anonymous">
+
+
+
+</body>
+</html>

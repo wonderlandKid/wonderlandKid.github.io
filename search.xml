@@ -1,51 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>计算机学习计划(置顶)</title>
-    <url>/2022/11/10/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/</url>
-    <content><![CDATA[<p>曾经这里是一个暑假的计算机提升计划, 但是现在来看, 这个暑假甚至都没有时间把课内的知识复习完. 这确实是非常生草. 这个计划还是非常重要, 预计是半年一次, 也就是这个文章半年一更新. 既然已经重新确立了标准就得重新规划一下. 🚧✅❌</p>
+    <title>java中的foreach</title>
+    <url>/2025/01/25/java%E4%B8%AD%E7%9A%84foreach/</url>
+    <content><![CDATA[<p>在学习java的时候, 遇到了这个foreach语句. 于是写一篇文章讨论一下这一段源代码:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">forEach</span><span class="params">(Consumer&lt;? <span class="built_in">super</span> E&gt; action)</span> &#123;</span><br><span class="line">	Objects.requireNonNull(action);</span><br><span class="line">	<span class="type">int</span> <span class="variable">expectedModCount</span> <span class="operator">=</span> <span class="built_in">this</span>.modCount;</span><br><span class="line">	Object[] es = <span class="built_in">this</span>.elementData;</span><br><span class="line">	<span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="built_in">this</span>.size;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; <span class="built_in">this</span>.modCount == expectedModCount &amp;&amp; i &lt; size; ++i) &#123;</span><br><span class="line">		action.accept(elementAt(es, i));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">this</span>.modCount != expectedModCount) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ConcurrentModificationException</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <span id="more"></span>
-<h1 id="大一"><a class="markdownIt-Anchor" href="#大一"></a> 大一</h1>
-<p>✅摆烂</p>
-<h1 id="大二上需要课外的东西寒假"><a class="markdownIt-Anchor" href="#大二上需要课外的东西寒假"></a> 大二上需要课外的东西(寒假)</h1>
-<p>✅理解透彻missing-semester的课程. 把课程里面的每一个笔记都尽量看懂.<br />
-✅好好学习(草)<br />
-❌看csapp(已改动, 把优先级提到lua之前.)<br />
-❌看lua的官方文档. (C语言复习)<br />
-✅了解一下rust</p>
-<h1 id="大二上之后的寒假"><a class="markdownIt-Anchor" href="#大二上之后的寒假"></a> 大二上之后的寒假</h1>
-<p>我现在看着以前的安排, 我估计是很难完成了, 因为考试又推迟了, 像是这种情况寒假就很难学到什么新东西了, 因为要卷绩点. 所以目标变一下:</p>
-<p>❌好好复习备考 尤其是数据结构<br />
-❌了解一下STL的作用 为后面多刷LeetCode题目作准备<br />
-❌了解一下python 优先级高于rust<br />
-✅了解一下rust</p>
-<p>这个寒假其实这些任务也很难完成, 因为还要肝原神~~(我超 原!).~~</p>
-<h1 id="大二下和暑假"><a class="markdownIt-Anchor" href="#大二下和暑假"></a> 大二下和暑假</h1>
-<p>❌专心研究算法<br />
-✅假期看操作系统相关 csapp</p>
-<h1 id="大三上"><a class="markdownIt-Anchor" href="#大三上"></a> 大三上</h1>
-<p>❌研究编译原理和计算机网络 两门课好好学<br />
-❌学习一些C++新标准<br />
-❌读CSAPP</p>
-<h1 id="大三上寒假"><a class="markdownIt-Anchor" href="#大三上寒假"></a> 大三上寒假</h1>
-<p>🚧收集考研相关信息<br />
-🚧肝完leetcode75题<br />
-🚧读完C++并发编程<br />
-🚧拔智齿</p>
+<p>其中, 我们先简单解释其他语句的作用. <code>Objects.requireNonNull(action);</code>作用是判断传入的<strong>对象实例</strong>是不是为空. 要是为空就直接抛出异常了. 然后是所谓modCount, 这个成员变量实际上是ArrayList里面检查多线程修改错误的一个常见的方式, 大概意思就是在foreach的时候不能修改就是了.</p>
+<p>然后就是中间的最关键的, 在ArrayList的实现里面, 实际上就是一个下标遍历, 然后把自己的数据传入给action实例的accept方法.</p>
+<p>我们也可以看看Consumer到底是个什么:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Consumer</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">accept</span><span class="params">(T var1)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> Consumer&lt;T&gt; <span class="title function_">andThen</span><span class="params">(Consumer&lt;? <span class="built_in">super</span> T&gt; after)</span> &#123;</span><br><span class="line">        Objects.requireNonNull(after);</span><br><span class="line">        <span class="keyword">return</span> (t) -&gt; &#123;</span><br><span class="line">            <span class="built_in">this</span>.accept(t);</span><br><span class="line">            after.accept(t);</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>发现这是一个<code>@FunctionalInterface</code>, 意思是这是一个<strong>函数式接口</strong>, 仅仅包含一个抽象方法. 这样规定是为了后面可以用lambda表达式来简化.</p>
+<p>所以现在我们来讨论接收参数中的<code>Consumer&lt;? super E&gt; action</code>到底是什么意思. 现在假设我们要通过foreach来遍历ArrayList这个Collection, 我们有哪几种写法? 最直接的就是这样:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; al = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(<span class="number">10</span>);</span><br><span class="line">        al.add(<span class="number">1</span>);</span><br><span class="line">        al.add(<span class="number">2</span>);</span><br><span class="line">        al.add(<span class="number">3</span>);</span><br><span class="line">        al.add(<span class="number">4</span>);</span><br><span class="line">        <span class="type">MyUtil</span> <span class="variable">mu</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyUtil</span>();</span><br><span class="line">        al.forEach(mu);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyUtil</span> <span class="keyword">implements</span> <span class="title class_">Consumer</span>&lt;Integer&gt; &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">accept</span><span class="params">(Integer integer)</span> &#123;</span><br><span class="line">        System.out.println(integer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参数要求是一个<code>Consumer&lt;? super E&gt; action</code>, 这实际上是一个<strong>接口多态</strong>, 只要实现了这个接口的类, 都可以传入以<code>Consumer&lt;? super E&gt; action</code>作为形参的函数. 这里有一个非常重要的, 那就是这里的E实际上在新建ArrayList的时候就已经确定了. 这里形参上的E和ArrayList初始化的E是一样的. 也就是对于确定的ArrayList, 这里的形参类型实际上就是<code>Consumer&lt;? super Integer&gt; action</code>而已, 也就是这里形参的类必须是实现了<code>Consumer&lt;Integer&gt;</code>接口或者是<code>Consumer&lt;Integer的父类&gt;</code>的接口的类型了.</p>
+<p>然后我们可以进一步使用匿名内部类的方法来写这里:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; al = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(<span class="number">10</span>);</span><br><span class="line">        al.add(<span class="number">1</span>);</span><br><span class="line">        al.add(<span class="number">2</span>);</span><br><span class="line">        al.add(<span class="number">3</span>);</span><br><span class="line">        al.add(<span class="number">4</span>);</span><br><span class="line">        al.forEach(<span class="keyword">new</span> <span class="title class_">Consumer</span>&lt;Integer&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">accept</span><span class="params">(Integer integer)</span> &#123;</span><br><span class="line">                System.out.println(integer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后就是lambda表达式, 为什么能够使用lambda表达式是因为标注了函数式接口, 也就是说函数式接口反正只有一个抽象方法, 所以重要的是方法而不是类的示例. 也就是说对于只有一个抽象方法的接口, 而且我本来不是需要你类的示例, 我本来就是只需要你一个抽象方法, 这样的形参其实传一个函数就可以了, lambda表达式就是这样一种简化的写法:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">al.forEach((Integer it)-&gt;&#123;</span><br><span class="line">	<span class="type">Integer</span> <span class="variable">itnew</span> <span class="operator">=</span> it + <span class="number">2</span>;</span><br><span class="line">	System.out.println(it);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>甚至还有更进一步的<strong>方法引用机制</strong>, lambda表达式实际上是从调用实例中的方法到只传方法的一个跨越, 所以更进一步我传入已经存在的方法不就好了吗?</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">al.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>注意这里是双冒号. 双冒号表示, 我只是引用你这个函数的名字(或者理解C++里面的函数指针), 而不是想要调用方法. 因为使用点号后面跟变量是访问变量, 跟函数名字就是想要调用函数, 但是函数引用只是参数传递, 不是调用, 所以使用双冒号. java里面关于lambda表达式的类型是要赋值给函数接口的对象.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 无参数，无返回值 → Runnable</span></span><br><span class="line"><span class="type">Runnable</span> <span class="variable">task</span> <span class="operator">=</span> () -&gt; System.out.println(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">task.run(); <span class="comment">// 输出: Hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 无参数，返回一个值 → Supplier&lt;T&gt;</span></span><br><span class="line">Supplier&lt;String&gt; supplier = () -&gt; <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line"><span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> supplier.get(); <span class="comment">// result = &quot;Hello&quot;</span></span><br></pre></td></tr></table></figure>
+<p>等会, 有个问题. 接口为什么&quot;实例化&quot;了? 左边类型是确定了泛型类型的接口啊?</p>
+<p>实际上这里也是一个底层隐含的操作:</p>
+<blockquote>
+<p>编译器会将 Lambda 表达式转换为一个匿名类，实现函数式接口的唯一抽象方法。例如，上述代码等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Runnable</span> <span class="variable">task</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>这是AI指出来的.</p>
 ]]></content>
       <tags>
         <tag>study</tag>
-        <tag>flag</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>virtualbox安装macos</title>
-    <url>/2023/12/01/virtualbox%E5%AE%89%E8%A3%85macos/</url>
-    <content><![CDATA[<p>因为选了IOS开发的缘故, 加之一直以来对于</p>
-]]></content>
-      <tags>
-        <tag>study</tag>
-        <tag>virtualbox</tag>
+        <tag>java</tag>
       </tags>
   </entry>
   <entry>
