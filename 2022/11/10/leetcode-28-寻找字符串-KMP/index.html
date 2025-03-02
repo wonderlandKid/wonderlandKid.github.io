@@ -18,34 +18,34 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"dtfulffroot.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"wonderlandkid.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="从我学习数据结构以来, 这应该是碰到的第一个比较难的算法了, 学习算法虽然我已经大概了解了, 但是就是使用cpp实现的时候很难实现, 这次算是第一次实现比较难的算法, 最后还是失败了, leetcode上面的样例没有全过, 后来听了老师讲课才大概理解书本上面的代码是什么意思. 先贴一下我最后过了的代码, 实际上也没有多厉害, 最后还是一直没过, 反正就是总是差一点.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="leetcode_28_寻找字符串_KMP">
-<meta property="og:url" content="http://dtfulffroot.github.io/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/index.html">
-<meta property="og:site_name" content="dtfulffroot的小窝">
+<meta property="og:url" content="http://wonderlandkid.github.io/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/index.html">
+<meta property="og:site_name" content="wonderlandKid的小窝">
 <meta property="og:description" content="从我学习数据结构以来, 这应该是碰到的第一个比较难的算法了, 学习算法虽然我已经大概了解了, 但是就是使用cpp实现的时候很难实现, 这次算是第一次实现比较难的算法, 最后还是失败了, leetcode上面的样例没有全过, 后来听了老师讲课才大概理解书本上面的代码是什么意思. 先贴一下我最后过了的代码, 实际上也没有多厉害, 最后还是一直没过, 反正就是总是差一点.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pic1.imgdb.cn/item/63478d8c16f2c2beb111fc69.png">
 <meta property="og:image" content="https://pic1.imgdb.cn/item/634ac26716f2c2beb1cc08e1.jpg">
 <meta property="article:published_time" content="2022-11-10T14:46:42.000Z">
-<meta property="article:modified_time" content="2024-11-06T00:26:46.059Z">
-<meta property="article:author" content="dtfulffroot">
+<meta property="article:modified_time" content="2025-01-26T13:08:03.779Z">
+<meta property="article:author" content="wonderlandKid">
 <meta property="article:tag" content="study">
 <meta property="article:tag" content="leetcode">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://pic1.imgdb.cn/item/63478d8c16f2c2beb111fc69.png">
 
 
-<link rel="canonical" href="http://dtfulffroot.github.io/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/">
+<link rel="canonical" href="http://wonderlandkid.github.io/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://dtfulffroot.github.io/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/","path":"2022/11/10/leetcode-28-寻找字符串-KMP/","title":"leetcode_28_寻找字符串_KMP"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://wonderlandkid.github.io/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/","path":"2022/11/10/leetcode-28-寻找字符串-KMP/","title":"leetcode_28_寻找字符串_KMP"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>leetcode_28_寻找字符串_KMP | dtfulffroot的小窝</title>
+<title>leetcode_28_寻找字符串_KMP | wonderlandKid的小窝</title>
   
 
 
@@ -78,7 +78,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <p class="site-title">dtfulffroot的小窝</p>
+      <p class="site-title">wonderlandKid的小窝</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -149,9 +149,9 @@
 
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="dtfulffroot"
+    <img class="site-author-image" itemprop="image" alt="wonderlandKid"
       src="https://pic.imgdb.cn/item/66ab69ecd9c307b7e945ca17.png">
-  <p class="site-author-name" itemprop="name">dtfulffroot</p>
+  <p class="site-author-name" itemprop="name">wonderlandKid</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap animated">
@@ -191,20 +191,20 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dtfulffroot.github.io/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/">
+    <link itemprop="mainEntityOfPage" href="http://wonderlandkid.github.io/2022/11/10/leetcode-28-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2-KMP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://pic.imgdb.cn/item/66ab69ecd9c307b7e945ca17.png">
-      <meta itemprop="name" content="dtfulffroot">
+      <meta itemprop="name" content="wonderlandKid">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="dtfulffroot的小窝">
+      <meta itemprop="name" content="wonderlandKid的小窝">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="leetcode_28_寻找字符串_KMP | dtfulffroot的小窝">
+      <meta itemprop="name" content="leetcode_28_寻找字符串_KMP | wonderlandKid的小窝">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
@@ -227,7 +227,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-11-06 08:26:46" itemprop="dateModified" datetime="2024-11-06T08:26:46+08:00">2024-11-06</time>
+      <time title="修改时间：2025-01-26 21:08:03" itemprop="dateModified" datetime="2025-01-26T21:08:03+08:00">2025-01-26</time>
     </span>
 
   
@@ -250,8 +250,9 @@
 <p>效果是真不戳! (其实leetcode平台确实是多次提交同一个代码会造成不一样的结果)</p>
 <p>对于整个题目, 是在haystack字符串里面寻找needle这个字符串, 首先假如说needle还长一些那肯定是没有办法找到的, 所以返回-1.</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//先给needle生成next数组 让next[0]=-1真是方便</span></span><br><span class="line"><span class="comment">//知道第前i个next数组, 求i+1位</span></span><br><span class="line"><span class="type">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; needle_length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">  j = next[i];</span><br><span class="line">  <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; needle[i] != needle[j]) j = next[j];</span><br><span class="line">  next[i + <span class="number">1</span>] = ++j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>补充说明一下这里next数组的意义. 就是needle的指针失配之后, needle指针应该重新指向的位置. 例如ababc的next数组为: <code>-1, 0, 0, 1, 2</code>, 从值来看, next[i]意思就是从0到i-1这个字符串的最长相等的前后缀的长度. 为什么第四项是1, 因为如果是第四项失配了, 那就是前面是有aba主串和子串一样, 那么子串的指针只需要指到b处就可以了.</p>
 <p>首先, 只有匹配失败的时候才会去寻找下一个可能性, 所以循环条件是不匹配, 但是假如j&lt;0了也就是说可能性已经用完了(因为只有next[0]是小于0的), 这个时候也不能循环了.</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 还是重复使用i和j, 其中i指向长串. j指向短串</span></span><br><span class="line">    i = j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; haystack_length &amp;&amp; j &lt; needle_length) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">        i++;</span><br><span class="line">        j++;</span><br><span class="line">      &#125; <span class="keyword">else</span></span><br><span class="line">        j = next[j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j &gt;= needle_length)</span><br><span class="line">      <span class="keyword">return</span> i - j;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"><span class="comment">//排版有点小问题 不影响阅读</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 还是重复使用i和j, 其中i指向长串. j指向短串</span></span><br><span class="line">i = j = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (i &lt; haystack_length &amp;&amp; j &lt; needle_length) &#123;</span><br><span class="line">  <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">	i++;</span><br><span class="line">	j++;</span><br><span class="line">  &#125; <span class="keyword">else</span></span><br><span class="line">	j = next[j];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (j &gt;= needle_length)</span><br><span class="line">  <span class="keyword">return</span> i - j;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"><span class="comment">//排版有点小问题 不影响阅读</span></span><br></pre></td></tr></table></figure>
 <p>不想解说了, 太妙了, 多看几遍.</p>
 <p>当然匹配字符串还有很多其他的算法, 比如说BM算法. <s>我不想看了</s></p>
 
@@ -302,7 +303,7 @@
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>
-    <span class="author" itemprop="copyrightHolder">dtfulffroot</span>
+    <span class="author" itemprop="copyrightHolder">wonderlandKid</span>
   </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

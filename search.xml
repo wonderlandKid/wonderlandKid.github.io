@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>从TreeMap看红黑树的具体实现</title>
+    <url>/2025/02/09/%E4%BB%8ETreeMap%E7%9C%8B%E7%BA%A2%E9%BB%91%E6%A0%91%E7%9A%84%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>java中的foreach</title>
     <url>/2025/01/25/java%E4%B8%AD%E7%9A%84foreach/</url>
     <content><![CDATA[<p>在学习java的时候, 遇到了这个foreach语句. 于是写一篇文章讨论一下这一段源代码:</p>
@@ -123,7 +132,7 @@
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; test1&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line">    <span class="keyword">auto</span> p = test1.<span class="built_in">data</span>();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;访问指针指向的第一个值%d\n&quot;</span>, *p);</span><br><span class="line">    test1.<span class="built_in">push_back</span>(<span class="number">4</span>);</span><br><span class="line">    test1.<span class="built_in">push_back</span>(<span class="number">4</span>);</span><br><span class="line">    test1.<span class="built_in">push_back</span>(<span class="number">4</span>);</span><br><span class="line">    test1.<span class="built_in">push_back</span>(<span class="number">4</span>);</span><br><span class="line">    test1.<span class="built_in">push_back</span>(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;访问指针指向的第一个值%d\n&quot;</span>, *p);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>输出是:</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">访问指针指向的第一个值1</span><br><span class="line">访问指针指向的第一个值1488999553</span><br></pre></td></tr></table></figure>
-<p>造成这个错误的原因是vector已经转移走了, 不在原位置了. 是一个隐蔽的错误. 而且比较离谱的是G++并不会对此做任何提示. 不过使用g++自带的越界检查可以检查出来, 但是这并不是一个强制选项:</p>
+<p>造成这个错误的原因是vector已经转移走了, 不在原位置了. 是一个隐蔽的错误. 而且比较离谱的是g++并不会对此做任何提示. 不过使用g++自带的越界检查可以检查出来, 但是这并不是一个强制选项:</p>
 <p><code>g++ -fsanitize=address -fno-omit-frame-pointer -O2 -g mytest.cpp</code></p>
 <p>那么再来考虑reserve, 不是reverse! reserve是预留. 如果一开始就知道capacity是大概多少, 不就可以减少内存重分配的次数吗? 我可以<code>vec.reserve(20)</code>直接把capacity拉到20, 虽然size()还是0.</p>
 <p>shrink_to_fit()就是将capacity缩小到size附近, 释放多余的空间.</p>
@@ -233,11 +242,6 @@
         <tag>study</tag>
         <tag>cpp</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>8086汇编上机</title>
-    <url>/2023/09/20/8086%E6%B1%87%E7%BC%96%E4%B8%8A%E6%9C%BA/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>CPP中的cin和cout运行缓慢</title>
@@ -1790,8 +1794,9 @@ rm -f bar.o
 <p>效果是真不戳! (其实leetcode平台确实是多次提交同一个代码会造成不一样的结果)</p>
 <p>对于整个题目, 是在haystack字符串里面寻找needle这个字符串, 首先假如说needle还长一些那肯定是没有办法找到的, 所以返回-1.</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//先给needle生成next数组 让next[0]=-1真是方便</span></span><br><span class="line"><span class="comment">//知道第前i个next数组, 求i+1位</span></span><br><span class="line"><span class="type">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; needle_length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">  j = next[i];</span><br><span class="line">  <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; needle[i] != needle[j]) j = next[j];</span><br><span class="line">  next[i + <span class="number">1</span>] = ++j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>补充说明一下这里next数组的意义. 就是needle的指针失配之后, needle指针应该重新指向的位置. 例如ababc的next数组为: <code>-1, 0, 0, 1, 2</code>, 从值来看, next[i]意思就是从0到i-1这个字符串的最长相等的前后缀的长度. 为什么第四项是1, 因为如果是第四项失配了, 那就是前面是有aba主串和子串一样, 那么子串的指针只需要指到b处就可以了.</p>
 <p>首先, 只有匹配失败的时候才会去寻找下一个可能性, 所以循环条件是不匹配, 但是假如j&lt;0了也就是说可能性已经用完了(因为只有next[0]是小于0的), 这个时候也不能循环了.</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 还是重复使用i和j, 其中i指向长串. j指向短串</span></span><br><span class="line">    i = j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; haystack_length &amp;&amp; j &lt; needle_length) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">        i++;</span><br><span class="line">        j++;</span><br><span class="line">      &#125; <span class="keyword">else</span></span><br><span class="line">        j = next[j];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j &gt;= needle_length)</span><br><span class="line">      <span class="keyword">return</span> i - j;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"><span class="comment">//排版有点小问题 不影响阅读</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 还是重复使用i和j, 其中i指向长串. j指向短串</span></span><br><span class="line">i = j = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (i &lt; haystack_length &amp;&amp; j &lt; needle_length) &#123;</span><br><span class="line">  <span class="keyword">if</span> (j == <span class="number">-1</span> || haystack[i] == needle[j]) &#123;</span><br><span class="line">	i++;</span><br><span class="line">	j++;</span><br><span class="line">  &#125; <span class="keyword">else</span></span><br><span class="line">	j = next[j];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (j &gt;= needle_length)</span><br><span class="line">  <span class="keyword">return</span> i - j;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"><span class="comment">//排版有点小问题 不影响阅读</span></span><br></pre></td></tr></table></figure>
 <p>不想解说了, 太妙了, 多看几遍.</p>
 <p>当然匹配字符串还有很多其他的算法, 比如说BM算法. <s>我不想看了</s></p>
 ]]></content>
