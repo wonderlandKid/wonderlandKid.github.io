@@ -3,7 +3,7 @@
   <entry>
     <title>Java中的注解和反射</title>
     <url>/2025/03/11/Java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3%E5%92%8C%E5%8F%8D%E5%B0%84/</url>
-    <content><![CDATA[<p>在学习Spring的时候, 经常看见在</p>
+    <content><![CDATA[<p>在学习Spring的时候, 经常看见在 writing</p>
 ]]></content>
       <tags>
         <tag>study</tag>
@@ -86,7 +86,7 @@ supplier – a function that creates a new mutable result container. For a paral
 <p>combiner – an associative, non-interfering, stateless function that accepts two partial result containers and merges them, which must be compatible with the accumulator function. The combiner function must fold the elements from the second result container into the first result container.</p>
 </blockquote>
 <p>下面是示例代码:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; asList = stringStream.collect(ArrayList::<span class="keyword">new</span>, ArrayList::add,                                            ArrayList::addAll);</span><br><span class="line"><span class="type">String</span> <span class="variable">concat</span> <span class="operator">=</span> stringStream.collect(StringBuilder::<span class="keyword">new</span>, StringBuilder::append,                                      StringBuilder::append).toString();</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; asList = stringStream.collect(ArrayList::<span class="keyword">new</span>,ArrayList::add,ArrayList::addAll);</span><br><span class="line"><span class="type">String</span> <span class="variable">concat</span> <span class="operator">=</span> stringStream.collect(StringBuilder::<span class="keyword">new</span>, StringBuilder::append, StringBuilder::append).toString();</span><br></pre></td></tr></table></figure>
 <p>大概就是, 第一个参数决定需要收集到什么容器里面, 第二个参数提供把流中元素放到容器中的方法, 而第三个参数在处理并行流时候至关重要. 因为并行流可能会产生多个容器, 那如何合并这些容器, 也需要提供一个方法. 在上面的例子里面, 代码的方法都是使用<strong>方法引用</strong>这种语法, 实际也可以写lambda表达式.</p>
 <p>collect也可以是下面这个参数: <code>&lt;R, A&gt; R collect(Collector&lt;? super T, A, R&gt; collector);</code></p>
 <p>代码长下面这个样子: <code>List&lt;String&gt; asList = stringStream.collect(Collectors.toList());</code></p>
@@ -197,7 +197,8 @@ supplier – a function that creates a new mutable result container. For a paral
   <entry>
     <title>从TreeMap看红黑树的具体实现</title>
     <url>/2025/02/09/%E4%BB%8ETreeMap%E7%9C%8B%E7%BA%A2%E9%BB%91%E6%A0%91%E7%9A%84%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>writing</p>
+]]></content>
       <tags>
         <tag>study</tag>
         <tag>java</tag>
