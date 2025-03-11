@@ -1,6 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Java中的注解和反射</title>
+    <url>/2025/03/11/Java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3%E5%92%8C%E5%8F%8D%E5%B0%84/</url>
+    <content><![CDATA[<p>在学习Spring的时候, 经常看见在</p>
+]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java中的Stream</title>
+    <url>/2025/03/10/Java%E4%B8%AD%E7%9A%84Stream/</url>
+    <content><![CDATA[<p>Java中的Stream是一个非常令人兴奋的特性, 它能够让程序员在很多情况下结合很多时间并且写出不容易出错的代码(并非容易调试), 下面介绍一下这个特性.</p>
+<span id="more"></span>
+<p>下面这个视频是B站最受好评的Stream教学:<br />
+<a href="https://www.bilibili.com/video/BV1Vi421C73n">Java中的流、并行流 - Java Stream API | Parallel Streams</a></p>
+<h1 id="stream流的分类"><a class="markdownIt-Anchor" href="#stream流的分类"></a> Stream流的分类</h1>
+<h2 id="通用对象流streamt"><a class="markdownIt-Anchor" href="#通用对象流streamt"></a> 通用对象流<code>Stream&lt;T&gt;</code></h2>
+<p>这是一个处理泛型对象的流, 适用于所有的对象类型. 也算是最常见的流. 例如: <code>Stream&lt;String&gt; stream = list.stream();</code></p>
+<h2 id="基本类型的流"><a class="markdownIt-Anchor" href="#基本类型的流"></a> 基本类型的流</h2>
+<p>有三种:</p>
+<ul>
+<li><code>IntStream</code></li>
+<li><code>LongStream</code></li>
+<li><code>DoubleStream</code></li>
+</ul>
+<p>例如:<br />
+<code>IntStream numbers = IntStream.range(1, 10);</code></p>
+<h2 id="并行流和顺序流"><a class="markdownIt-Anchor" href="#并行流和顺序流"></a> 并行流和顺序流</h2>
+<p>java里面的并行流对于程序员来说是透明的. 也就是说, <code>list.stream()</code>返回的类型是<code>Stream&lt;&gt;</code>, 而<code>parallelStream()</code>返回类型也还是<code>Stream&lt;&gt;</code>. 这里详细说明一下并行流的一些例子.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List.of(<span class="string">&quot;T&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="string">&quot;S&quot;</span>, <span class="string">&quot;T&quot;</span>, <span class="string">&quot;W&quot;</span>, <span class="string">&quot;O&quot;</span>, <span class="string">&quot;R&quot;</span>, <span class="string">&quot;D&quot;</span>)</span><br><span class="line">		.parallelStream()</span><br><span class="line">		.map(String::toLowerCase)</span><br><span class="line">		.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>这样打印的话, 不能保证字母按照顺序出现. 因为parallelStream会将一个完整的流分割成各个小块, 每个小块会执行<strong>整个流水线操作</strong>(包括所有中间操作和终结操作), 并行流会把map和forEach合并为一个复合任务. 也就说, 从parallelStream开始分开, 然后对于每一个块执行后续操作.</p>
+<p>对于终结方法来说, 难道就没有办法保证后续的顺序了吗? 那还是有的:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List.of(<span class="string">&quot;T&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="string">&quot;S&quot;</span>, <span class="string">&quot;T&quot;</span>, <span class="string">&quot;W&quot;</span>, <span class="string">&quot;O&quot;</span>, <span class="string">&quot;R&quot;</span>, <span class="string">&quot;D&quot;</span>)</span><br><span class="line">		.parallelStream()</span><br><span class="line">		.map(String::toLowerCase)</span><br><span class="line">		.forEachOrdered(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>这里会保证顺序打印, 那么forEachOrdered是如何做到的呢? 在parallelStream分开不同块之后, forEachOrdered会按照顺序执行, 所有线程共用一个forEachOrdered, forEachOrdered会按照顺序来执行, 注意, forEachOrdered并不是等到所有线程的中间操作执行完成之后再执行. 例如一号块中间操作已经完成, 但是2号块还没有, 这种情况下还是会执行forEachOrdered.</p>
+<h2 id="其他流类型"><a class="markdownIt-Anchor" href="#其他流类型"></a> 其他流类型</h2>
+<p>也可以通过 <code>Stream.generate()</code> 或 <code>Stream.iterate()</code> 动态生成元素.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Stream&lt;Double&gt; randomStream = Stream.generate(Math::random).limit(<span class="number">5</span>);</span><br><span class="line">Stream&lt;Integer&gt; evenNumbers = Stream.iterate(<span class="number">0</span>, n -&gt; n + <span class="number">2</span>).limit(<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+<p>这里<code>Stream.generate()</code>的形参是一个<code>Supplier&lt;? extends T&gt; s</code>, 也就是常见的一个函数式接口.</p>
+<h1 id="非终结方法"><a class="markdownIt-Anchor" href="#非终结方法"></a> 非终结方法</h1>
+<p>所谓非终结方法, 也就是中间操作. 中间操作分为<strong>有状态</strong>操作和<strong>无状态</strong>操作. 所谓有状态, 一般都是不能并行, 也就是当前元素的操作需要和已经过去的元素有关系.</p>
+<ul>
+<li><code>filter(Predicate&lt;? super T&gt; predicate)</code></li>
+<li><code>map(Function&lt;? super T, ? extends R&gt; mapper)</code></li>
+<li><code>flatMap(Function&lt;? super T, ? extends Stream&lt;R&gt;&gt; mapper)</code><br />
+flatmap作用是, 把一个流里面的每一个元素也变成一个流, 然后把许多流最后再合并成一个流. 例如: <code>Stream&lt;String&gt; words = lines.stream().flatMap(line -&gt; Arrays.stream(line.split(&quot; &quot;)));</code></li>
+<li><code>peek(Consumer&lt;? super T&gt; action)</code></li>
+</ul>
+<p>上面都是一些常用的操作, 值得注意的是, map一系列操作里面有很多mapToInt这样的操作, 是可以实现在对象流和基本类型流之间转换的操作.</p>
+<p>下面就是一些<strong>有状态</strong>的操作:</p>
+<ul>
+<li><code>distinct()</code></li>
+<li><code>sorted()</code></li>
+<li><code>limit(long maxSize)</code></li>
+<li><code>skip(long n)</code></li>
+</ul>
+<p>其中sorted函数也可以接受一个比较器. 再次重申, 比较器<code>compare(T o1, T o2)</code>, 如果是负值, 就表示第一个数字比较小. 所以可以记作减法. 而排序是&quot;大&quot;的排在后面.</p>
+<p>值得注意的是还有一些操作也很有意思:</p>
+<ul>
+<li><code>parallel()</code></li>
+<li><code>sequential()</code></li>
+<li><code>unordered()</code></li>
+</ul>
+<p>第一个是把流变成并行, 第二个是把流变成串行, 最后一个是允许乱序执行, 这可能会提高性能表现.</p>
+<h1 id="终结方法"><a class="markdownIt-Anchor" href="#终结方法"></a> 终结方法</h1>
+<p>终结方法就是对一个流经过遍历以及变换操作之后, 最后要对这一系列数字做什么.</p>
+<ul>
+<li><code>collect(Collectors.toList())</code></li>
+<li><code>reduce()、sum()、average()</code></li>
+<li><code>findFirst()、max()、min()</code></li>
+<li><code>forEach()</code></li>
+<li><code>anyMatch()、allMatch()、noneMatch()</code></li>
+</ul>
+<p>先说collect, 我们可以看一下collect的方法签名:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&lt;R&gt; R <span class="title function_">collect</span><span class="params">(Supplier&lt;R&gt; supplier,</span></span><br><span class="line"><span class="params">                  BiConsumer&lt;R, ? <span class="built_in">super</span> T&gt; accumulator,</span></span><br><span class="line"><span class="params">                  BiConsumer&lt;R, R&gt; combiner)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个签名是在Stream里面的, 如果是在IntStream里面的话, 会有一些不同:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&lt;R&gt; R <span class="title function_">collect</span><span class="params">(Supplier&lt;R&gt; supplier,</span></span><br><span class="line"><span class="params">                  ObjIntConsumer&lt;R&gt; accumulator,</span></span><br><span class="line"><span class="params">                  BiConsumer&lt;R, R&gt; combiner)</span>;</span><br></pre></td></tr></table></figure>
+<p>我们就以Stream里面的collect来作为例子, 这三个参数的作用分别是:</p>
+<blockquote>
+<p>Params:<br />
+supplier – a function that creates a new mutable result container. For a parallel execution, this function may be called multiple times and must return a fresh value each time.</p>
+<p>accumulator – an associative, non-interfering, stateless function that must fold an element into a result container.</p>
+<p>combiner – an associative, non-interfering, stateless function that accepts two partial result containers and merges them, which must be compatible with the accumulator function. The combiner function must fold the elements from the second result container into the first result container.</p>
+</blockquote>
+<p>下面是示例代码:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; asList = stringStream.collect(ArrayList::<span class="keyword">new</span>, ArrayList::add,                                            ArrayList::addAll);</span><br><span class="line"><span class="type">String</span> <span class="variable">concat</span> <span class="operator">=</span> stringStream.collect(StringBuilder::<span class="keyword">new</span>, StringBuilder::append,                                      StringBuilder::append).toString();</span><br></pre></td></tr></table></figure>
+<p>大概就是, 第一个参数决定需要收集到什么容器里面, 第二个参数提供把流中元素放到容器中的方法, 而第三个参数在处理并行流时候至关重要. 因为并行流可能会产生多个容器, 那如何合并这些容器, 也需要提供一个方法. 在上面的例子里面, 代码的方法都是使用<strong>方法引用</strong>这种语法, 实际也可以写lambda表达式.</p>
+<p>collect也可以是下面这个参数: <code>&lt;R, A&gt; R collect(Collector&lt;? super T, A, R&gt; collector);</code></p>
+<p>代码长下面这个样子: <code>List&lt;String&gt; asList = stringStream.collect(Collectors.toList());</code></p>
+<p>这个其实更加像是写好了的方法, 可以Collectors.toList()还可以Collectors.toCollection()这样的. 我们可以看下面这一段:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T, C <span class="keyword">extends</span> <span class="title class_">Collection</span>&lt;T&gt;&gt;</span><br><span class="line">    Collector&lt;T, ?, C&gt; toCollection(Supplier&lt;C&gt; collectionFactory) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">CollectorImpl</span>&lt;&gt;(collectionFactory, Collection&lt;T&gt;::add,</span><br><span class="line">                                   (r1, r2) -&gt; &#123; r1.addAll(r2); <span class="keyword">return</span> r1; &#125;,</span><br><span class="line">                                   CH_ID);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>可以看见下面的三个参数, 确实也是类似supplier, accumulator以及combiner的结构. 在java较新的版本中, 还提供一个更加简单的toList()方法, 但是这个方法返回的List是不可变的:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> (List&lt;T&gt;) Collections.unmodifiableList(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(Arrays.asList(<span class="built_in">this</span>.toArray())));</span><br></pre></td></tr></table></figure>
+<p>它可以直接跟在流后面, 而不需要collect.</p>
+<p>关于reduce, sum, average. reduce方法是最灵活的, 可以对流里面的对象进行某种累计操作:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Integer[] numbers = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> Arrays.stream(numbers).reduce(<span class="number">0</span>, (subtotal, element) -&gt; subtotal + element);</span><br></pre></td></tr></table></figure>
+<p>这里第一项写的是最开始的和, 第二项是lambda表达式, 参数的名字已经很明确了. 说明element如何被作用到整体, 如果像上面这样写, 最后算的就是累加.</p>
+<p>sum和average主要更用在<strong>数值流</strong>, 计算平均值和总和.</p>
+]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringMVC和Spring以及SpringBoot的区别</title>
+    <url>/2025/03/08/SpringMVC%E5%92%8CSpring%E4%BB%A5%E5%8F%8ASpringBoot%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<p>我觉得还是有必要详细研究这三者的区别. 在学习过程中经常会混淆这几个概念.</p>
+<span id="more"></span>
+<h1 id="spring"><a class="markdownIt-Anchor" href="#spring"></a> Spring</h1>
+<p>首先是Spring, Spring是一个很基础的框架, 提供了IOC和AOP, 现在我们来理解一下IOC和AOP是什么.</p>
+<blockquote>
+<p>IOC容器（Inversion of Control Container） 是Spring框架的核心组件，它通过控制反转和依赖注入（DI）来管理应用程序中对象（Bean）的生命周期和依赖关系。它的核心目标是降低代码的耦合度，使对象之间的关系由容器动态管理，而非硬编码在代码中。</p>
+</blockquote>
+<p>那么控制反转和依赖注入如何降低代码耦合度呢? 先来看一段代码实现:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 接口：消息服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">MessageService</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">send</span><span class="params">(String message)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实现类1：邮件服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EmailService</span> <span class="keyword">implements</span> <span class="title class_">MessageService</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">send</span><span class="params">(String message)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;发送邮件：&quot;</span> + message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实现类2：短信服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SMSService</span> <span class="keyword">implements</span> <span class="title class_">MessageService</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">send</span><span class="params">(String message)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;发送短信：&quot;</span> + message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 客户端：直接创建服务实例（高耦合）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 直接new一个具体的实现类</span></span><br><span class="line">        <span class="type">MessageService</span> <span class="variable">service</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">EmailService</span>();</span><br><span class="line">        service.send(<span class="string">&quot;Hello, this is a message!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那这些代码为什么是高耦合. 因为Client这个类的实现里面出现了具体的EmailService, 假如想要切换成SMSService那么需要改动实现类的代码, 假如想要添加新的通知的实现类那么也需要改动代码.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 配置类：告诉Spring如何创建Bean（对象）</span></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppConfig</span> &#123;</span><br><span class="line">    <span class="comment">// 定义Bean：选择EmailService作为MessageService的实现</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> MessageService <span class="title function_">messageService</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">EmailService</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 客户端不再直接创建对象，而是通过注入获取</span></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">    <span class="comment">// 通过@Autowired注入MessageService实例</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> MessageService messageService;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">send</span><span class="params">(String message)</span> &#123;</span><br><span class="line">        messageService.send(message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 启动Spring容器，加载配置类</span></span><br><span class="line">        <span class="type">AnnotationConfigApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> </span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(AppConfig.class);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 从容器中获取Client实例（Spring自动注入依赖）</span></span><br><span class="line">        <span class="type">Client</span> <span class="variable">client</span> <span class="operator">=</span> context.getBean(Client.class);</span><br><span class="line">        client.send(<span class="string">&quot;Hello, this is a message!&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        context.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里这个Client类通过@AutoWired注解, 不需要初始化messageService这个变量. 但是Spring是怎么知道我需要用这个函数生成的实例来注入呢, 这是因为<strong>Bean 的装配和依赖注入的逻辑核心是类型匹配</strong>. 这里注册之后只有这一个位置的是满足MessageService类型, 故会在这里注入.</p>
+<p>假如是这样:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppConfig</span> &#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> MessageService <span class="title function_">emailService</span><span class="params">()</span> &#123; <span class="comment">// 类型是 MessageService</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">EmailService</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> MessageService <span class="title function_">smsService</span><span class="params">()</span> &#123; <span class="comment">// 类型也是 MessageService</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">SMSService</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Spring就会抛出<strong>NoUniqueBeanDefinitionException</strong>异常了. 这就是依赖注入(Dependency injection).</p>
+<p>控制反转(Inversion of Container)的含义就是, 原本是Client类自己来控制创建messageService, 现在由Spring来控制, 通过依赖注入来控制. 这个&quot;容器&quot;的意思就是交给spring控制.</p>
+<h1 id="springmvc"><a class="markdownIt-Anchor" href="#springmvc"></a> SpringMVC</h1>
+<p>特别注意, MVC这个单词是一种软件架构模式, Model-View-Controller. 在使用SpringMVC开发web应用的时候, 需要先给Maven项目添加依赖, 这一点并不麻烦, 然后需要配置web.xml和spring-mvc.xml这两个文件, AI给出的示例XML在下面:</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- web.xml --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>dispatcherServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>/WEB-INF/spring-mvc.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>dispatcherServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- spring-mvc.xml --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:mvc</span>=<span class="string">&quot;http://www.springframework.org/schema/mvc&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;...&quot;</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- 开启组件扫描 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.example.controller&quot;</span>/&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- 开启注解驱动 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:annotation-driven</span>/&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- 配置视图解析器 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/WEB-INF/views/&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.jsp&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>与其解释这些配置文件的作用, 不如反问为什么SpringBoot不需要这些配置文件.</p>
+<p>generated by Qwen-QwQ-32B</p>
+<table>
+<thead>
+<tr>
+<th><strong>配置项</strong></th>
+<th><strong>传统 Spring MVC</strong></th>
+<th><strong>Spring Boot</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>部署描述符</strong></td>
+<td>必须通过 <code>web.xml</code> 配置 <code>DispatcherServlet</code>、Filter、Listener 等。</td>
+<td>无需 <code>web.xml</code>，通过 <code>@SpringBootApplication</code> 自动配置。</td>
+</tr>
+<tr>
+<td><strong>Spring MVC 配置</strong></td>
+<td>需通过 <code>spring-mvc.xml</code> 显式配置组件扫描、视图解析器、静态资源等。</td>
+<td>通过注解和少量 Java 配置类（如 <code>WebMvcConfigurer</code>）实现，默认配置已满足大部分需求。</td>
+</tr>
+<tr>
+<td><strong>静态资源处理</strong></td>
+<td>需手动配置 <code>mvc:resources</code> 或 <code>mvc:default-servlet-handler</code>。</td>
+<td>默认支持 <code>/static</code>、<code>/public</code> 等目录，无需额外配置。</td>
+</tr>
+<tr>
+<td><strong>编码过滤器</strong></td>
+<td>需在 <code>web.xml</code> 中手动配置 <code>CharacterEncodingFilter</code>。</td>
+<td>通过 <code>spring.http.encoding.charset=UTF-8</code> 自动配置编码。</td>
+</tr>
+<tr>
+<td><strong>启动方式</strong></td>
+<td>需部署到 Tomcat 等服务器，通过 WAR 文件运行。</td>
+<td>直接运行 <code>main</code> 方法，内置 Tomcat 启动。</td>
+</tr>
+<tr>
+<td>特别值得一提的是, SpringMVC应用最后生成WAR包, 然后丢到Tomcat等服务器中运行.</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>例如：</p>
+<ul>
+<li>配置<code>web.xml</code>定义<code>DispatcherServlet</code>。</li>
+<li>通过Tomcat的<code>webapps</code>目录部署WAR包。</li>
+</ul>
+</blockquote>
+]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring中的MVC架构</title>
+    <url>/2025/03/08/Spring%E4%B8%AD%E7%9A%84MVC%E6%9E%B6%E6%9E%84/</url>
+    <content><![CDATA[]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>从TreeMap看红黑树的具体实现</title>
     <url>/2025/02/09/%E4%BB%8ETreeMap%E7%9C%8B%E7%BA%A2%E9%BB%91%E6%A0%91%E7%9A%84%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0/</url>
     <content><![CDATA[]]></content>
