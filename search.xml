@@ -1,6 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>众安笔试</title>
+    <url>/2025/04/05/%E4%BC%97%E5%AE%89%E7%AC%94%E8%AF%95/</url>
+    <content><![CDATA[<p>众安笔试选择题解析. <span id="more"></span></p>
+<h1 id="1"><a class="markdownIt-Anchor" href="#1"></a> 1</h1>
+]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>上海数禾笔试</title>
+    <url>/2025/04/03/%E4%B8%8A%E6%B5%B7%E6%95%B0%E7%A6%BE%E7%AC%94%E8%AF%95/</url>
+    <content><![CDATA[<p>上海数禾笔试详解. <span id="more"></span></p>
+<p>单选</p>
+<h1 id="1"><a class="markdownIt-Anchor" href="#1"></a> 1</h1>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Integer</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">42</span>;</span><br><span class="line"><span class="type">Long</span> <span class="variable">l</span> <span class="operator">=</span> <span class="number">42L</span>;</span><br><span class="line"><span class="type">Double</span> <span class="variable">d</span> <span class="operator">=</span> <span class="number">42.0</span>;</span><br></pre></td></tr></table></figure>
+<p>which is true?</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">i == l</span><br><span class="line">l.equals(42L)</span><br><span class="line">d.equals(l)</span><br><span class="line">l == d</span><br><span class="line">i == d</span><br></pre></td></tr></table></figure>
+<p><code>l.equals(42L)</code>是true.</p>
+<p>解释, java里面所有大写开头的都是类, 不是基本类型. 为什么<code>d.equals(l)</code>是false. 因为:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> (obj <span class="keyword">instanceof</span> Double)</span><br><span class="line">		   &amp;&amp; (doubleToLongBits(((Double)obj).value) ==</span><br><span class="line">				  doubleToLongBits(value));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只要这个类型不是Double, 会直接判false. 然后如果是Double和double比较, 会有这样:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> (obj <span class="keyword">instanceof</span> Long) &#123;</span><br><span class="line">		<span class="keyword">return</span> value == ((Long)obj).longValue();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里接受的参数是Object, 但是传入是基本数据类型. 当基本数据类型传递给Object类型的时候会触发自动装箱, 最后obj是一个Long类型的对象了.</p>
+<p>值得注意, 这里如果写42就会是false, 因为会触发自动装箱成Integer.</p>
+<h1 id="2"><a class="markdownIt-Anchor" href="#2"></a> 2</h1>
+<p>以下有关JDBC <code>Statement</code>的说法错误的是？</p>
+<p>A. JDBC提供了 <code>Statement</code>、<code>PreparedStatement</code> 和 <code>CallableStatement</code> 三种方式来执行查询语句，其中 <code>Statement</code> 用于通用查询，<code>PreparedStatement</code> 用于执行参数化查询，而 <code>CallableStatement</code> 则是用于存储过程。</p>
+<p>B. <code>PreparedStatement</code> 可以阻止常见的SQL注入式攻击。</p>
+<p>C. <code>PreparedStatement</code> 中，<code>?</code> 叫做占位符，一个占位符可以有一个或者多个值。</p>
+<p>D. 对于 <code>PreparedStatement</code> 来说，数据库可以使用已经编译过及定义好的执行计划，由于 <code>PreparedStatement</code> 对象已预编译过，所以其执行速度要快于 <code>Statement</code> 对象。</p>
+<p>C 错误, 一个占位符只能有一个值:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;SELECT * FROM users WHERE id = ? OR name = ?&quot;</span>;</span><br><span class="line">preparedStatement.setInt(<span class="number">1</span>, <span class="number">123</span>); <span class="comment">// 第一个占位符</span></span><br><span class="line">preparedStatement.setString(<span class="number">2</span>, <span class="string">&quot;Alice&quot;</span>); <span class="comment">// 第二个占位符</span></span><br></pre></td></tr></table></figure>
+<h1 id="3"><a class="markdownIt-Anchor" href="#3"></a> 3</h1>
+<p>下面代码的打印结果:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">C</span> &#123;</span><br><span class="line">    C() &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;C&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">    <span class="type">C</span> <span class="variable">c</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">C</span>();</span><br><span class="line">    A() &#123;</span><br><span class="line">        <span class="built_in">this</span>(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    A(String s) &#123;</span><br><span class="line">        System.out.println(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> <span class="keyword">extends</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    Test()&#123;</span><br><span class="line">        <span class="built_in">super</span>(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当调用一个类的静态方法的时候, java会加载这个类, 也就是加载Test类, 但是Test类继承A, 所以先加载A类, 在这个类加载的过程中, 如果存在静态初始化代码块, 则会被执行, 但是这个例子里面没有.</p>
+<p>加载完Test之后, 就是开始执行main方法, 实例化了Test, 然后通过super调用了构造函数, 然后试图调用A的带参构造.</p>
+<blockquote>
+<p>在创建对象时，实例部分的初始化顺序为：</p>
+<ol>
+<li><strong>父类的实例变量赋值</strong>（按代码中声明顺序）。</li>
+<li><strong>父类的构造代码块</strong>（按代码中声明顺序执行）。</li>
+<li><strong>父类的构造函数</strong>（显式或隐式调用 <code>super()</code>）。</li>
+<li><strong>子类的实例变量赋值</strong>（按代码中声明顺序）。</li>
+<li><strong>子类的构造代码块</strong>（按代码中声明顺序执行）。</li>
+<li><strong>子类的构造函数</strong>。</li>
+</ol>
+</blockquote>
+<p>赋值最先, 打印C, 然后带参构造打印B, 最后打印B. 结果是:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C</span><br><span class="line">B</span><br><span class="line">B</span><br></pre></td></tr></table></figure>
+<h1 id="4"><a class="markdownIt-Anchor" href="#4"></a> 4</h1>
+<p>在生产者消费者问题中，一组生产者进程和一组消费者进程共享一个初始为空、大小为n的缓冲区，只有缓冲区没满时，生产者才能把消息放入缓冲区，否则必须等待;只有缓冲区不空时，消费者才能从中取出消息，否则必须等待。由于缓冲区是临界资源，它只允许一个生产者放入消息，或一个消费者从中取出消息。现设一个资源信号量的初始值n=10(与缓冲区大小相同)，经过多次操作后资源信号量当前值为4，若P表示等待该资源的进程数，Q表示该资源的可用个数，则P、Q分别是()</p>
+<p>读题啊, 资源信号量初值是10, 表明一开始缓冲区是满的, 现在是4, 表明4个资源可以用, 既然资源没有用完, 那么也就没有人在等待.</p>
+<p>这里有歧义. 资源信号量初始值是10, 意思是一开始缓冲区里面是满的吗? 如果不是满的, 空也是一种资源(是生产者需要的资源).</p>
+<p>0 4 或者 0 6</p>
+<h1 id="5"><a class="markdownIt-Anchor" href="#5"></a> 5</h1>
+<p>在某企业中,有关系 W(工号,姓名,工种,工资),其中工资由工种唯一决定。将其规范化到第三范式,正确的答案是?</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">W1(工号,姓名) W2(工种,工资)</span><br><span class="line">以上都不对</span><br><span class="line">W1(工号,姓名,工种) W2(工种,工资)</span><br><span class="line">W1(工号,工种,工资) W2(工号,姓名)</span><br></pre></td></tr></table></figure>
+<p>第一范式: 每行只包含单一值, 这个比较好理解.<br />
+第二范式: 所有非主属性必须<strong>完全依赖</strong>主键, 而非其一部分.<br />
+第三范式: 不能存在传递依赖, 非主键之间不能有依赖.</p>
+<p>选C</p>
+<h1 id="6"><a class="markdownIt-Anchor" href="#6"></a> 6</h1>
+<p>下面代码的输出是:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">B</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">B</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;构造块&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;静态块&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">B</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>静态成员变量的初始化优先于静态代码块的执行</strong>!!!</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">构造块</span><br><span class="line">构造块</span><br><span class="line">静态块</span><br><span class="line">构造块</span><br></pre></td></tr></table></figure>
+<p>结果是这样.</p>
+<h1 id="7"><a class="markdownIt-Anchor" href="#7"></a> 7</h1>
+<p>系统为某进程分配了4个页框，该进程已访问的页号序列为2,0,2,9,3,4,2,8,2,4,8,4,5。若进程要访问的下一页的页号为7，依据LRU算法，应淘汰页的页号是()<br />
+A 2<br />
+B 8<br />
+C 4<br />
+D 3</p>
+<p>选A</p>
+<h1 id="8"><a class="markdownIt-Anchor" href="#8"></a> 8</h1>
+<p>以下不是 Object 类的方法的是</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">clone()</span><br><span class="line">hasNext()</span><br><span class="line">toString()</span><br><span class="line">finalize()</span><br></pre></td></tr></table></figure>
+<p>haxNext()不是. 真是忘完了, hasNext()是Iterator接口里面的.</p>
+<h1 id="9"><a class="markdownIt-Anchor" href="#9"></a> 9</h1>
+<p>J2EE中，当把来自客户机的HTTP请求委托给serviet时，会调用HttpServlet的()方法<br />
+service<br />
+init<br />
+dopost<br />
+doget</p>
+<p>选择service.</p>
+<blockquote>
+<p>当J2EE容器将HTTP请求委托给Servlet时，<strong>首先调用的是<code>HttpServlet</code>的<code>service()</code>方法</strong>。以下是关键流程说明：</p>
+<ol>
+<li>
+<p><strong>容器调用流程</strong>：</p>
+<ul>
+<li>容器解析HTTP请求后，会创建<code>HttpServletRequest</code>和<code>HttpServletResponse</code>对象。</li>
+<li><strong>调用<code>HttpServlet</code>的<code>service()</code>方法</strong>，并将上述两个对象作为参数传递给该方法。</li>
+<li><code>service()</code>方法根据请求的HTTP方法（如<code>GET</code>、<code>POST</code>）决定调用<code>doGet()</code>、<code>doPost()</code>等对应方法。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h1 id="10"><a class="markdownIt-Anchor" href="#10"></a> 10</h1>
+<p>在现代操作系统中采用缓冲技术的主要目的是()</p>
+<p>改善用户编程环境<br />
+实现与设备无关性<br />
+提高CPU和设备之间的并行程度<br />
+提高CPU的处理速度</p>
+<p>选C</p>
+<h1 id="11"><a class="markdownIt-Anchor" href="#11"></a> 11</h1>
+<p>下面代码的输出结果:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">B</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;run&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">B</span> <span class="variable">b</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">        b.run();</span><br><span class="line">        System.out.println(<span class="string">&quot;main&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">run</span><br><span class="line">main</span><br></pre></td></tr></table></figure>
+<p>java里面实现多线程的几种方式:</p>
+<h2 id="继承thread类"><a class="markdownIt-Anchor" href="#继承thread类"></a> 继承Thread类</h2>
+<p>某个类继承了Thread类之后, 重写其run()方法, 最后通过调用start()启动线程.</p>
+<h2 id="实现runnable接口"><a class="markdownIt-Anchor" href="#实现runnable接口"></a> 实现Runnable接口</h2>
+<p>``<br />
+让某个类实现Runnable接口并且重写run方法, 然后再某一个函数里面通过thread启动.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyRunnable</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;线程执行任务： &quot;</span> + Thread.currentThread().getName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">MyRunnable</span> <span class="variable">runnable</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyRunnable</span>();</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(runnable);</span><br><span class="line">        thread.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意, 仍然是start启动!</p>
+<h2 id="使用callable和future"><a class="markdownIt-Anchor" href="#使用callable和future"></a> 使用Callable和Future</h2>
+<p>这个主要是处理需要有返回值的结果, 给一个实例代码:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FutureExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 创建异步任务（返回整数）</span></span><br><span class="line">        Callable&lt;Integer&gt; task = () -&gt; &#123;</span><br><span class="line">            Thread.sleep(<span class="number">2000</span>); <span class="comment">// 模拟耗时操作</span></span><br><span class="line">            <span class="keyword">return</span> <span class="number">5</span>; <span class="comment">// 返回结果</span></span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 创建 FutureTask（Future的实现类）</span></span><br><span class="line">        FutureTask&lt;Integer&gt; future = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(task);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 启动异步任务</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(future).start();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. 主线程继续执行（可做其他操作）</span></span><br><span class="line">        System.out.println(<span class="string">&quot;主线程在等待结果...&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5. 获取结果（阻塞直到任务完成）</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Integer</span> <span class="variable">result</span> <span class="operator">=</span> future.get();</span><br><span class="line">            System.out.println(<span class="string">&quot;任务结果: &quot;</span> + result);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 6. 检查任务状态</span></span><br><span class="line">        System.out.println(<span class="string">&quot;任务是否完成: &quot;</span> + future.isDone());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="12"><a class="markdownIt-Anchor" href="#12"></a> 12</h1>
+<p>下面的值是</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Math.floor(-<span class="number">8.5</span>)</span><br></pre></td></tr></table></figure>
+<p>-8(long)<br />
+-8.0(double)<br />
+-9(long)<br />
+-9(double)</p>
+<p>答案是-9double. 虽然取整但还是返回double, 这是可能会溢出的考虑. 返回double也能够保证数据的一致性.</p>
+<h1 id="13"><a class="markdownIt-Anchor" href="#13"></a> 13</h1>
+<p>在Java中，以下关于方法重载和方法重写描述正确的是?</p>
+<p>方法重载和方法的重写实现的功能相同<br />
+方法重写的返回值类型必须相同或相容。<br />
+方法重载的返回值类型必须一致，参数项必须不同<br />
+方法重载出现在父子关系中，方法重写是在同一类中</p>
+<p>选择B. 重写之后返回值必须相同或者相容.</p>
+<h1 id="14"><a class="markdownIt-Anchor" href="#14"></a> 14</h1>
+<p>假设用S表示进栈操作，用X表示出栈操作。如果元素的进栈顺序是abcd，为了得到出栈序列abcd，则相应的S和X的操作序列为()<br />
+SSSSXXXX<br />
+SXSXSXSX<br />
+SXSSXXSX<br />
+SSSXXSXX</p>
+<p>B 不解释</p>
+<h1 id="15"><a class="markdownIt-Anchor" href="#15"></a> 15</h1>
+<p>15.在并发控制技术中，最常用的是封锁机制，基本的封锁类型有排它锁X和共享锁S，下列关于两种锁的相容性描述不正确的是<br />
+(<br />
+X/X:TRUE<br />
+X/S:FALSE<br />
+S/X:FALSE<br />
+S/S: TRUE</p>
+<p>选A. X锁和任何锁都不兼容. 包括其自身.</p>
+<h1 id="16"><a class="markdownIt-Anchor" href="#16"></a> 16</h1>
+<p>下面关于 Cookie 与 Session 的说法中，正确的是()<br />
+Session 数据保存在客户端浏览器<br />
+Cookie 被禁止时没有办法将 session id 传递回服务器<br />
+Session 的安全性比 Cookie 高<br />
+会话 Cookie 关闭浏览器之后会存在一段时间</p>
+<p>选C.</p>
+<p>Session被保存在服务端.<br />
+Cookie被禁止, 可以重写URL或者表单的隐藏数据传输session id.</p>
+<p>Cookie在会话关闭之后立刻删除.</p>
+<h1 id="17"><a class="markdownIt-Anchor" href="#17"></a> 17</h1>
+<p>设散列表的长度为10，散列函数H(n)=n mod7，初始关键字序列为(33，24，8，17，21，10)，用链地址法作为解决冲突的方法，平均查找长度是()<br />
+1<br />
+2.5<br />
+2<br />
+1.5</p>
+<p>选1.5</p>
+<h1 id="18"><a class="markdownIt-Anchor" href="#18"></a> 18</h1>
+<p>下面二叉树中一定是完全二叉树的是<br />
+平衡二叉树<br />
+二叉排序树<br />
+满二叉树<br />
+单支二叉树</p>
+<p>C 满二叉树.</p>
+<p>完全二叉树是除最后一层所有层都满, 并且最后一层尽量靠左. 满二叉树就是一个每一层都满的二叉树.</p>
+<h1 id="19"><a class="markdownIt-Anchor" href="#19"></a> 19</h1>
+<p>下面 Java 代码的运行结果为()</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">	<span class="type">Object</span> <span class="variable">o</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>() &#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">// 重写equals()方法，总是返回true</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	System.out.println(o.equals(<span class="string">&quot;Fred&quot;</span>)); <span class="comment">// 调用重写后的equals()方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行时抛出异常<br />
+第三行编译错误<br />
+Fred<br />
+true</p>
+<p>true 不解释</p>
+<h1 id="20"><a class="markdownIt-Anchor" href="#20"></a> 20</h1>
+<p>以下关于Java中集合类ArrayList、LinkedList、HashMap描述错误的是()<br />
+HashMap实现Map接口，它允许任何类型的键和值对象，并允许将null用作键或值<br />
+ArrayList的访问速度比LinkedList快<br />
+添加和删除元素时，ArrayList的表现更佳<br />
+ArrayList和LinkedList均实现了List接口</p>
+<p>选C.<br />
+这里A居然是对的.</p>
+<h1 id="21"><a class="markdownIt-Anchor" href="#21"></a> 21</h1>
+<p>执行以下代码段(程序已包含所有必需的头文件)会输出什么结果</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> a[<span class="number">2</span>][<span class="number">3</span>]; <span class="comment">// 定义一个 2 行 3 列的字符数组</span></span><br><span class="line"><span class="comment">// 使用 strcpy 将字符串复制到数组中</span></span><br><span class="line"><span class="built_in">strcpy</span>(a[<span class="number">0</span>], <span class="string">&quot;ab&quot;</span>);</span><br><span class="line"><span class="built_in">strcpy</span>(a[<span class="number">1</span>], <span class="string">&quot;cd&quot;</span>);</span><br><span class="line"><span class="comment">// 修改 a[0][2] 的值为空格</span></span><br><span class="line">a[<span class="number">0</span>][<span class="number">2</span>] = <span class="string">&#x27; &#x27;</span>;</span><br><span class="line"><span class="comment">// 输出结果</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; a[<span class="number">0</span>] &lt;&lt; a[<span class="number">1</span>] &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ab cd</span><br></pre></td></tr></table></figure>
+<h1 id="22"><a class="markdownIt-Anchor" href="#22"></a> 22</h1>
+<p>下面关于 Java 中 volatile 关键字的说法错误的是（）<br />
+A. 能保证线程安全<br />
+B. volatile 能禁止进行指令重排序<br />
+C. JVM 保证从主内存加载到线程工作内存的值是最新的<br />
+D. volatile 关键字用在多线程同步中，可保证读取的可见性</p>
+<p>A</p>
+<blockquote>
+<p>选项 A 错误：</p>
+<p>volatile 关键字不能保证线程安全。它仅能保证变量的可见性（即线程读取的是主内存的最新值）和禁止指令重排序，但无法保证操作的原子性。例如，i++ 这样的复合操作（读取+修改+写入）在多线程环境下仍可能出错，需通过锁（如 synchronized 或 Atomic 类）保证原子性。<br />
+选项 B、C、D 正确：<br />
+B：volatile 确实能通过内存屏障禁止指令重排序。<br />
+C：JVM 会确保 volatile 变量从主内存加载到线程工作内存时，取的是最新值（通过插入读屏障）。<br />
+D：volatile 的核心作用是保证变量的可见性，即一个线程修改值后，其他线程能立即看到该变化。</p>
+</blockquote>
+<h1 id="23"><a class="markdownIt-Anchor" href="#23"></a> 23</h1>
+<p>Java中下面哪个能创建并启动线程?</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyRunnable</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//some code here</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>选项：</strong><br />
+A. new Runnable(MyRunnable).start()<br />
+B. new MyRunnable().start()<br />
+C. new Thread(new MyRunnable()).start()<br />
+D. new Thread(MyRunnable).run()</p>
+<p><strong>正确答案是 C. new Thread(new MyRunnable()).start()</strong></p>
+<h1 id="24"><a class="markdownIt-Anchor" href="#24"></a> 24</h1>
+<p>下面函数的时间复杂度是多少:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">jumpFloor</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n == <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">jumpFloor</span>(n<span class="number">-1</span>) + <span class="built_in">jumpFloor</span>(n<span class="number">-2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>答: <code>O(2^n)</code></p>
+<p>如何求递归程序的时间复杂度:</p>
+<h1 id="25"><a class="markdownIt-Anchor" href="#25"></a> 25</h1>
+<p>程序读入用户输入的一个值，要求创建一个自定义的异常，如果输入值大于10，使用throw语句显式地引发异常，异常输出信息为 “something’swrong!”，语句为（）</p>
+<p>选项：</p>
+<p>A. if(i&gt;10) throw new Exception(“something’swrong!”);</p>
+<p>B. if(i&gt;10) throw Exception( “something’swrong!”);</p>
+<p>C. if(i&gt;10) throw new Exception e(“something’swrong!”);</p>
+<p>D. if(i&gt;10) throw Exception e(“something’swrong!”);</p>
+<p>A 不解释</p>
+]]></content>
+      <tags>
+        <tag>study</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java中的注解和反射</title>
     <url>/2025/03/11/Java%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3%E5%92%8C%E5%8F%8D%E5%B0%84/</url>
     <content><![CDATA[<p>在学习Spring的时候, 经常看见在某些函数或者类上面有着@开头的字符串, 这叫做注解. 而反射在Spring中则经常和注解配合使用. 下面先聊反射:</p>
