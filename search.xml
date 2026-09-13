@@ -1,247 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>众安笔试</title>
-    <url>/2025/04/05/%E4%BC%97%E5%AE%89%E7%AC%94%E8%AF%95/</url>
-    <content><![CDATA[<p>众安笔试选择题解析. <span id="more"></span></p>
-<h1 id="1"><a class="markdownIt-Anchor" href="#1"></a> 1</h1>
+    <title>Archlinux和Niri</title>
+    <url>/2026/09/13/Archlinux%E5%92%8CNiri/</url>
+    <content><![CDATA[<p>有很多和系统配置的相关杂项, 实在是不想重新单开文章来写, 所以都统一整合到这里. 用标题的方式.</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">                  -`                     wonderlandkid@liu</span><br><span class="line">                 .o+`                    -----------------</span><br><span class="line">                `ooo/                    OS: Arch Linux x86_64</span><br><span class="line">               `+oooo:                   Host: Swift SFX14-41G (V1.10)</span><br><span class="line">              `+oooooo:                  Kernel: Linux 7.2.4-arch1-2</span><br><span class="line">              -+oooooo+:                 Uptime: 33 mins</span><br><span class="line">            `/:-:++oooo+:                Packages: 886 (pacman)</span><br><span class="line">           `/++++/+++++++:               Shell: bash 5.3.15</span><br><span class="line">          `/++++++++++++++:              Display (CMN14D5): 1920x1080 @ 1.25x in 14&quot;, 60 Hz [Built-in]</span><br><span class="line">         `/+++ooooooooooooo/`            Window Manager: niri 26.04 (Wayland)</span><br><span class="line">        ./ooosssso++osssssso+`           Cursor: default (36px)</span><br><span class="line">       .oossssso-````/ossssss+`          Terminal: foot 1.28.0</span><br><span class="line">      -osssssso.      :ssssssso.         Terminal Font: Maple Mono NF CN (15pt)</span><br><span class="line">     :osssssss/        osssso+++.        CPU: AMD Ryzen 7 5700U (16) @ 4.37 GHz</span><br><span class="line">    /ossssssss/        +ssssooo/-        GPU 1: NVIDIA GeForce GTX 1650 Mobile / Max-Q [Discrete]</span><br><span class="line">  `/ossssso+/:-        -:/+osssso+-      GPU 2: AMD Lucienne [Integrated]</span><br><span class="line"> `+sso+:-`                 `.-/+oso:     Memory: 5.61 GiB / 14.95 GiB (38%)</span><br><span class="line">`++:.                           `-/+/    Swap: 0 B / 32.00 GiB (0%)</span><br><span class="line">.`                                 `/    Disk (/): 171.57 GiB / 266.32 GiB (64%) - ext4</span><br><span class="line">                                         Local IP (wlan0): 192.168.18.229/24</span><br><span class="line">                                         Battery (AP18E7M): 100% [AC Connected]</span><br><span class="line">                                         Locale: en_US.UTF-8</span><br></pre></td></tr></table></figure>
+<h1 id="简介"><a class="markdownIt-Anchor" href="#简介"></a> 简介</h1>
+<blockquote>
+<p>这台 Acer Swift 14 上跑的是 Arch Linux。滚动更新意味着它永远是最新的，也意味着每次 pacman -Syu 都得留个心眼。<span id="more"></span></p>
+<p>桌面部分我选了 niri：一个 Rust 写的 Wayland 合成器，走的是&quot;可滚动平铺&quot;路线——窗口不再是不断被挤压重排的格子，而是排成一条无限向右延伸的带子，焦点移动到哪，视口就滚到哪。用了之后我基本告别了&quot;开第四个窗口时所有窗口都变成 20 像素宽&quot;的噩梦。</p>
+<p>但 niri 只负责窗口，桌面上那些该有的东西：状态栏、启动器、通知、锁屏，它一概不管。这部分交给 DMS（DankMaterialShell）——一个基于 Quickshell、遵循 Material 3 的桌面 shell，对 niri 做了专门适配，能直接读到工作区和窗口状态。</p>
+<p>下面是这套配置的搭建记录。</p>
+</blockquote>
+<p><s>AI生成的简介味道好冲.</s></p>
+<p>相关参考:</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> [<span class="string">DankMaterialShell (DMS)</span>](<span class="link">https://github.com/AvengeMedia/DankMaterialShell</span>) — Quickshell 写的 Material 3 风格 Wayland 桌面 shell</span><br><span class="line"><span class="bullet">-</span> [<span class="string">niri</span>](<span class="link">https://github.com/niri-wm/niri</span>) — Rust 编写的可滚动平铺 Wayland 合成器</span><br><span class="line"><span class="bullet">-</span> [<span class="string">Quickshell</span>](<span class="link">https://github.com/quickshell-mirror/quickshell</span>) — DMS 的底层框架</span><br><span class="line"><span class="bullet">-</span> [<span class="string">Maple Mono</span>](<span class="link">https://github.com/subframe7536/maple-font</span>) — 圆角连字等宽字体</span><br><span class="line"><span class="bullet">-</span> [<span class="string">foot</span>](<span class="link">https://codeberg.org/dnkl/foot</span>) — 轻量 Wayland 终端（Codeberg）</span><br></pre></td></tr></table></figure>
+<h1 id="终端模拟器相关配置"><a class="markdownIt-Anchor" href="#终端模拟器相关配置"></a> 终端模拟器相关配置</h1>
+<p>对于终端的使用可以说是最重要的了. 市面上现在有各种常用的终端模拟器. 当然我最喜欢用的是alacritty和foot. 其中foot是最近才接触, 此前一直使用alacritty.</p>
+<p>这两者的速度都很快,</p>
 ]]></content>
       <tags>
-        <tag>study</tag>
-        <tag>java</tag>
+        <tag>touchfish</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
-    <title>上海数禾笔试</title>
-    <url>/2025/04/03/%E4%B8%8A%E6%B5%B7%E6%95%B0%E7%A6%BE%E7%AC%94%E8%AF%95/</url>
-    <content><![CDATA[<p>上海数禾笔试详解. <span id="more"></span></p>
-<p>单选</p>
-<h1 id="1"><a class="markdownIt-Anchor" href="#1"></a> 1</h1>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Integer</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">42</span>;</span><br><span class="line"><span class="type">Long</span> <span class="variable">l</span> <span class="operator">=</span> <span class="number">42L</span>;</span><br><span class="line"><span class="type">Double</span> <span class="variable">d</span> <span class="operator">=</span> <span class="number">42.0</span>;</span><br></pre></td></tr></table></figure>
-<p>which is true?</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">i == l</span><br><span class="line">l.equals(42L)</span><br><span class="line">d.equals(l)</span><br><span class="line">l == d</span><br><span class="line">i == d</span><br></pre></td></tr></table></figure>
-<p><code>l.equals(42L)</code>是true.</p>
-<p>解释, java里面所有大写开头的都是类, 不是基本类型. 为什么<code>d.equals(l)</code>是false. 因为:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> (obj <span class="keyword">instanceof</span> Double)</span><br><span class="line">		   &amp;&amp; (doubleToLongBits(((Double)obj).value) ==</span><br><span class="line">				  doubleToLongBits(value));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>只要这个类型不是Double, 会直接判false. 然后如果是Double和double比较, 会有这样:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> (obj <span class="keyword">instanceof</span> Long) &#123;</span><br><span class="line">		<span class="keyword">return</span> value == ((Long)obj).longValue();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里接受的参数是Object, 但是传入是基本数据类型. 当基本数据类型传递给Object类型的时候会触发自动装箱, 最后obj是一个Long类型的对象了.</p>
-<p>值得注意, 这里如果写42就会是false, 因为会触发自动装箱成Integer.</p>
-<h1 id="2"><a class="markdownIt-Anchor" href="#2"></a> 2</h1>
-<p>以下有关JDBC <code>Statement</code>的说法错误的是？</p>
-<p>A. JDBC提供了 <code>Statement</code>、<code>PreparedStatement</code> 和 <code>CallableStatement</code> 三种方式来执行查询语句，其中 <code>Statement</code> 用于通用查询，<code>PreparedStatement</code> 用于执行参数化查询，而 <code>CallableStatement</code> 则是用于存储过程。</p>
-<p>B. <code>PreparedStatement</code> 可以阻止常见的SQL注入式攻击。</p>
-<p>C. <code>PreparedStatement</code> 中，<code>?</code> 叫做占位符，一个占位符可以有一个或者多个值。</p>
-<p>D. 对于 <code>PreparedStatement</code> 来说，数据库可以使用已经编译过及定义好的执行计划，由于 <code>PreparedStatement</code> 对象已预编译过，所以其执行速度要快于 <code>Statement</code> 对象。</p>
-<p>C 错误, 一个占位符只能有一个值:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;SELECT * FROM users WHERE id = ? OR name = ?&quot;</span>;</span><br><span class="line">preparedStatement.setInt(<span class="number">1</span>, <span class="number">123</span>); <span class="comment">// 第一个占位符</span></span><br><span class="line">preparedStatement.setString(<span class="number">2</span>, <span class="string">&quot;Alice&quot;</span>); <span class="comment">// 第二个占位符</span></span><br></pre></td></tr></table></figure>
-<h1 id="3"><a class="markdownIt-Anchor" href="#3"></a> 3</h1>
-<p>下面代码的打印结果:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">C</span> &#123;</span><br><span class="line">    C() &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;C&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">    <span class="type">C</span> <span class="variable">c</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">C</span>();</span><br><span class="line">    A() &#123;</span><br><span class="line">        <span class="built_in">this</span>(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    A(String s) &#123;</span><br><span class="line">        System.out.println(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> <span class="keyword">extends</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    Test()&#123;</span><br><span class="line">        <span class="built_in">super</span>(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当调用一个类的静态方法的时候, java会加载这个类, 也就是加载Test类, 但是Test类继承A, 所以先加载A类, 在这个类加载的过程中, 如果存在静态初始化代码块, 则会被执行, 但是这个例子里面没有.</p>
-<p>加载完Test之后, 就是开始执行main方法, 实例化了Test, 然后通过super调用了构造函数, 然后试图调用A的带参构造.</p>
+    <title>a new start</title>
+    <url>/2026/09/13/a-new-start/</url>
+    <content><![CDATA[<p>几乎好久没有写东西了. 现在有了一些可以写的东西, 希望能够重新开始学习, 我要成为coding高手! 删除了一些仓库中没有完成的文章. 现在我电脑上的发行版已经是arch linux了. 此网站一些关于manjaro和endeavourOS的文章会稍显过时. 时代可以说是进步很多了. 接下来准备写关于archlinux + niri环境配置的帖子以及一个有关于kotlin项目的文章. 希望能够坚持下来把这两件事做好.</p>
 <blockquote>
-<p>在创建对象时，实例部分的初始化顺序为：</p>
-<ol>
-<li><strong>父类的实例变量赋值</strong>（按代码中声明顺序）。</li>
-<li><strong>父类的构造代码块</strong>（按代码中声明顺序执行）。</li>
-<li><strong>父类的构造函数</strong>（显式或隐式调用 <code>super()</code>）。</li>
-<li><strong>子类的实例变量赋值</strong>（按代码中声明顺序）。</li>
-<li><strong>子类的构造代码块</strong>（按代码中声明顺序执行）。</li>
-<li><strong>子类的构造函数</strong>。</li>
-</ol>
+<p>雄关漫道真如铁, 而今迈步从头越.</p>
 </blockquote>
-<p>赋值最先, 打印C, 然后带参构造打印B, 最后打印B. 结果是:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C</span><br><span class="line">B</span><br><span class="line">B</span><br></pre></td></tr></table></figure>
-<h1 id="4"><a class="markdownIt-Anchor" href="#4"></a> 4</h1>
-<p>在生产者消费者问题中，一组生产者进程和一组消费者进程共享一个初始为空、大小为n的缓冲区，只有缓冲区没满时，生产者才能把消息放入缓冲区，否则必须等待;只有缓冲区不空时，消费者才能从中取出消息，否则必须等待。由于缓冲区是临界资源，它只允许一个生产者放入消息，或一个消费者从中取出消息。现设一个资源信号量的初始值n=10(与缓冲区大小相同)，经过多次操作后资源信号量当前值为4，若P表示等待该资源的进程数，Q表示该资源的可用个数，则P、Q分别是()</p>
-<p>读题啊, 资源信号量初值是10, 表明一开始缓冲区是满的, 现在是4, 表明4个资源可以用, 既然资源没有用完, 那么也就没有人在等待.</p>
-<p>这里有歧义. 资源信号量初始值是10, 意思是一开始缓冲区里面是满的吗? 如果不是满的, 空也是一种资源(是生产者需要的资源).</p>
-<p>0 4 或者 0 6</p>
-<h1 id="5"><a class="markdownIt-Anchor" href="#5"></a> 5</h1>
-<p>在某企业中,有关系 W(工号,姓名,工种,工资),其中工资由工种唯一决定。将其规范化到第三范式,正确的答案是?</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">W1(工号,姓名) W2(工种,工资)</span><br><span class="line">以上都不对</span><br><span class="line">W1(工号,姓名,工种) W2(工种,工资)</span><br><span class="line">W1(工号,工种,工资) W2(工号,姓名)</span><br></pre></td></tr></table></figure>
-<p>第一范式: 每行只包含单一值, 这个比较好理解.<br />
-第二范式: 所有非主属性必须<strong>完全依赖</strong>主键, 而非其一部分.<br />
-第三范式: 不能存在传递依赖, 非主键之间不能有依赖.</p>
-<p>选C</p>
-<h1 id="6"><a class="markdownIt-Anchor" href="#6"></a> 6</h1>
-<p>下面代码的输出是:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">B</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">B</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;构造块&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;静态块&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">B</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>静态成员变量的初始化优先于静态代码块的执行</strong>!!!</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">构造块</span><br><span class="line">构造块</span><br><span class="line">静态块</span><br><span class="line">构造块</span><br></pre></td></tr></table></figure>
-<p>结果是这样.</p>
-<h1 id="7"><a class="markdownIt-Anchor" href="#7"></a> 7</h1>
-<p>系统为某进程分配了4个页框，该进程已访问的页号序列为2,0,2,9,3,4,2,8,2,4,8,4,5。若进程要访问的下一页的页号为7，依据LRU算法，应淘汰页的页号是()<br />
-A 2<br />
-B 8<br />
-C 4<br />
-D 3</p>
-<p>选A</p>
-<h1 id="8"><a class="markdownIt-Anchor" href="#8"></a> 8</h1>
-<p>以下不是 Object 类的方法的是</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">clone()</span><br><span class="line">hasNext()</span><br><span class="line">toString()</span><br><span class="line">finalize()</span><br></pre></td></tr></table></figure>
-<p>haxNext()不是. 真是忘完了, hasNext()是Iterator接口里面的.</p>
-<h1 id="9"><a class="markdownIt-Anchor" href="#9"></a> 9</h1>
-<p>J2EE中，当把来自客户机的HTTP请求委托给serviet时，会调用HttpServlet的()方法<br />
-service<br />
-init<br />
-dopost<br />
-doget</p>
-<p>选择service.</p>
-<blockquote>
-<p>当J2EE容器将HTTP请求委托给Servlet时，<strong>首先调用的是<code>HttpServlet</code>的<code>service()</code>方法</strong>。以下是关键流程说明：</p>
-<ol>
-<li>
-<p><strong>容器调用流程</strong>：</p>
-<ul>
-<li>容器解析HTTP请求后，会创建<code>HttpServletRequest</code>和<code>HttpServletResponse</code>对象。</li>
-<li><strong>调用<code>HttpServlet</code>的<code>service()</code>方法</strong>，并将上述两个对象作为参数传递给该方法。</li>
-<li><code>service()</code>方法根据请求的HTTP方法（如<code>GET</code>、<code>POST</code>）决定调用<code>doGet()</code>、<code>doPost()</code>等对应方法。</li>
-</ul>
-</li>
-</ol>
-</blockquote>
-<h1 id="10"><a class="markdownIt-Anchor" href="#10"></a> 10</h1>
-<p>在现代操作系统中采用缓冲技术的主要目的是()</p>
-<p>改善用户编程环境<br />
-实现与设备无关性<br />
-提高CPU和设备之间的并行程度<br />
-提高CPU的处理速度</p>
-<p>选C</p>
-<h1 id="11"><a class="markdownIt-Anchor" href="#11"></a> 11</h1>
-<p>下面代码的输出结果:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">B</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;run&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">B</span> <span class="variable">b</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">        b.run();</span><br><span class="line">        System.out.println(<span class="string">&quot;main&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">run</span><br><span class="line">main</span><br></pre></td></tr></table></figure>
-<p>java里面实现多线程的几种方式:</p>
-<h2 id="继承thread类"><a class="markdownIt-Anchor" href="#继承thread类"></a> 继承Thread类</h2>
-<p>某个类继承了Thread类之后, 重写其run()方法, 最后通过调用start()启动线程.</p>
-<h2 id="实现runnable接口"><a class="markdownIt-Anchor" href="#实现runnable接口"></a> 实现Runnable接口</h2>
-<p>``<br />
-让某个类实现Runnable接口并且重写run方法, 然后再某一个函数里面通过thread启动.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyRunnable</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;线程执行任务： &quot;</span> + Thread.currentThread().getName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">MyRunnable</span> <span class="variable">runnable</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyRunnable</span>();</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(runnable);</span><br><span class="line">        thread.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意, 仍然是start启动!</p>
-<h2 id="使用callable和future"><a class="markdownIt-Anchor" href="#使用callable和future"></a> 使用Callable和Future</h2>
-<p>这个主要是处理需要有返回值的结果, 给一个实例代码:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FutureExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 创建异步任务（返回整数）</span></span><br><span class="line">        Callable&lt;Integer&gt; task = () -&gt; &#123;</span><br><span class="line">            Thread.sleep(<span class="number">2000</span>); <span class="comment">// 模拟耗时操作</span></span><br><span class="line">            <span class="keyword">return</span> <span class="number">5</span>; <span class="comment">// 返回结果</span></span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 创建 FutureTask（Future的实现类）</span></span><br><span class="line">        FutureTask&lt;Integer&gt; future = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(task);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 启动异步任务</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(future).start();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. 主线程继续执行（可做其他操作）</span></span><br><span class="line">        System.out.println(<span class="string">&quot;主线程在等待结果...&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5. 获取结果（阻塞直到任务完成）</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Integer</span> <span class="variable">result</span> <span class="operator">=</span> future.get();</span><br><span class="line">            System.out.println(<span class="string">&quot;任务结果: &quot;</span> + result);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 6. 检查任务状态</span></span><br><span class="line">        System.out.println(<span class="string">&quot;任务是否完成: &quot;</span> + future.isDone());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="12"><a class="markdownIt-Anchor" href="#12"></a> 12</h1>
-<p>下面的值是</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Math.floor(-<span class="number">8.5</span>)</span><br></pre></td></tr></table></figure>
-<p>-8(long)<br />
--8.0(double)<br />
--9(long)<br />
--9(double)</p>
-<p>答案是-9double. 虽然取整但还是返回double, 这是可能会溢出的考虑. 返回double也能够保证数据的一致性.</p>
-<h1 id="13"><a class="markdownIt-Anchor" href="#13"></a> 13</h1>
-<p>在Java中，以下关于方法重载和方法重写描述正确的是?</p>
-<p>方法重载和方法的重写实现的功能相同<br />
-方法重写的返回值类型必须相同或相容。<br />
-方法重载的返回值类型必须一致，参数项必须不同<br />
-方法重载出现在父子关系中，方法重写是在同一类中</p>
-<p>选择B. 重写之后返回值必须相同或者相容.</p>
-<h1 id="14"><a class="markdownIt-Anchor" href="#14"></a> 14</h1>
-<p>假设用S表示进栈操作，用X表示出栈操作。如果元素的进栈顺序是abcd，为了得到出栈序列abcd，则相应的S和X的操作序列为()<br />
-SSSSXXXX<br />
-SXSXSXSX<br />
-SXSSXXSX<br />
-SSSXXSXX</p>
-<p>B 不解释</p>
-<h1 id="15"><a class="markdownIt-Anchor" href="#15"></a> 15</h1>
-<p>15.在并发控制技术中，最常用的是封锁机制，基本的封锁类型有排它锁X和共享锁S，下列关于两种锁的相容性描述不正确的是<br />
-(<br />
-X/X:TRUE<br />
-X/S:FALSE<br />
-S/X:FALSE<br />
-S/S: TRUE</p>
-<p>选A. X锁和任何锁都不兼容. 包括其自身.</p>
-<h1 id="16"><a class="markdownIt-Anchor" href="#16"></a> 16</h1>
-<p>下面关于 Cookie 与 Session 的说法中，正确的是()<br />
-Session 数据保存在客户端浏览器<br />
-Cookie 被禁止时没有办法将 session id 传递回服务器<br />
-Session 的安全性比 Cookie 高<br />
-会话 Cookie 关闭浏览器之后会存在一段时间</p>
-<p>选C.</p>
-<p>Session被保存在服务端.<br />
-Cookie被禁止, 可以重写URL或者表单的隐藏数据传输session id.</p>
-<p>Cookie在会话关闭之后立刻删除.</p>
-<h1 id="17"><a class="markdownIt-Anchor" href="#17"></a> 17</h1>
-<p>设散列表的长度为10，散列函数H(n)=n mod7，初始关键字序列为(33，24，8，17，21，10)，用链地址法作为解决冲突的方法，平均查找长度是()<br />
-1<br />
-2.5<br />
-2<br />
-1.5</p>
-<p>选1.5</p>
-<h1 id="18"><a class="markdownIt-Anchor" href="#18"></a> 18</h1>
-<p>下面二叉树中一定是完全二叉树的是<br />
-平衡二叉树<br />
-二叉排序树<br />
-满二叉树<br />
-单支二叉树</p>
-<p>C 满二叉树.</p>
-<p>完全二叉树是除最后一层所有层都满, 并且最后一层尽量靠左. 满二叉树就是一个每一层都满的二叉树.</p>
-<h1 id="19"><a class="markdownIt-Anchor" href="#19"></a> 19</h1>
-<p>下面 Java 代码的运行结果为()</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">	<span class="type">Object</span> <span class="variable">o</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>() &#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">// 重写equals()方法，总是返回true</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	System.out.println(o.equals(<span class="string">&quot;Fred&quot;</span>)); <span class="comment">// 调用重写后的equals()方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>运行时抛出异常<br />
-第三行编译错误<br />
-Fred<br />
-true</p>
-<p>true 不解释</p>
-<h1 id="20"><a class="markdownIt-Anchor" href="#20"></a> 20</h1>
-<p>以下关于Java中集合类ArrayList、LinkedList、HashMap描述错误的是()<br />
-HashMap实现Map接口，它允许任何类型的键和值对象，并允许将null用作键或值<br />
-ArrayList的访问速度比LinkedList快<br />
-添加和删除元素时，ArrayList的表现更佳<br />
-ArrayList和LinkedList均实现了List接口</p>
-<p>选C.<br />
-这里A居然是对的.</p>
-<h1 id="21"><a class="markdownIt-Anchor" href="#21"></a> 21</h1>
-<p>执行以下代码段(程序已包含所有必需的头文件)会输出什么结果</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> a[<span class="number">2</span>][<span class="number">3</span>]; <span class="comment">// 定义一个 2 行 3 列的字符数组</span></span><br><span class="line"><span class="comment">// 使用 strcpy 将字符串复制到数组中</span></span><br><span class="line"><span class="built_in">strcpy</span>(a[<span class="number">0</span>], <span class="string">&quot;ab&quot;</span>);</span><br><span class="line"><span class="built_in">strcpy</span>(a[<span class="number">1</span>], <span class="string">&quot;cd&quot;</span>);</span><br><span class="line"><span class="comment">// 修改 a[0][2] 的值为空格</span></span><br><span class="line">a[<span class="number">0</span>][<span class="number">2</span>] = <span class="string">&#x27; &#x27;</span>;</span><br><span class="line"><span class="comment">// 输出结果</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; a[<span class="number">0</span>] &lt;&lt; a[<span class="number">1</span>] &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ab cd</span><br></pre></td></tr></table></figure>
-<h1 id="22"><a class="markdownIt-Anchor" href="#22"></a> 22</h1>
-<p>下面关于 Java 中 volatile 关键字的说法错误的是（）<br />
-A. 能保证线程安全<br />
-B. volatile 能禁止进行指令重排序<br />
-C. JVM 保证从主内存加载到线程工作内存的值是最新的<br />
-D. volatile 关键字用在多线程同步中，可保证读取的可见性</p>
-<p>A</p>
-<blockquote>
-<p>选项 A 错误：</p>
-<p>volatile 关键字不能保证线程安全。它仅能保证变量的可见性（即线程读取的是主内存的最新值）和禁止指令重排序，但无法保证操作的原子性。例如，i++ 这样的复合操作（读取+修改+写入）在多线程环境下仍可能出错，需通过锁（如 synchronized 或 Atomic 类）保证原子性。<br />
-选项 B、C、D 正确：<br />
-B：volatile 确实能通过内存屏障禁止指令重排序。<br />
-C：JVM 会确保 volatile 变量从主内存加载到线程工作内存时，取的是最新值（通过插入读屏障）。<br />
-D：volatile 的核心作用是保证变量的可见性，即一个线程修改值后，其他线程能立即看到该变化。</p>
-</blockquote>
-<h1 id="23"><a class="markdownIt-Anchor" href="#23"></a> 23</h1>
-<p>Java中下面哪个能创建并启动线程?</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyRunnable</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//some code here</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>选项：</strong><br />
-A. new Runnable(MyRunnable).start()<br />
-B. new MyRunnable().start()<br />
-C. new Thread(new MyRunnable()).start()<br />
-D. new Thread(MyRunnable).run()</p>
-<p><strong>正确答案是 C. new Thread(new MyRunnable()).start()</strong></p>
-<h1 id="24"><a class="markdownIt-Anchor" href="#24"></a> 24</h1>
-<p>下面函数的时间复杂度是多少:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">jumpFloor</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n == <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">jumpFloor</span>(n<span class="number">-1</span>) + <span class="built_in">jumpFloor</span>(n<span class="number">-2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>答: <code>O(2^n)</code></p>
-<p>如何求递归程序的时间复杂度:</p>
-<h1 id="25"><a class="markdownIt-Anchor" href="#25"></a> 25</h1>
-<p>程序读入用户输入的一个值，要求创建一个自定义的异常，如果输入值大于10，使用throw语句显式地引发异常，异常输出信息为 “something’swrong!”，语句为（）</p>
-<p>选项：</p>
-<p>A. if(i&gt;10) throw new Exception(“something’swrong!”);</p>
-<p>B. if(i&gt;10) throw Exception( “something’swrong!”);</p>
-<p>C. if(i&gt;10) throw new Exception e(“something’swrong!”);</p>
-<p>D. if(i&gt;10) throw Exception e(“something’swrong!”);</p>
-<p>A 不解释</p>
 ]]></content>
       <tags>
-        <tag>study</tag>
-        <tag>java</tag>
+        <tag>touchfish</tag>
       </tags>
   </entry>
   <entry>
@@ -518,25 +310,6 @@ supplier – a function that creates a new mutable result container. For a paral
 <li>通过Tomcat的<code>webapps</code>目录部署WAR包。</li>
 </ul>
 </blockquote>
-]]></content>
-      <tags>
-        <tag>study</tag>
-        <tag>java</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Spring中的MVC架构</title>
-    <url>/2025/03/08/Spring%E4%B8%AD%E7%9A%84MVC%E6%9E%B6%E6%9E%84/</url>
-    <content><![CDATA[]]></content>
-      <tags>
-        <tag>study</tag>
-        <tag>java</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>从TreeMap看红黑树的具体实现</title>
-    <url>/2025/02/09/%E4%BB%8ETreeMap%E7%9C%8B%E7%BA%A2%E9%BB%91%E6%A0%91%E7%9A%84%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[<p>writing</p>
 ]]></content>
       <tags>
         <tag>study</tag>
@@ -908,45 +681,6 @@ supplier – a function that creates a new mutable result container. For a paral
 <p>其实和manjaro确实差不太多, 可以参看manjaro那一篇文章. 关于Ubuntu的那一篇文章写的是真的详细. 在进入live环境的时候如果选择了nvidia的那个选择项, 那么在安装完成之后应该会是自动安装的N卡驱动. 然后再搭配上最新的envycontrol, 简直是完美.</p>
 <p>可以说流畅地用上了arch系简直是走上了人生巅峰的感觉.</p>
 <p><strong>那么接下来是我新添加的内容以及新的想说的话.</strong> 实际情况是, envycontrol依赖于特定版本的python. 在上次离开arch系的原因就是yay -Syyu的时候python从3.10更新到了3.11, 然后一大票软件通通寄了, 我的备份也比较老, 所以直接放弃了. 这次事故再次让人认识到, 一旦一个软件是非官方的, 依赖社区的, 它就很容易出了问题好久没人解决. 我不知道现在解决没有但是, 我现在仍然在使用官方的<code>nvidia-prime</code>方案, 虽然看上去好像耗电, 但是更加安心. aur的社区包非常多, 但是可能问题也很多, 很多时候就是能少装几个就少装几个, 尽量装有官方支持的, 不然用arch就永远在看issue和修bug的路上.</p>
-<h1 id="pacman包管理器"><a class="markdownIt-Anchor" href="#pacman包管理器"></a> pacman包管理器</h1>
-<p>对于安装, 多是S开头. 没有什么稀奇的地方.</p>
-<p><code>pacman -Rs package_name</code>: 相比普通的-R, 这个会remove所有的dependencies.</p>
-<p><code>pacman -Rn package_name</code>: prevent backup files of package.</p>
-<p>显然-Rsn是未来经常用的命令了.</p>
-<p><code>pacman -Syu</code>: 更新整个系统. 如果是Syyu, 就是强制重新sync repo, 即使repo已经报告它没有被更新.</p>
-<p>除开更新下载和安装, 查询也是包管理器重要的功能. 随着对linux系统使用的深入, 查询命令确实用得越来越多.</p>
-<blockquote>
-<p>Pacman queries the local package database with the <code>-Q</code> flag, the sync database with the <code>-S</code> flag and the files database with the <code>-F</code> flag. See <code>pacman -Q --help</code>, <code>pacman -S --help</code> and <code>pacman -F --help</code> for the respective suboptions of each flag.</p>
-</blockquote>
-<p><code>pacman -Ss string1 string2 ...</code>: 在远端搜索这个包的名字, 列出描述. 这个描述还是比较简略, 但是关键是它显示了每个包来自于哪个仓库:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜  ~ sudo pacman -Ss neovim     </span><br><span class="line">community/neovide 0.10.3-1</span><br><span class="line">    No Nonsense Neovim Client in Rust</span><br><span class="line">community/neovim 0.8.3-1 [installed]</span><br><span class="line">    Fork of Vim aiming to improve user experience, plugins, and GUIs</span><br><span class="line">...省略, 类似这一种显示信息.</span><br></pre></td></tr></table></figure>
-<p>如果觉得信息太少, 使用-Si查看extensive的信息.</p>
-<p>对于已经install的包, 可以使用-Q选项来查询:</p>
-<p><code>pacman -Qs neovim</code></p>
-<p>同样的:</p>
-<p><code>pacman -Qi neovim</code></p>
-<p>如果想要查看一个包安装在哪些目录, 使用-Ql, 这样一下子确实输出很多目录.</p>
-<p>然后还有一个特别乐的, 可以看一个文件是谁在maintain:</p>
-<p><code>pacman -Qo filepath</code></p>
-<p>我就是通过这么命令验证了<code>/etc/environment</code>这个文件是属于哪一个包, 在群友的帮助下确实学到了很多.</p>
-]]></content>
-      <tags>
-        <tag>touchfish</tag>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>重新回到arch系</title>
-    <url>/2023/03/09/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0arch%E7%B3%BB/</url>
-    <content><![CDATA[<p>现在是2023年的3月份, Ubuntu23.04即将发布, 带来一个新的更加精简的镜像, 并且带来许多新特性. 但是我却尝试回到了endeavoros. <span id="more"></span></p>
-<p>一直以来, arch系和Ubuntu相对比一直差点意思. 首先是arch自己, 装完桌面后配置过于麻烦, 是在是让人难以忍受. manjaro也不是很好, 突出表现在驱动, 对于N卡的驱动比arch实在是差太多了. 使用manjaro玩MC会画面撕裂, 罪魁祸首还是采取了一个hybrid的显卡驱动方法(当然自2023年以来我也没有再去试manjaro了). 而且manjaro毕竟不是arch, 在使用一些aur软件或者是GitHub的开源项目过程中, 万一出了问题, 有时候没法复现. 毕竟aur是给arch用的而不是给manjaro用的.</p>
-<p>对于一些对arch亲缘比较近的发行版, 对于N卡的方案就好很多, 对于笔记本的双显卡切换试用<code>nvidia-prime</code>的方案, 也就是默认是一种混合的模式, 如果需要使用独显, 显示地用<code>prime-run</code>. 虽然说这个方案没有彻底关闭nvidia省电但是毕竟是官方的方案, 比manjaro的要好.</p>
-<p>当然archwiki也提供了一些其他的方案, 其中有一些方案是需要手动做一些看似很危险的操作, 改一些平时我从来不会去看的文件, 和内核相关. 这些方案确实很吓人, 毕竟如果linux桌面没了还好, kernel panic处理起来可是麻烦多了.</p>
-<p>所以看来看去, 好用的其实就一个首推的, <code>optimus-manager</code>. 这应该是算一个首选. 但是这个也确实有一些弊端, 首先就是它已经很久没有更新了(虽然说It works well so no maintainance is needed). 而且optimus也需要搭配一些其他的包比如说bbswitch一起使用来&quot;延长电池续航时间&quot;. 配置起来还是麻烦.</p>
-<p><code>envycontrol</code>是最新的, 也是目前最优的解. 也是目前我正在使用的, 非常好用, 方便程度相当于Ubuntu里面的<code>prime-select</code>. 我也在近期重新回到了arch发行版, 也是今天的主角: <strong>endeavoros</strong>.</p>
-<p>如果是想要安装xfce的版本那没有什么大问题, 直接安装就行, 默认下面就是给你安装xfce桌面. 但是如果你想安装其他的桌面环境比如说我最喜欢的KDE, 或者是gnome. 那么就需要先<strong>换源</strong>. 保证pacman不会报网络相关的错误. 而且如果不换源的话很有可能它会给你报错, 就说连不上网络, 无法使用online模式, 而offline只有xfce这一种桌面环境. 联网了之后的选择是十分丰富的.</p>
-<p>其实和manjaro确实差不太多, 可以参看manjaro那一篇文章. 关于Ubuntu的那一篇文章写的是真的详细. 在进入live环境的时候如果选择了nvidia的那个选择项, 那么在安装完成之后应该会是自动安装的N卡驱动. 然后再搭配上最新的envycontrol, 简直是完美.</p>
-<p>可以说流畅地用上了arch系简直是走上了人生巅峰的感觉.</p>
 <h1 id="pacman包管理器"><a class="markdownIt-Anchor" href="#pacman包管理器"></a> pacman包管理器</h1>
 <p>对于安装, 多是S开头. 没有什么稀奇的地方.</p>
 <p><code>pacman -Rs package_name</code>: 相比普通的-R, 这个会remove所有的dependencies.</p>
@@ -4723,49 +4457,6 @@ cout &lt;&lt; endl;<br />
       </tags>
   </entry>
   <entry>
-    <title>missing_semester粗看</title>
-    <url>/2022/11/10/missing-semester%E7%B2%97%E7%9C%8B/</url>
-    <content><![CDATA[<p>虽然Missing semester的网站很贴心准备了笔记, 但是笔记里面提到的知识点非常多而且繁杂. 还是有必要开一篇文章来注解一下. 官方对这个课真的很用心, 还有专门的中文翻译(当然这个有可能是别的中国人贡献的). 实际上即使是有笔记我还是没办法理解每一条命令的内涵, 也只是稍稍理解一下罢了.</p>
-<p><a href="https://missing-semester-cn.github.io/">官方笔记</a></p>
-<span id="more"></span>
-<h1 id="数据整理"><a class="markdownIt-Anchor" href="#数据整理"></a> 数据整理</h1>
-<h2 id="ssh"><a class="markdownIt-Anchor" href="#ssh"></a> ssh</h2>
-<p>虽然数据整理和SSH没有什么关系, 仅仅只是使用ssh举了一个例子. 但是秉持着探索的态度, 还是有必要了解一下ssh. 毕竟在我前面的学习生活中其实已经不少见了.</p>
-<p>ssh全名叫做Secure Shell. 提供了一种安全的方式登录远程桌面. 在同一个局域网下面ssh的用法十分简单, 我手机termux使用ssh可以在局域网下面轻松登录电脑的shell. 在tldr(一个我非常喜欢的简洁版本的man手册)里面列出来了一些最经典的ssh命令:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Secure Shell is a protocol used to securely log onto remote systems.It can be used for logging or executing commands on a remote server.More information: https://man.openbsd.org/ssh.</span><br><span class="line"></span><br><span class="line"> - Connect to a remote server:</span><br><span class="line">   ssh &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Connect to a remote server with a specific identity (private key):</span><br><span class="line">   ssh -i &#123;&#123;path/to/key_file&#125;&#125; &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Connect to a remote server using a specific port:</span><br><span class="line">   ssh &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125; -p &#123;&#123;2222&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Run a command on a remote server with a [t]ty allocation allowing interaction with the remote command:</span><br><span class="line">   ssh &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125; -t &#123;&#123;command&#125;&#125; &#123;&#123;command_arguments&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - SSH tunneling: Dynamic port forwarding (SOCKS proxy on localhost:1080):</span><br><span class="line">   ssh -D &#123;&#123;1080&#125;&#125; &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - SSH tunneling: Forward a specific port (localhost:9999 to example.org:80) along with disabling pseudo-[T]ty allocation and executio[N] of remote commands:</span><br><span class="line">   ssh -L &#123;&#123;9999&#125;&#125;:&#123;&#123;example.org&#125;&#125;:&#123;&#123;80&#125;&#125; -N -T &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - SSH jumping: Connect through a jumphost to a remote server (Multiple jump hops may be specified separated by comma characters):</span><br><span class="line">   ssh -J &#123;&#123;username&#125;&#125;@&#123;&#123;jump_host&#125;&#125; &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br><span class="line"></span><br><span class="line"> - Agent forwarding: Forward the authentication information to the remote machine (see man ssh_config for available options):</span><br><span class="line">   ssh -A &#123;&#123;username&#125;&#125;@&#123;&#123;remote_host&#125;&#125;</span><br></pre></td></tr></table></figure>
-<p>当然在使用ssh的过程中还可以配置免密码登录之类的操作, [这个B站视频](<a href="https://oiaom.github.io/2022/08/29/missing-semester/%E3%80%90%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E5%9C%B0%E8%AE%BF%E9%97%AE%E8%BF%9C%E7%A8%8B%E4%B8%BB%E6%9C%BA%EF%BC%9FSSH%E4%B8%8Efrp%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B%E3%80%91">https://oiaom.github.io/2022/08/29/missing-semester/【如何优雅地访问远程主机？SSH与frp内网穿透配置教程】</a> <a href="https://www.bilibili.com/video/BV13L411w7XU?share_source=copy_web&amp;vd_source=c825e8a8735a644c2c384d551af8125e">https://www.bilibili.com/video/BV13L411w7XU?share_source=copy_web&amp;vd_source=c825e8a8735a644c2c384d551af8125e</a>)讲得很好.</p>
-<p>不过在这里ssh其实也就是起到一个来输出日志的作用, 目的还是讲解grep的用法.</p>
-<p>其中有一个很妙的思想. 首先ssh传输是比较慢的, 远程运行命令和本机运行命令是远远快于ssh的传输的.</p>
-<p>看下面命令:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh myserver journalctl | grep sshd</span><br></pre></td></tr></table></figure>
-<p>这个意思是, 把这个日志打印出来, 并且过滤出含有sshd的内容.</p>
-<p>但是这个缺陷很大. 首先, 我是在本机上面运行这条命令, grep是在本机上面运行的, 所以对于ssh来说, 还是需要传输完整的日志输出到本机, 之后本机执行grep来过滤到我需要的数据. 中间传输比较慢.</p>
-<p>所以可以作如下改进:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh &#x27;myserver journalctl | grep sshd&#x27;</span><br></pre></td></tr></table></figure>
-<p>但是不知道是不是因为手机是termux的缘故, 目前还没有成功打印出来正常的ssh日志.</p>
-<h2 id="正则表达式"><a class="markdownIt-Anchor" href="#正则表达式"></a> 正则表达式</h2>
-<p>正则表达式在计算机中的应用很广泛, 很多代码补全的插件就是使用这个工具来判断的. 对于基本的正则表达式了解可以参看:<a href="https://www.bilibili.com/video/BV1da4y1p7iZ?share_source=copy_web&amp;vd_source=c825e8a8735a644c2c384d551af8125e">10分钟快速掌握正则表达式</a></p>
-<p>详细一点的文档可以参看:<a href="https://github.com/ziishaned/learn-regex/blob/master/translations/README-cn.md">ziishaned/learn-regex</a></p>
-<p>我估计在我看llvm的那个时候可以用到相关知识, 所以这个文档我就是粗略地过一遍吧.</p>
-<h2 id="awk"><a class="markdownIt-Anchor" href="#awk"></a> awk</h2>
-<p>grep, sed, awk是比较出名的处理文本的三个工具.</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜  ~ which awk         </span><br><span class="line">/usr/bin/awk</span><br><span class="line">➜  ~ ls -l /usr/bin/awk</span><br><span class="line">lrwxrwxrwx root root 21 B Thu Aug 11 07:05:20 2022  /usr/bin/awk ⇒ /etc/alternatives/awk</span><br><span class="line">➜  ~ </span><br></pre></td></tr></table></figure>
-<p>这是我电脑上面的awk情况.</p>
-<p>这个工具非常抽象, 我就不学了. <a href="https://www.runoob.com/linux/linux-comm-awk.html">菜鸟教程点此</a></p>
-<p>虽然在grep sed awk里面awk应该是最强大的.</p>
-<h1 id="命令行环境"><a class="markdownIt-Anchor" href="#命令行环境"></a> 命令行环境</h1>
-<h2 id="kill命令"><a class="markdownIt-Anchor" href="#kill命令"></a> kill命令</h2>
-<p><a href="https://www.runoob.com/linux/linux-comm-kill.html">菜鸟教程kill</a></p>
-<h2 id="ps命令"><a class="markdownIt-Anchor" href="#ps命令"></a> ps命令</h2>
-<p><a href="https://www.runoob.com/linux/linux-comm-ps.html">菜鸟教程ps</a></p>
-<p>这个内容太杂了, 我还是多学一点东西之后再来学吧, 只是粗略地看了一遍.</p>
-]]></content>
-      <tags>
-        <tag>touchfish</tag>
-        <tag>残缺的笔记</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>数学公式符号</title>
     <url>/2022/11/10/%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F%E7%AC%A6%E5%8F%B7/</url>
     <content><![CDATA[<p>主要是离散数学的笔记需要一些符号, 但是又不想老是百度上面找, 可以记笔记的过程中自己就留下来一些, 方便自己找. 用了Latex的部分语法.</p>
@@ -5244,8 +4935,8 @@ m368.1 178.2c0-86.4-60.9-215.4-368.1-215.4-306.4 0-367.3 129-367.3 215.4 0 85.8
 <p>下面需要vscode里面非常好用的扩展—-“remote-wsl”, 接下来的步骤就和开始看的视频一样了. windows下面的小问题就重启解.</p>
 ]]></content>
       <tags>
-        <tag>vscode</tag>
         <tag>touchfish</tag>
+        <tag>vscode</tag>
       </tags>
   </entry>
   <entry>
@@ -5415,8 +5106,8 @@ m368.1 178.2c0-86.4-60.9-215.4-368.1-215.4-306.4 0-367.3 129-367.3 215.4 0 85.8
 <p>未完, 有时间接着写.</p>
 ]]></content>
       <tags>
-        <tag>study</tag>
         <tag>linux</tag>
+        <tag>study</tag>
       </tags>
   </entry>
   <entry>
@@ -6064,7 +5755,7 @@ width就是打印的宽度。这样能够让输入输出更灵活了。</p>
 ]]></content>
       <tags>
         <tag>study</tag>
-        <tag>C和C++</tag>
+        <tag>cpp</tag>
       </tags>
   </entry>
   <entry>
@@ -6129,8 +5820,8 @@ width就是打印的宽度。这样能够让输入输出更灵活了。</p>
 <p>再就是缩放，我在xfce版本更改缩放的时候总感觉缩放不是很统一。（跟个人太菜有很大关系）有的时候更改还是觉得缩放不是很合适。感觉大小有一些不协调。在kde版本下在显示器设置里面改成150缩放或者说是125缩放不仅字体显示会更加清晰，而且综合起来观感比较好，非常协调。</p>
 ]]></content>
       <tags>
-        <tag>study</tag>
         <tag>linux</tag>
+        <tag>study</tag>
       </tags>
   </entry>
   <entry>
